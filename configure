@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+set -u
+
+if [[ ! -e src/libscran ]]
+then
+    git clone https://github.com/LTLA/libscran src/libscran
+fi
+
+cd src/libscran
+mkdir -p build
+cd build
+cmake ..
+cmake --build .
