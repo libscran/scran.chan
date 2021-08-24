@@ -15,3 +15,5 @@ target_include_directories(static_scran PUBLIC include/)
 add_subdirectory(extern)
 
 target_link_libraries(static_scran scran)
+
+set_property(TARGET static_scran PROPERTY POSITION_INDEPENDENT_CODE ON)

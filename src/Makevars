@@ -1,0 +1,2 @@
+PKG_CPPFLAGS+=-Istatic/include -Istatic/build/_deps/tatami-src/include
+PKG_LIBS+=static/build/libstatic_scran.a
