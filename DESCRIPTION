@@ -6,6 +6,8 @@ Version: 0.0.1
 Authors@R: person("Aaron", "Lun", email="infinite.monkeys.with.keyboards@gmail.com", role=c("aut", "cre"))
 Imports:
     Rcpp
+LinkingTo:
+    Rcpp
 Suggests:
     knitr,
     rmarkdown,
@@ -13,4 +15,4 @@ Suggests:
     testthat,
     SingleCellExperiment
 VignetteBuilder: knitr
-SystemRequirements: git, CMake
+SystemRequirements: C++17, git, CMake

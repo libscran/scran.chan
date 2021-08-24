@@ -3,13 +3,12 @@
 set -e
 set -u
 
-if [[ ! -e src/libscran ]]
+if [[ ! -e src/static/build ]]
 then
-    git clone https://github.com/LTLA/libscran src/libscran
+    cd src/static
+    mkdir -p build
+    cd build
+    cmake ..
+    cmake --build .
 fi
 
-cd src/libscran
-mkdir -p build
-cd build
-cmake ..
-cmake --build .

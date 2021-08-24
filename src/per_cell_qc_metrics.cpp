@@ -1,5 +1,6 @@
 #include "Rcpp.h"
-#include "scran/PerCellQCMetrics.h"
+#include "scran/static/bindings.hpp"
+#include "tatamize.h"
 
 // [[Rcpp::export(rng=false)]]
 Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets) {
@@ -18,9 +19,9 @@ Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets) {
     // Creating output containers.
     size_t nc = mat->ncol();
     Rcpp::NumericVector sums(nc);
-    Rcpp::NumericVector detected(nc);
-    std::vector<Rcpp::LogicalVector> out_subsets;
-    std::vector<int*> out_sub_ptrs;
+    Rcpp::IntegerVector detected(nc);
+    std::vector<Rcpp::NumericVector> out_subsets;
+    std::vector<double*> out_sub_ptrs;
     for (size_t s = 0; s < subsets.size(); ++s) {
         out_subsets.emplace_back(nc);
     }
@@ -29,11 +30,10 @@ Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets) {
     }
 
     // Running QC code.
-    scran::PerCellQCMetrics qc;
-    qc.run(mat, 
+    scran::sttc::PerCellQCMetrics(mat, 
         std::move(in_sub_ptrs), 
         static_cast<double*>(sums.begin()),
-        static_cast<double*>(detected.begin()),
+        static_cast<int*>(detected.begin()),
         std::move(out_sub_ptrs)
     );
 

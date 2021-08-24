@@ -1,4 +1,4 @@
-#include "tatamize.hpp"
+#include "tatamize.h"
 #include <exception>
 
 std::shared_ptr<tatami::Matrix<double, int> > tatamize(Rcpp::RObject x) {
@@ -24,7 +24,7 @@ std::shared_ptr<tatami::Matrix<double, int> > tatamize(Rcpp::RObject x) {
             Rcpp::NumericVector(cls.slot("x")),
             Rcpp::IntegerVector(cls.slot("i")),
             Rcpp::IntegerVector(cls.slot("p"))
-        );
+        ));
     }
 
     if (cls.is("dgeMatrix")) {
@@ -33,7 +33,7 @@ std::shared_ptr<tatami::Matrix<double, int> > tatamize(Rcpp::RObject x) {
             dims[0], 
             dims[1],
             Rcpp::NumericVector(cls.slot("x"))
-        );
+        ));
     }
 
     throw std::runtime_error("unknown matrix type");

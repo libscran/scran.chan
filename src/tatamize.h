@@ -1,7 +1,7 @@
 #ifndef DIET_SCRAN_TATAMIZE_H
 #define DIET_SCRAN_TATAMIZE_H
 
-#include "tatami/tatami.hpp"
+#include "tatami/tatami.h"
 #include <memory>
 #include "Rcpp.h"
 
