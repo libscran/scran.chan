@@ -1,15 +1,16 @@
 #include "tatami/tatami.h"
 #include "Rcpp.h"
+#include "tatamize.h"
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::IntegerVector tatami_dim(SEXP x) {
-    Rcpp::XPtr<tatami::NumericMatrix> ptr(x);
+    auto ptr = extract_NumericMatrix(x);
     return Rcpp::IntegerVector::create(ptr->nrow(), ptr->ncol());
 }
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::NumericMatrix tatami_rows(SEXP x, Rcpp::IntegerVector rows, int first, int last) {
-    Rcpp::XPtr<tatami::NumericMatrix> ptr(x);
+    auto ptr = extract_NumericMatrix(x);
 
     size_t nc = last - first;
     Rcpp::NumericMatrix output(nc, rows.size());
@@ -25,7 +26,7 @@ Rcpp::NumericMatrix tatami_rows(SEXP x, Rcpp::IntegerVector rows, int first, int
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::NumericMatrix tatami_columns(SEXP x, Rcpp::IntegerVector columns, int first, int last) {
-    Rcpp::XPtr<tatami::NumericMatrix> ptr(x);
+    auto ptr = extract_NumericMatrix(x);
 
     size_t nr = last - first;
     Rcpp::NumericMatrix output(nr, columns.size());

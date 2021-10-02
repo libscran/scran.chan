@@ -10,6 +10,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// filter_cells
+SEXP filter_cells(SEXP x, Rcpp::LogicalVector discard);
+RcppExport SEXP _scran_chan_filter_cells(SEXP xSEXP, SEXP discardSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type discard(discardSEXP);
+    rcpp_result_gen = Rcpp::wrap(filter_cells(x, discard));
+    return rcpp_result_gen;
+END_RCPP
+}
 // initialize_from_sparse
 SEXP initialize_from_sparse(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol);
 RcppExport SEXP _scran_chan_initialize_from_sparse(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP) {
@@ -100,6 +111,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_sparse", (DL_FUNC) &_scran_chan_initialize_from_sparse, 5},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 5},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 4},

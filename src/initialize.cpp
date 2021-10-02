@@ -1,5 +1,6 @@
 #include "tatami/tatami.h"
 #include "Rcpp.h"
+#include "tatamize.h"
 
 #include <cstdint>
 #include <limits>
@@ -39,8 +40,7 @@ SEXP initialize_from_sparse(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::
     RcppVectorPlus i_(i);
     RcppVectorPlus p_(p);
     typedef tatami::CompressedSparseColumnMatrix<double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
-    tatami::NumericMatrix* ptr = new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false);
-    return Rcpp::XPtr<tatami::NumericMatrix>(ptr, true);
+    return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false));
 }
 
 template<typename X, typename I, class V>
@@ -128,8 +128,7 @@ SEXP initialize_from_blocks_internal(Rcpp::List indmat, const std::vector<V>& vl
     }
 
     typedef tatami::CompressedSparseColumnMatrix<double, int, decltype(values), decltype(indices), decltype(indptrs)> SparseMat;
-    tatami::NumericMatrix* ptr = new SparseMat(nrow, ncol, std::move(values), std::move(indices), std::move(indptrs));
-    return Rcpp::XPtr<tatami::NumericMatrix>(ptr, true);
+    return new_MatrixChan(new SparseMat(nrow, ncol, std::move(values), std::move(indices), std::move(indptrs)));
 }
 
 //[[Rcpp::export(rng=false)]]

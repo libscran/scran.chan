@@ -1,5 +1,6 @@
 #include "Rcpp.h"
 #include "scran/quality_control/PerCellQCMetrics.hpp"
+#include "tatamize.h"
 
 // [[Rcpp::export(rng=false)]]
 Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets) {
@@ -13,7 +14,7 @@ Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets) {
         in_sub_ptrs.push_back(s.begin());
     }
 
-    Rcpp::XPtr<tatami::NumericMatrix> mat(x);
+    auto mat = extract_NumericMatrix(x);
 
     // Creating output containers.
     size_t nc = mat->ncol();
@@ -30,7 +31,7 @@ Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets) {
 
     // Running QC code.
     scran::PerCellQCMetrics qc;
-    qc.run(mat.get(), 
+    qc.run(mat, 
         std::move(in_sub_ptrs), 
         static_cast<double*>(sums.begin()),
         static_cast<int*>(detected.begin()),
