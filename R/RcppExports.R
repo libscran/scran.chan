@@ -13,3 +13,15 @@ compute_qc_metrics <- function(x, subsets) {
     .Call('_scran_chan_compute_qc_metrics', PACKAGE = 'scran.chan', x, subsets)
 }
 
+tatami_dim <- function(x) {
+    .Call('_scran_chan_tatami_dim', PACKAGE = 'scran.chan', x)
+}
+
+tatami_rows <- function(x, rows, first, last) {
+    .Call('_scran_chan_tatami_rows', PACKAGE = 'scran.chan', x, rows, first, last)
+}
+
+tatami_columns <- function(x, columns, first, last) {
+    .Call('_scran_chan_tatami_columns', PACKAGE = 'scran.chan', x, columns, first, last)
+}
+
