@@ -1,3 +1,3 @@
-#' @useDynLib diet.scran
+#' @useDynLib scran.chan
 #' @importFrom Rcpp sourceCpp
 NULL
