@@ -38,14 +38,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// compute_qc_metrics
-Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets);
-RcppExport SEXP _scran_chan_compute_qc_metrics(SEXP xSEXP, SEXP subsetsSEXP) {
+// per_cell_qc_filters
+Rcpp::List per_cell_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, double nmads);
+RcppExport SEXP _scran_chan_per_cell_qc_filters(SEXP sumsSEXP, SEXP detectedSEXP, SEXP subsetsSEXP, SEXP nmadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::RObject >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type sums(sumsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type detected(detectedSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type subsets(subsetsSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_qc_metrics(x, subsets));
+    Rcpp::traits::input_parameter< double >::type nmads(nmadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(per_cell_qc_filters(sums, detected, subsets, nmads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// per_cell_qc_metrics
+Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets);
+RcppExport SEXP _scran_chan_per_cell_qc_metrics(SEXP xSEXP, SEXP subsetsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type subsets(subsetsSEXP);
+    rcpp_result_gen = Rcpp::wrap(per_cell_qc_metrics(x, subsets));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -89,7 +102,8 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_initialize_from_sparse", (DL_FUNC) &_scran_chan_initialize_from_sparse, 5},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 5},
-    {"_scran_chan_compute_qc_metrics", (DL_FUNC) &_scran_chan_compute_qc_metrics, 2},
+    {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 4},
+    {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 2},
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},

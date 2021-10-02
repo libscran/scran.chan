@@ -38,20 +38,23 @@ initializeSparseMatrix <- function(x, num.threads=1) {
             BPPARAM <- BiocParallel::MulticoreParam(num.threads)
         }
 
-        m <- DelayedArray::blockApply(x, grid=DelayedArray::colAutoGrid(x), BPPARAM=BPPARAM, as.sparse=NA, 
+        m <- DelayedArray::blockApply(x, 
+            grid=DelayedArray::colAutoGrid(x), 
+            BPPARAM=BPPARAM, 
+            as.sparse=NA, 
             FUN = function(block) {
-                if (is(block, "SparseArraySeed")) {
-                    block
-                } else {
+                if (!is(block, "SparseArraySeed")) {
                     i <- which(block != 0, arr.ind=TRUE)
-                    DelayedArray::SparseArraySeed(dim(block), nzindex=i, nzdata=block[i], dimnames=dimnames(block))
+                    block <- DelayedArray::SparseArraySeed(dim(block), nzindex=i, nzdata=block[i], dimnames=dimnames(block))
                 }
+                block
             }
         )
 
         indices <- lapply(m, DelayedArray::nzindex)
         values <- lapply(m, DelayedArray::nzdata)
-        ptr <- initialize_from_blocks(indices, values, nrow(x), ncol(x), num.threads)
+        ncols <- vapply(m, ncol, 0L)
+        ptr <- initialize_from_blocks(indices, values, nrow(x), ncols, num.threads)
         o <- seq_len(nrow(x)) - 1L
     }
 

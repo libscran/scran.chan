@@ -1,11 +1,8 @@
 #include "Rcpp.h"
-#include "scran/static/bindings.hpp"
-#include "tatamize.h"
+#include "scran/quality_control/PerCellQCMetrics.hpp"
 
 // [[Rcpp::export(rng=false)]]
-Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets) {
-    auto mat = tatamize(x);
-
+Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets) {
     std::vector<const int*> in_sub_ptrs;
     std::vector<Rcpp::LogicalVector> in_subsets;
 
@@ -15,6 +12,8 @@ Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets) {
     for (const auto& s : in_subsets) {
         in_sub_ptrs.push_back(s.begin());
     }
+
+    Rcpp::XPtr<tatami::NumericMatrix> mat(x);
 
     // Creating output containers.
     size_t nc = mat->ncol();
@@ -30,7 +29,8 @@ Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets) {
     }
 
     // Running QC code.
-    scran::sttc::PerCellQCMetrics(mat, 
+    scran::PerCellQCMetrics qc;
+    qc.run(mat.get(), 
         std::move(in_sub_ptrs), 
         static_cast<double*>(sums.begin()),
         static_cast<int*>(detected.begin()),
@@ -38,8 +38,8 @@ Rcpp::List compute_qc_metrics(Rcpp::RObject x, Rcpp::List subsets) {
     );
 
     return Rcpp::List::create(
-        sums,
-        detected,
-        Rcpp::List(out_subsets.begin(), out_subsets.end())
+        Rcpp::Named("sums") = sums,
+        Rcpp::Named("detected") = detected,
+        Rcpp::Named("subsets") = Rcpp::List(out_subsets.begin(), out_subsets.end())
     );
 }

@@ -9,8 +9,12 @@ initialize_from_blocks <- function(indices, values, nrow, ncols, nthreads) {
     .Call('_scran_chan_initialize_from_blocks', PACKAGE = 'scran.chan', indices, values, nrow, ncols, nthreads)
 }
 
-compute_qc_metrics <- function(x, subsets) {
-    .Call('_scran_chan_compute_qc_metrics', PACKAGE = 'scran.chan', x, subsets)
+per_cell_qc_filters <- function(sums, detected, subsets, nmads) {
+    .Call('_scran_chan_per_cell_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, nmads)
+}
+
+per_cell_qc_metrics <- function(x, subsets) {
+    .Call('_scran_chan_per_cell_qc_metrics', PACKAGE = 'scran.chan', x, subsets)
 }
 
 tatami_dim <- function(x) {
