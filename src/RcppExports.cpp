@@ -49,6 +49,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// log_norm_counts
+SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors);
+RcppExport SEXP _scran_chan_log_norm_counts(SEXP xSEXP, SEXP size_factorsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type size_factors(size_factorsSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_norm_counts(x, size_factors));
+    return rcpp_result_gen;
+END_RCPP
+}
 // per_cell_qc_filters
 Rcpp::List per_cell_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, double nmads);
 RcppExport SEXP _scran_chan_per_cell_qc_filters(SEXP sumsSEXP, SEXP detectedSEXP, SEXP subsetsSEXP, SEXP nmadsSEXP) {
@@ -114,6 +125,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_sparse", (DL_FUNC) &_scran_chan_initialize_from_sparse, 5},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 5},
+    {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 2},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 4},
     {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 2},
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},

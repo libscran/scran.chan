@@ -13,6 +13,10 @@ initialize_from_blocks <- function(indices, values, nrow, ncols, nthreads) {
     .Call('_scran_chan_initialize_from_blocks', PACKAGE = 'scran.chan', indices, values, nrow, ncols, nthreads)
 }
 
+log_norm_counts <- function(x, size_factors) {
+    .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors)
+}
+
 per_cell_qc_filters <- function(sums, detected, subsets, nmads) {
     .Call('_scran_chan_per_cell_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, nmads)
 }
