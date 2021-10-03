@@ -1,1 +1,1 @@
-PKG_CPPFLAGS+=-Ilibscran/include -Ilibscran/_deps/tatami-src/include
+PKG_CPPFLAGS+=-Ilibscran/include -Ilibscran/_deps/tatami-src/include -Ilibscran/_deps/weightedlowess-src/include

@@ -3,6 +3,7 @@
 export(filterCells.chan)
 export(initializeSparseMatrix)
 export(logNormCounts.chan)
+export(modelGeneVar.chan)
 export(perCellQCFilters.chan)
 export(perCellQCMetrics.chan)
 importClassesFrom(Matrix,Matrix)

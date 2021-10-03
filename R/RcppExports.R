@@ -17,6 +17,10 @@ log_norm_counts <- function(x, size_factors) {
     .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors)
 }
 
+model_gene_var <- function(x, span) {
+    .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, span)
+}
+
 per_cell_qc_filters <- function(sums, detected, subsets, nmads) {
     .Call('_scran_chan_per_cell_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, nmads)
 }
