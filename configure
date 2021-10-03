@@ -8,7 +8,22 @@ then
     cd src
     git clone https://github.com/LTLA/libscran 
     cd libscran
-    cmake .
-    cmake --build . -DBUILD_TESTING=OFF
+    cmake . -DBUILD_TESTING=OFF
+    cmake --build .
 fi
 
+if [[ ! -e src/qdtsne ]]
+then
+    cd src
+    git clone https://github.com/LTLA/qdtsne
+    cd qdtsne 
+    cmake . -DBUILD_TESTING=OFF
+fi
+
+if [[ ! -e src/umappp ]]
+then
+    cd src
+    git clone https://github.com/LTLA/umappp
+    cd umappp 
+    cmake . -DBUILD_TESTING=OFF
+fi    

@@ -10,6 +10,16 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// build_nn_index
+SEXP build_nn_index(Rcpp::NumericMatrix data);
+RcppExport SEXP _scran_chan_build_nn_index(SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(build_nn_index(data));
+    return rcpp_result_gen;
+END_RCPP
+}
 // filter_cells
 SEXP filter_cells(SEXP x, Rcpp::LogicalVector discard);
 RcppExport SEXP _scran_chan_filter_cells(SEXP xSEXP, SEXP discardSEXP) {
@@ -143,8 +153,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// initialize_tsne
+SEXP initialize_tsne(SEXP nnptr, double perplexity, int nthreads);
+RcppExport SEXP _scran_chan_initialize_tsne(SEXP nnptrSEXP, SEXP perplexitySEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
+    Rcpp::traits::input_parameter< double >::type perplexity(perplexitySEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(initialize_tsne(nnptr, perplexity, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// run_tsne
+SEXP run_tsne(SEXP init, int nthreads);
+RcppExport SEXP _scran_chan_run_tsne(SEXP initSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type init(initSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_tsne(init, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_sparse", (DL_FUNC) &_scran_chan_initialize_from_sparse, 5},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 5},
@@ -156,6 +190,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 3},
+    {"_scran_chan_initialize_tsne", (DL_FUNC) &_scran_chan_initialize_tsne, 3},
+    {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 2},
     {NULL, NULL, 0}
 };
 
