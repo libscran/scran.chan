@@ -131,6 +131,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// run_pca
+Rcpp::List run_pca(SEXP x, int ndim, Rcpp::Nullable<Rcpp::LogicalVector> features);
+RcppExport SEXP _scran_chan_run_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP featuresSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type ndim(ndimSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::LogicalVector> >::type features(featuresSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_pca(x, ndim, features));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
@@ -143,6 +155,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},
+    {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 3},
     {NULL, NULL, 0}
 };
 

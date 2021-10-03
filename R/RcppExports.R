@@ -41,3 +41,7 @@ tatami_columns <- function(x, columns, first, last) {
     .Call('_scran_chan_tatami_columns', PACKAGE = 'scran.chan', x, columns, first, last)
 }
 
+run_pca <- function(x, ndim, features) {
+    .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features)
+}
+
