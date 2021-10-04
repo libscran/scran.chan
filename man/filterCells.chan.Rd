@@ -29,7 +29,7 @@ sub <- list(Mito=rbinom(nrow(x), 1, 0.1) > 0)
 y <- initializeSparseMatrix(x)
 qc <- perCellQCMetrics.chan(y, sub)
 filters <- perCellQCFilters.chan(qc$sums, qc$detected, qc$subsets)
-filterCells.chan(y, filters$filters$overall)
+filtered <- filterCells.chan(y, filters$filters$overall)
 
 }
 \author{

@@ -14,7 +14,7 @@ Rcpp::List run_pca(SEXP x, int ndim, Rcpp::Nullable<Rcpp::LogicalVector> feature
         fptr = static_cast<const int*>(feats_.begin());
     }
 
-    auto mat = extract_NumericMatrix_shared(x);
+    auto mat = extract_NumericMatrix(x);
     auto res = pcs.run(mat, fptr);
     res.pcs.adjointInPlace();
 
