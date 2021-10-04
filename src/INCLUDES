@@ -1,0 +1,13 @@
+aarand-src/include
+annoy-src/include
+eigen-src
+hnswlib-src
+irlba-src/include
+kmeans-src/include
+knncolle-src/include
+qdtsne-src/include
+scran-src/include
+spectra-src/include
+tatami-src/include
+umappp-src/include
+weightedlowess-src/include
