@@ -40,4 +40,6 @@ FetchContent_MakeAvailable(umappp)
 
 add_library(dummy INTERFACE)
 
-target_link_libraries(dummy INTERFACE scran qdtsne umappp)
+target_link_libraries(dummy INTERFACE scran qdtsne umappp igraph)
+
+set_property(TARGET igraph PROPERTY POSITION_INDEPENDENT_CODE ON)

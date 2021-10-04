@@ -2,6 +2,8 @@ aarand-src/include
 annoy-src/include
 eigen-src
 hnswlib-src
+igraph-build/include
+igraph-src/include
 irlba-src/include
 kmeans-src/include
 knncolle-src/include

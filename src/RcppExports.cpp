@@ -20,6 +20,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// build_graph
+SEXP build_graph(SEXP nnptr, int k, int nthreads);
+RcppExport SEXP _scran_chan_build_graph(SEXP nnptrSEXP, SEXP kSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(build_graph(nnptr, k, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cluster_multilevel
+SEXP cluster_multilevel(SEXP ptr, double res);
+RcppExport SEXP _scran_chan_cluster_multilevel(SEXP ptrSEXP, SEXP resSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type ptr(ptrSEXP);
+    Rcpp::traits::input_parameter< double >::type res(resSEXP);
+    rcpp_result_gen = Rcpp::wrap(cluster_multilevel(ptr, res));
+    return rcpp_result_gen;
+END_RCPP
+}
 // filter_cells
 SEXP filter_cells(SEXP x, Rcpp::LogicalVector discard);
 RcppExport SEXP _scran_chan_filter_cells(SEXP xSEXP, SEXP discardSEXP) {
@@ -201,6 +224,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
+    {"_scran_chan_build_graph", (DL_FUNC) &_scran_chan_build_graph, 3},
+    {"_scran_chan_cluster_multilevel", (DL_FUNC) &_scran_chan_cluster_multilevel, 2},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_sparse", (DL_FUNC) &_scran_chan_initialize_from_sparse, 5},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 5},

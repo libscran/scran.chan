@@ -5,6 +5,14 @@ build_nn_index <- function(data) {
     .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data)
 }
 
+build_graph <- function(nnptr, k, nthreads) {
+    .Call('_scran_chan_build_graph', PACKAGE = 'scran.chan', nnptr, k, nthreads)
+}
+
+cluster_multilevel <- function(ptr, res) {
+    .Call('_scran_chan_cluster_multilevel', PACKAGE = 'scran.chan', ptr, res)
+}
+
 filter_cells <- function(x, discard) {
     .Call('_scran_chan_filter_cells', PACKAGE = 'scran.chan', x, discard)
 }
