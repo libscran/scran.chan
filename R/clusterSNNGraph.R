@@ -3,7 +3,7 @@
 #' Perform multi-level (i.e., Louvain) clustering on a shared nearest neighbor graph.
 #'
 #' @param x Numeric matrix where rows are dimensions and columns are cells.
-#' @param k Integer scalar specifying the number of neighbors to use to construct the graph.
+#' @param num.neighbors Integer scalar specifying the number of neighbors to use to construct the graph.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
 #' @return A list containing:
@@ -22,10 +22,14 @@
 #' clustering$modularity
 #' lapply(clustering$membership, table)
 #' 
- #' @export
-clusterSNNGraph.chan <- function(x, k=10, resolution=1, num.threads=1) {
+#' @export
+clusterSNNGraph.chan <- function(x, num.neighbors=10, resolution=1, num.threads=1) {
     neighbors <- build_nn_index(x)
-    graph <- build_graph(neighbors, k=k, nthreads=num.threads)
+    graph <- build_graph(neighbors, k=num.neighbors, nthreads=num.threads)
+    .cluster_snn_graph_internal(graph, resolution=resolution)
+}
+
+.cluster_snn_graph_internal <- function(graph, resolution) {
     clustering <- cluster_multilevel(graph, res=resolution)
     clustering$best <- clustering$best + 1L
     clustering$membership <- lapply(clustering$membership, function(x) x + 1L)

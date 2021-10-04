@@ -4,12 +4,12 @@
 \alias{clusterSNNGraph.chan}
 \title{Apply graph-based clustering}
 \usage{
-clusterSNNGraph.chan(x, k = 10, resolution = 1, num.threads = 1)
+clusterSNNGraph.chan(x, num.neighbors = 10, resolution = 1, num.threads = 1)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
-\item{k}{Integer scalar specifying the number of neighbors to use to construct the graph.}
+\item{num.neighbors}{Integer scalar specifying the number of neighbors to use to construct the graph.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
