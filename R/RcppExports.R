@@ -57,3 +57,11 @@ run_tsne <- function(init, nthreads) {
     .Call('_scran_chan_run_tsne', PACKAGE = 'scran.chan', init, nthreads)
 }
 
+initialize_umap <- function(nnptr, num_neighbors, num_threads) {
+    .Call('_scran_chan_initialize_umap', PACKAGE = 'scran.chan', nnptr, num_neighbors, num_threads)
+}
+
+run_umap <- function(init) {
+    .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', init)
+}
+

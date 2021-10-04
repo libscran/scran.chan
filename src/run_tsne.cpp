@@ -5,10 +5,12 @@
 #include "omp.h"
 #endif
 
+typedef qdtsne::Tsne<2, float> tsne;
+
 struct InitializedTsne {
-    InitializedTsne(qdtsne::Tsne<> r, qdtsne::Tsne<>::Status<int> s, int n) : runner(std::move(r)), status(std::move(s)), nobs(n) {}
-    qdtsne::Tsne<> runner;
-    qdtsne::Tsne<>::Status<int> status;
+    InitializedTsne(tsne r, tsne::Status<int> s, int n) : runner(std::move(r)), status(std::move(s)), nobs(n) {}
+    tsne runner;
+    tsne::Status<int> status;
     int nobs;
 };
 
@@ -19,7 +21,7 @@ SEXP initialize_tsne(SEXP nnptr, double perplexity, int nthreads) {
 #endif
     KnncollePtr nns(nnptr);
 
-    qdtsne::Tsne<> runner;
+    tsne runner;
     runner.set_perplexity(perplexity).set_max_depth(7).set_interpolation(100);
     auto status = runner.initialize(nns.get());
    
@@ -33,12 +35,14 @@ SEXP run_tsne(SEXP init, int nthreads) {
 #endif
 
     Rcpp::XPtr<InitializedTsne> ptr(init);
-    Rcpp::NumericMatrix output(2, ptr->nobs);
-    auto optr = static_cast<double*>(output.begin());
-    qdtsne::initialize_random(optr, ptr->nobs);
+    std::vector<float> embedding(2 * ptr->nobs);
+    qdtsne::initialize_random(embedding.data(), ptr->nobs);
 
     auto t = ptr->runner;
-    t.run(ptr->status, optr);
+    t.run(ptr->status, embedding.data());
+
+    Rcpp::NumericMatrix output(2, ptr->nobs);
+    std::copy(embedding.begin(), embedding.end(), output.begin());
     return output;
 }
 
