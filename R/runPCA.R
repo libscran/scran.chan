@@ -6,6 +6,7 @@
 #' @param num.comp Integer scalar specifying the number of top PCs to obtain.
 #' @param subset Logical vector specifying which features to use in the PCA (e.g., highly variable genes).
 #' If \code{NULL}, all features in \code{x} are used.
+#' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return List containing \code{components}, containing the top principal components;
 #' and \code{prop.variance}, containing the proportion of variance explained by each component.
@@ -21,6 +22,6 @@
 #' barplot(pcs$prop.variance)
 #'
 #' @export
-runPCA.chan <- function(x, num.comp=50, subset=NULL) {
-    run_pca(x$pointer, num.comp, subset)
+runPCA.chan <- function(x, num.comp=50, subset=NULL, num.threads=1) {
+    run_pca(x$pointer, num.comp, subset, nthreads=num.threads)
 }

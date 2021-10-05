@@ -6,10 +6,10 @@
 #' This is typically a matrix of principal components.
 #' @param tsne.perplexity Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.
 #' @param umap.num.neighbors Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.
-#' @param snn.num.neighbors,snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
+#' @param cluster.snn.num.neighbors,cluster.snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
-#' @return A list containing \code{"snn"}, \code{"umap"} and \code{"tsne"},
+#' @return A list containing \code{"cluster.snn"}, \code{"umap"} and \code{"tsne"},
 #' each of which contains the result of their respective function \code{*.chan} functions.
 #'
 #' @details
@@ -29,15 +29,15 @@
 #' str(res)
 #' @export
 #' @importFrom parallel clusterCall
-runAllNeighbors <- function(x, tsne.perplexity=30, umap.num.neighbors=15, snn.num.neighbors=10, snn.resolution=1, num.threads=1) {
+runAllNeighbors <- function(x, tsne.perplexity=30, umap.num.neighbors=15, cluster.snn.num.neighbors=10, cluster.snn.resolution=1, num.threads=1) {
     neighbors <- build_nn_index(x)
     tsne.init <- initialize_tsne(neighbors, tsne.perplexity, num.threads)
     umap.init <- initialize_umap(neighbors, umap.num.neighbors, num.threads)
-    snn.graph <- build_graph(neighbors, snn.num.neighbors, num.threads)
+    snn.graph <- build_graph(neighbors, cluster.snn.num.neighbors, num.threads)
 
     jobs <- list(
-        snn=function() {
-            .cluster_snn_graph_internal(snn.graph, resolution=snn.resolution)
+        cluster.snn=function() {
+            .cluster_snn_graph_internal(snn.graph, resolution=cluster.snn.resolution)
         },
         umap=function() {
             output <- run_umap(umap.init)

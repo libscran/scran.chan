@@ -4,7 +4,7 @@
 \alias{runPCA.chan}
 \title{Principal components analysis}
 \usage{
-runPCA.chan(x, num.comp = 50, subset = NULL)
+runPCA.chan(x, num.comp = 50, subset = NULL, num.threads = 1)
 }
 \arguments{
 \item{x}{A list containing a log-expression matrix like that produced by \code{\link{logNormCounts.chan}}.}
@@ -13,6 +13,8 @@ runPCA.chan(x, num.comp = 50, subset = NULL)
 
 \item{subset}{Logical vector specifying which features to use in the PCA (e.g., highly variable genes).
 If \code{NULL}, all features in \code{x} are used.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 List containing \code{components}, containing the top principal components;

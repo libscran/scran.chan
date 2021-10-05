@@ -8,8 +8,8 @@ runAllNeighbors(
   x,
   tsne.perplexity = 30,
   umap.num.neighbors = 15,
-  snn.num.neighbors = 10,
-  snn.resolution = 1,
+  cluster.snn.num.neighbors = 10,
+  cluster.snn.resolution = 1,
   num.threads = 1
 )
 }
@@ -21,12 +21,12 @@ This is typically a matrix of principal components.}
 
 \item{umap.num.neighbors}{Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.}
 
-\item{snn.num.neighbors, snn.resolution}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
+\item{cluster.snn.num.neighbors, cluster.snn.resolution}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
-A list containing \code{"snn"}, \code{"umap"} and \code{"tsne"},
+A list containing \code{"cluster.snn"}, \code{"umap"} and \code{"tsne"},
 each of which contains the result of their respective function \code{*.chan} functions.
 }
 \description{
