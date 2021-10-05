@@ -64,9 +64,11 @@ SEXP initialize_from_blocks_internal(Rcpp::List indmat, const std::vector<V>& vl
     int ncol = std::accumulate(ncols.begin(), ncols.end(), 0);
     std::vector<size_t> indptrs(ncol + 1);
 
-    std::vector<int> block_starts(ncols.size());
+    std::vector<size_t> block_starts_idx(ncols.size());
+    std::vector<int> block_starts_col(ncols.size());
     for (size_t i = 1; i < nblocks; ++i) {
-        block_starts[i] = block_starts[i-1] + vlist[i-1].size();
+        block_starts_idx[i] = block_starts_idx[i-1] + vlist[i-1].size();
+        block_starts_col[i] = block_starts_col[i-1] + ncols[i-1];
     }
 
     // Sorting within each block.
@@ -102,18 +104,20 @@ SEXP initialize_from_blocks_internal(Rcpp::List indmat, const std::vector<V>& vl
                 }
             });
 
-            size_t offset = block_starts[i];
-            for (size_t z = 0; z < curnnz; ++z, ++offset) {
+            size_t idx_offset = block_starts_idx[i];
+            int col_offset = block_starts_col[i];
+            for (size_t z = 0; z < curnnz; ++z, ++idx_offset) {
                 auto o = order[z];
-                values[offset] = curv[o];
-                indices[offset] = row[o];
-                ++indptrs[col[o]]; // col is already 1-based, so no need to +1.
+                values[idx_offset] = curv[o];
+                indices[idx_offset] = row[o];
+                ++indptrs[col_offset + col[o]]; // col is already 1-based, so no need to +1.
             }
         } else {
-            std::copy(curv.begin(), curv.end(), values.begin() + block_starts[i]);
-            std::copy(row, row + curnnz, indices.begin() + block_starts[i]);
+            std::copy(curv.begin(), curv.end(), values.begin() + block_starts_idx[i]);
+            std::copy(row, row + curnnz, indices.begin() + block_starts_idx[i]);
+            int col_offset = block_starts_col[i];
             for (size_t z = 0; z < curnnz; ++z) {
-                ++indptrs[col[z]]; // col is already 1-based, so no need to +1.
+                ++indptrs[col_offset + col[z]]; // col is already 1-based, so no need to +1.
             }
         }
     }
