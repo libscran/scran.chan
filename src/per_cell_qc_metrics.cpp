@@ -1,9 +1,17 @@
+#undef _OPENMP
 #include "Rcpp.h"
 #include "scran/quality_control/PerCellQCMetrics.hpp"
 #include "tatamize.h"
+#ifdef _OPENMP
+#include "omp.h"
+#endif
 
 // [[Rcpp::export(rng=false)]]
-Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets) {
+Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads) {
+#ifdef _openmp
+    omp_set_num_threads(nthreads);
+#endif
+    
     std::vector<const int*> in_sub_ptrs;
     std::vector<Rcpp::LogicalVector> in_subsets;
 

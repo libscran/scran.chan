@@ -4,12 +4,14 @@
 \alias{perCellQCMetrics.chan}
 \title{Compute per-cell QC metrics}
 \usage{
-perCellQCMetrics.chan(x, subsets = NULL)
+perCellQCMetrics.chan(x, subsets, num.threads = 1)
 }
 \arguments{
 \item{x}{List containing the output of \code{\link{initializeSparseMatrix}}.}
 
 \item{subsets}{List of logical vectors specifying feature subsets of interest.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 A list containing:

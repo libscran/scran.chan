@@ -4,6 +4,7 @@
 #'
 #' @param x List containing the output of \code{\link{initializeSparseMatrix}}.
 #' @param subsets List of logical vectors specifying feature subsets of interest.
+#' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return A list containing:
 #' \itemize{
@@ -30,7 +31,7 @@
 #' summary(qc$subsets$Mito)
 #'
 #' @export
-perCellQCMetrics.chan <- function(x, subsets=NULL) {
+perCellQCMetrics.chan <- function(x, subsets, num.threads = 1) {
     nr <- tatami_dim(x$pointer)[1]
 
     # Converting to the expected logical vector.
@@ -52,7 +53,7 @@ perCellQCMetrics.chan <- function(x, subsets=NULL) {
     }
  
     # Slapping on some names.
-    output <- per_cell_qc_metrics(x$pointer, subsets)
+    output <- per_cell_qc_metrics(x$pointer, subsets, nthreads=num.threads)
     names(output$subsets) <- names(subsets)
     output
 }

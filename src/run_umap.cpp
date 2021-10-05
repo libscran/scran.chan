@@ -16,9 +16,9 @@ struct InitializedUmap {
 };
 
 //[[Rcpp::export(rng=false)]]
-SEXP initialize_umap(SEXP nnptr, int num_neighbors, int num_threads) {
+SEXP initialize_umap(SEXP nnptr, int num_neighbors, int nthreads) {
 #ifdef _OPENMP
-    omp_set_num_threads(num_threads);
+    omp_set_num_threads(nthreads);
 #endif
     KnncollePtr nns(nnptr);
 

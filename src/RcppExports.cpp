@@ -94,13 +94,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // model_gene_var
-Rcpp::List model_gene_var(SEXP x, double span);
-RcppExport SEXP _scran_chan_model_gene_var(SEXP xSEXP, SEXP spanSEXP) {
+Rcpp::List model_gene_var(SEXP x, double span, int nthreads);
+RcppExport SEXP _scran_chan_model_gene_var(SEXP xSEXP, SEXP spanSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type span(spanSEXP);
-    rcpp_result_gen = Rcpp::wrap(model_gene_var(x, span));
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(model_gene_var(x, span, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -118,13 +119,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // per_cell_qc_metrics
-Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets);
-RcppExport SEXP _scran_chan_per_cell_qc_metrics(SEXP xSEXP, SEXP subsetsSEXP) {
+Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads);
+RcppExport SEXP _scran_chan_per_cell_qc_metrics(SEXP xSEXP, SEXP subsetsSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type subsets(subsetsSEXP);
-    rcpp_result_gen = Rcpp::wrap(per_cell_qc_metrics(x, subsets));
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(per_cell_qc_metrics(x, subsets, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -165,14 +167,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_pca
-Rcpp::List run_pca(SEXP x, int ndim, Rcpp::Nullable<Rcpp::LogicalVector> features);
-RcppExport SEXP _scran_chan_run_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP featuresSEXP) {
+Rcpp::List run_pca(SEXP x, int ndim, Rcpp::Nullable<Rcpp::LogicalVector> features, int nthreads);
+RcppExport SEXP _scran_chan_run_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP featuresSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type ndim(ndimSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::LogicalVector> >::type features(featuresSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_pca(x, ndim, features));
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_pca(x, ndim, features, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -200,14 +203,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // initialize_umap
-SEXP initialize_umap(SEXP nnptr, int num_neighbors, int num_threads);
-RcppExport SEXP _scran_chan_initialize_umap(SEXP nnptrSEXP, SEXP num_neighborsSEXP, SEXP num_threadsSEXP) {
+SEXP initialize_umap(SEXP nnptr, int num_neighbors, int nthreads);
+RcppExport SEXP _scran_chan_initialize_umap(SEXP nnptrSEXP, SEXP num_neighborsSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
     Rcpp::traits::input_parameter< int >::type num_neighbors(num_neighborsSEXP);
-    Rcpp::traits::input_parameter< int >::type num_threads(num_threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_umap(nnptr, num_neighbors, num_threads));
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(initialize_umap(nnptr, num_neighbors, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -230,13 +233,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_initialize_from_sparse", (DL_FUNC) &_scran_chan_initialize_from_sparse, 5},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 5},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 2},
-    {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 2},
+    {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 3},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 4},
-    {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 2},
+    {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 3},
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},
-    {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 3},
+    {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 4},
     {"_scran_chan_initialize_tsne", (DL_FUNC) &_scran_chan_initialize_tsne, 3},
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 2},
     {"_scran_chan_initialize_umap", (DL_FUNC) &_scran_chan_initialize_umap, 3},

@@ -29,16 +29,16 @@ log_norm_counts <- function(x, size_factors) {
     .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors)
 }
 
-model_gene_var <- function(x, span) {
-    .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, span)
+model_gene_var <- function(x, span, nthreads) {
+    .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, span, nthreads)
 }
 
 per_cell_qc_filters <- function(sums, detected, subsets, nmads) {
     .Call('_scran_chan_per_cell_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, nmads)
 }
 
-per_cell_qc_metrics <- function(x, subsets) {
-    .Call('_scran_chan_per_cell_qc_metrics', PACKAGE = 'scran.chan', x, subsets)
+per_cell_qc_metrics <- function(x, subsets, nthreads) {
+    .Call('_scran_chan_per_cell_qc_metrics', PACKAGE = 'scran.chan', x, subsets, nthreads)
 }
 
 tatami_dim <- function(x) {
@@ -53,8 +53,8 @@ tatami_columns <- function(x, columns, first, last) {
     .Call('_scran_chan_tatami_columns', PACKAGE = 'scran.chan', x, columns, first, last)
 }
 
-run_pca <- function(x, ndim, features) {
-    .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features)
+run_pca <- function(x, ndim, features, nthreads) {
+    .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, nthreads)
 }
 
 initialize_tsne <- function(nnptr, perplexity, nthreads) {
@@ -65,8 +65,8 @@ run_tsne <- function(init, nthreads) {
     .Call('_scran_chan_run_tsne', PACKAGE = 'scran.chan', init, nthreads)
 }
 
-initialize_umap <- function(nnptr, num_neighbors, num_threads) {
-    .Call('_scran_chan_initialize_umap', PACKAGE = 'scran.chan', nnptr, num_neighbors, num_threads)
+initialize_umap <- function(nnptr, num_neighbors, nthreads) {
+    .Call('_scran_chan_initialize_umap', PACKAGE = 'scran.chan', nnptr, num_neighbors, nthreads)
 }
 
 run_umap <- function(init) {

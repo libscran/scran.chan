@@ -4,12 +4,14 @@
 \alias{modelGeneVar.chan}
 \title{Model per-gene variance}
 \usage{
-modelGeneVar.chan(x, span = 0.3)
+modelGeneVar.chan(x, span = 0.3, num.threads = 1)
 }
 \arguments{
 \item{x}{A list containing the log-expression matrix, typically produced by \code{\link{logNormCounts.chan}}.}
 
 \item{span}{Numeric scalar containing the span to use for LOWESS smoothing of the trend.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 A data.frame of statistics for each gene in \code{x}.

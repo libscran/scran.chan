@@ -1,9 +1,14 @@
-#include "scran/feature_selection/ModelGeneVar.hpp"
+#undef _OPENMP
 #include "tatamize.h"
 #include "Rcpp.h"
+#include "scran/feature_selection/ModelGeneVar.hpp"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List model_gene_var(SEXP x, double span) {
+Rcpp::List model_gene_var(SEXP x, double span, int nthreads) {
+#ifdef _OPENMP
+    omp_set_num_threads(nthreads);
+#endif
+
     scran::ModelGeneVar mvar;
     mvar.set_span(span);
 
