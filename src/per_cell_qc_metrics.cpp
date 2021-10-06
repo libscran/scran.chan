@@ -1,4 +1,3 @@
-#undef _OPENMP
 #include "Rcpp.h"
 #include "scran/quality_control/PerCellQCMetrics.hpp"
 #include "tatamize.h"

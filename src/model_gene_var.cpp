@@ -1,7 +1,9 @@
-#undef _OPENMP
 #include "tatamize.h"
 #include "Rcpp.h"
 #include "scran/feature_selection/ModelGeneVar.hpp"
+#ifdef _OPENMP
+#include "omp.h"
+#endif
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::List model_gene_var(SEXP x, double span, int nthreads) {
