@@ -33,28 +33,9 @@ runAllNeighbors <- function(x, tsne.perplexity=30, umap.num.neighbors=15, cluste
     neighbors <- build_nn_index(x)
     tsne.init <- initialize_tsne(neighbors, tsne.perplexity, num.threads)
     umap.init <- initialize_umap(neighbors, umap.num.neighbors, num.threads)
-    snn.graph <- build_graph(neighbors, cluster.snn.num.neighbors, num.threads)
+    snn.graph <- build_graph(neighbors, cluster.snn.num.neighbors, cluster.snn.resolution, num.threads)
 
-    jobs <- list(
-        cluster.snn=function() {
-            .cluster_snn_graph_internal(snn.graph, resolution=cluster.snn.resolution)
-        },
-        umap=function() {
-            output <- run_umap(umap.init)
-            t(output)
-        },
-        tsne=function() {
-            remaining.threads <- max(1L, num.threads - 2L)
-            output <- run_tsne(tsne.init, remaining.threads)
-            t(output)
-        }
-    )
-
-    if (num.threads == 1) {
-        output <- lapply(jobs, function(f) f())
-    } else {
-        output <- BiocParallel::bplapply(jobs, function(f) f(), BPPARAM=BiocParallel::MulticoreParam(num.threads))
-    }
-
+    output <- run_all_neighbors(snn.graph, umap.init, tsne.init, num.threads)
+    names(output) <- c("cluster.snn", "umap", "tsne")
     output
 }

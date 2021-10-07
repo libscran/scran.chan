@@ -25,12 +25,9 @@
 #' @export
 clusterSNNGraph.chan <- function(x, num.neighbors=10, resolution=1, num.threads=1) {
     neighbors <- build_nn_index(x)
-    graph <- build_graph(neighbors, k=num.neighbors, nthreads=num.threads)
-    .cluster_snn_graph_internal(graph, resolution=resolution)
-}
+    graph <- build_graph(neighbors, k=num.neighbors, resolution=resolution, nthreads=num.threads)
 
-.cluster_snn_graph_internal <- function(graph, resolution) {
-    clustering <- cluster_multilevel(graph, res=resolution)
+    clustering <- cluster_multilevel(graph)
     clustering$best <- clustering$best + 1L
     clustering$membership <- lapply(clustering$membership, function(x) x + 1L)
     clustering
