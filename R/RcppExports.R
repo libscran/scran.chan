@@ -17,12 +17,20 @@ filter_cells <- function(x, discard) {
     .Call('_scran_chan_filter_cells', PACKAGE = 'scran.chan', x, discard)
 }
 
-initialize_from_sparse <- function(x, i, p, nrow, ncol) {
-    .Call('_scran_chan_initialize_from_sparse', PACKAGE = 'scran.chan', x, i, p, nrow, ncol)
+initialize_from_blocks <- function(nr, nc, is_integer) {
+    .Call('_scran_chan_initialize_from_blocks', PACKAGE = 'scran.chan', nr, nc, is_integer)
 }
 
-initialize_from_blocks <- function(indices, values, nrow, ncols, nthreads) {
-    .Call('_scran_chan_initialize_from_blocks', PACKAGE = 'scran.chan', indices, values, nrow, ncols, nthreads)
+add_new_block <- function(ptr0, rows, columns, values, nc, is_integer) {
+    .Call('_scran_chan_add_new_block', PACKAGE = 'scran.chan', ptr0, rows, columns, values, nc, is_integer)
+}
+
+finalize_all_blocks <- function(ptr0, nc, is_integer) {
+    .Call('_scran_chan_finalize_all_blocks', PACKAGE = 'scran.chan', ptr0, nc, is_integer)
+}
+
+initialize_from_dgCMatrix <- function(x, i, p, nrow, ncol) {
+    .Call('_scran_chan_initialize_from_dgCMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol)
 }
 
 log_norm_counts <- function(x, size_factors) {

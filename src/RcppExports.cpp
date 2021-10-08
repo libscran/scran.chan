@@ -54,9 +54,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// initialize_from_sparse
-SEXP initialize_from_sparse(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol);
-RcppExport SEXP _scran_chan_initialize_from_sparse(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP) {
+// initialize_from_blocks
+SEXP initialize_from_blocks(int nr, int nc, bool is_integer);
+RcppExport SEXP _scran_chan_initialize_from_blocks(SEXP nrSEXP, SEXP ncSEXP, SEXP is_integerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< int >::type nr(nrSEXP);
+    Rcpp::traits::input_parameter< int >::type nc(ncSEXP);
+    Rcpp::traits::input_parameter< bool >::type is_integer(is_integerSEXP);
+    rcpp_result_gen = Rcpp::wrap(initialize_from_blocks(nr, nc, is_integer));
+    return rcpp_result_gen;
+END_RCPP
+}
+// add_new_block
+SEXP add_new_block(SEXP ptr0, Rcpp::IntegerVector rows, Rcpp::IntegerVector columns, SEXP values, int nc, bool is_integer);
+RcppExport SEXP _scran_chan_add_new_block(SEXP ptr0SEXP, SEXP rowsSEXP, SEXP columnsSEXP, SEXP valuesSEXP, SEXP ncSEXP, SEXP is_integerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type ptr0(ptr0SEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type rows(rowsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type columns(columnsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type values(valuesSEXP);
+    Rcpp::traits::input_parameter< int >::type nc(ncSEXP);
+    Rcpp::traits::input_parameter< bool >::type is_integer(is_integerSEXP);
+    rcpp_result_gen = Rcpp::wrap(add_new_block(ptr0, rows, columns, values, nc, is_integer));
+    return rcpp_result_gen;
+END_RCPP
+}
+// finalize_all_blocks
+SEXP finalize_all_blocks(SEXP ptr0, int nc, bool is_integer);
+RcppExport SEXP _scran_chan_finalize_all_blocks(SEXP ptr0SEXP, SEXP ncSEXP, SEXP is_integerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type ptr0(ptr0SEXP);
+    Rcpp::traits::input_parameter< int >::type nc(ncSEXP);
+    Rcpp::traits::input_parameter< bool >::type is_integer(is_integerSEXP);
+    rcpp_result_gen = Rcpp::wrap(finalize_all_blocks(ptr0, nc, is_integer));
+    return rcpp_result_gen;
+END_RCPP
+}
+// initialize_from_dgCMatrix
+SEXP initialize_from_dgCMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol);
+RcppExport SEXP _scran_chan_initialize_from_dgCMatrix(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
@@ -64,21 +103,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
     Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_from_sparse(x, i, p, nrow, ncol));
-    return rcpp_result_gen;
-END_RCPP
-}
-// initialize_from_blocks
-SEXP initialize_from_blocks(Rcpp::List indices, Rcpp::List values, int nrow, Rcpp::IntegerVector ncols, int nthreads);
-RcppExport SEXP _scran_chan_initialize_from_blocks(SEXP indicesSEXP, SEXP valuesSEXP, SEXP nrowSEXP, SEXP ncolsSEXP, SEXP nthreadsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type indices(indicesSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type values(valuesSEXP);
-    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ncols(ncolsSEXP);
-    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_from_blocks(indices, values, nrow, ncols, nthreads));
+    rcpp_result_gen = Rcpp::wrap(initialize_from_dgCMatrix(x, i, p, nrow, ncol));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -243,8 +268,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_build_graph", (DL_FUNC) &_scran_chan_build_graph, 4},
     {"_scran_chan_cluster_multilevel", (DL_FUNC) &_scran_chan_cluster_multilevel, 1},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
-    {"_scran_chan_initialize_from_sparse", (DL_FUNC) &_scran_chan_initialize_from_sparse, 5},
-    {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 5},
+    {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 3},
+    {"_scran_chan_add_new_block", (DL_FUNC) &_scran_chan_add_new_block, 6},
+    {"_scran_chan_finalize_all_blocks", (DL_FUNC) &_scran_chan_finalize_all_blocks, 3},
+    {"_scran_chan_initialize_from_dgCMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgCMatrix, 5},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 2},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 3},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 4},
