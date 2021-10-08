@@ -13,7 +13,9 @@ Suggests:
     rmarkdown,
     BiocStyle,
     testthat,
-    SingleCellExperiment
+    S4Vectors,
+    SingleCellExperiment,
+    DelayedArray
 VignetteBuilder: knitr
 SystemRequirements: C++17, git, CMake
 RoxygenNote: 7.1.2
