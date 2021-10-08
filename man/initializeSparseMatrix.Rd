@@ -4,11 +4,25 @@
 \alias{initializeSparseMatrix}
 \title{Initialize the count matrix}
 \usage{
-initializeSparseMatrix(x, num.threads = 1)
+initializeSparseMatrix(
+  x,
+  force.integer = TRUE,
+  no.sparse.copy = TRUE,
+  num.threads = 1
+)
 }
 \arguments{
 \item{x}{A matrix-like object.
 This should contain non-negative integers.}
+
+\item{force.integer}{Logical scalar indicating whether double-precision \code{x} should be forced into integers.}
+
+\item{no.sparse.copy}{Logical scalar indicating whether we should avoid a copy when \code{x} is a dgCMatrix.
+This is more memory efficient if the data has already been loaded into memory.
+If \code{TRUE}, any setting of \code{force.integer} is ignored.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use when initializing \code{x}.
+For dgCMatrix inputs, this is only relevant when \code{no.sparse.copy = FALSE}.}
 }
 \value{
 A list of internal components that can be used in other \pkg{scran.chan} functions.
@@ -20,6 +34,8 @@ otherwise an efficient block realization is performed.
 }
 \details{
 Do not attempt to serialize this object; it contains a pointer to external memory, and will not be valid after a save/load cycle.
+
+If \code{no.sparse.copy=TRUE}, the lifetime of the sparse matrix in \code{x} must be greater than the returned pointer.
 }
 \examples{
 # Mocking up a count matrix:

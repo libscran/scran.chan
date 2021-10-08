@@ -14,6 +14,7 @@ Suggests:
     rmarkdown,
     BiocStyle,
     testthat,
+    Matrix,
     S4Vectors,
     SingleCellExperiment,
     DelayedArray
