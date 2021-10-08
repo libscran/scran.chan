@@ -40,5 +40,8 @@ runAllNeighbors <- function(x, tsne.perplexity=30, umap.num.neighbors=15, cluste
     # Enforce 1-based indexing, see ?clusterSNNGraph.chan.
     output$cluster.snn$membership <- lapply(output$cluster.snn$membership, function(x) x + 1L)
 
+    output$umap <- t(output$umap)
+    output$tsne <- t(output$tsne)
+
     output
 }
