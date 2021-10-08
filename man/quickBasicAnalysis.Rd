@@ -46,7 +46,8 @@ A list containing the elements:
 \itemize{
     \item \code{qc.metrics}, a list containing the output of \code{\link{perCellQCMetrics.chan}}.
     \item \code{qc.filters}, a list containing the output of \code{\link{perCellQCFilters.chan}}.
-    The \code{overall} vector is used to determine which cells to discard during quality control.
+    \item \code{qc.discard}, a logical vector specifying which cells to discard during quality control.
+    This is the same as \code{qc.filters$filters$overall}.
     \item \code{size.factors}, a numeric vector containing the size factors for scaling normalization.
     \item \code{variances}, a list containing the output of \code{\link{modelGeneVar.chan}}.
     This contains a \code{keep} column indicating whether the gene is retained for PCA.
@@ -63,8 +64,8 @@ No frills, no dependencies.
 \examples{
 library(scRNAseq)
 x <- ZeiselBrainData()
-mito <- grep("^mt-", rownames(x)))
-out <- quickBasicAnalysis(assay(x), qc.subsets=list(Mt=x), num.threads=4)
+mito <- grep("^mt-", rownames(x))
+out <- quickBasicAnalysis(assay(x), qc.subsets=list(Mt=mito), num.threads=1)
 
 }
 \author{

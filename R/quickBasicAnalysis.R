@@ -15,7 +15,8 @@
 #' \itemize{
 #'     \item \code{qc.metrics}, a list containing the output of \code{\link{perCellQCMetrics.chan}}.
 #'     \item \code{qc.filters}, a list containing the output of \code{\link{perCellQCFilters.chan}}.
-#'     The \code{overall} vector is used to determine which cells to discard during quality control.
+#'     \item \code{qc.discard}, a logical vector specifying which cells to discard during quality control.
+#'     This is the same as \code{qc.filters$filters$overall}.
 #'     \item \code{size.factors}, a numeric vector containing the size factors for scaling normalization.
 #'     \item \code{variances}, a list containing the output of \code{\link{modelGeneVar.chan}}.
 #'     This contains a \code{keep} column indicating whether the gene is retained for PCA.
@@ -50,7 +51,8 @@ quickBasicAnalysis <- function(x,
     results <- list()
     results$qc.metrics <- qc.metrics <- perCellQCMetrics.chan(x, qc.subsets, num.threads=num.threads)
     results$qc.filters <- qc.filters <- perCellQCFilters.chan(qc.metrics$sums, qc.metrics$detected, qc.metrics$subsets, nmads=qc.nmads)
-    x <- filterCells.chan(x, qc.filters$filters$overall)
+    results$qc.discard <- qc.filters$filters$overall
+    x <- filterCells.chan(x, results$qc.discard)
 
     sf <- qc.metrics$sums[!qc.filters$filters$overall]
     sf <- sf/mean(sf)

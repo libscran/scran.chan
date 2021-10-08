@@ -28,7 +28,6 @@
 #' res <- runAllNeighbors(x)
 #' str(res)
 #' @export
-#' @importFrom parallel clusterCall
 runAllNeighbors <- function(x, tsne.perplexity=30, umap.num.neighbors=15, cluster.snn.num.neighbors=10, cluster.snn.resolution=1, num.threads=1) {
     neighbors <- build_nn_index(x)
     tsne.init <- initialize_tsne(neighbors, tsne.perplexity, num.threads)
@@ -37,5 +36,9 @@ runAllNeighbors <- function(x, tsne.perplexity=30, umap.num.neighbors=15, cluste
 
     output <- run_all_neighbors(snn.graph, umap.init, tsne.init, num.threads)
     names(output) <- c("cluster.snn", "umap", "tsne")
+
+    # Enforce 1-based indexing, see ?clusterSNNGraph.chan.
+    output$cluster.snn$membership <- lapply(output$cluster.snn$membership, function(x) x + 1L)
+
     output
 }
