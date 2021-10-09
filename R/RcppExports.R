@@ -21,8 +21,8 @@ initialize_from_blocks <- function(nr, nc, is_integer) {
     .Call('_scran_chan_initialize_from_blocks', PACKAGE = 'scran.chan', nr, nc, is_integer)
 }
 
-add_new_block <- function(ptr0, rows, columns, values, nc, is_integer) {
-    .Call('_scran_chan_add_new_block', PACKAGE = 'scran.chan', ptr0, rows, columns, values, nc, is_integer)
+add_new_block <- function(ptr0, rows, columns, values, nr_block, nc, is_integer) {
+    .Call('_scran_chan_add_new_block', PACKAGE = 'scran.chan', ptr0, rows, columns, values, nr_block, nc, is_integer)
 }
 
 finalize_all_blocks <- function(ptr0, nc, is_integer) {

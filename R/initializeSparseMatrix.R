@@ -58,14 +58,14 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, n
             output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
             nzi <- DelayedArray::nzindex(output)
             o <- order(nzi[,1], nzi[,2])
-            list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o])
+            list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
         }
 
         NC <- ncol(x)
         is.int <- DelayedArray::type(x) == "integer" || force.integer
         ptr0 <- initialize_from_blocks(nrow(x), NC, is.int)
         reduction <- function(ignore, block) {
-            add_new_block(ptr0, block$row, block$column, block$value, NC, is.int)
+            add_new_block(ptr0, block$row, block$column, block$value, block$nrow, NC, is.int)
         }
 
         if (num.threads==1) {

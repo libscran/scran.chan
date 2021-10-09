@@ -67,17 +67,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // add_new_block
-SEXP add_new_block(SEXP ptr0, Rcpp::IntegerVector rows, Rcpp::IntegerVector columns, SEXP values, int nc, bool is_integer);
-RcppExport SEXP _scran_chan_add_new_block(SEXP ptr0SEXP, SEXP rowsSEXP, SEXP columnsSEXP, SEXP valuesSEXP, SEXP ncSEXP, SEXP is_integerSEXP) {
+SEXP add_new_block(SEXP ptr0, Rcpp::IntegerVector rows, Rcpp::IntegerVector columns, SEXP values, int nr_block, int nc, bool is_integer);
+RcppExport SEXP _scran_chan_add_new_block(SEXP ptr0SEXP, SEXP rowsSEXP, SEXP columnsSEXP, SEXP valuesSEXP, SEXP nr_blockSEXP, SEXP ncSEXP, SEXP is_integerSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type ptr0(ptr0SEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type rows(rowsSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type columns(columnsSEXP);
     Rcpp::traits::input_parameter< SEXP >::type values(valuesSEXP);
+    Rcpp::traits::input_parameter< int >::type nr_block(nr_blockSEXP);
     Rcpp::traits::input_parameter< int >::type nc(ncSEXP);
     Rcpp::traits::input_parameter< bool >::type is_integer(is_integerSEXP);
-    rcpp_result_gen = Rcpp::wrap(add_new_block(ptr0, rows, columns, values, nc, is_integer));
+    rcpp_result_gen = Rcpp::wrap(add_new_block(ptr0, rows, columns, values, nr_block, nc, is_integer));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -269,7 +270,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_cluster_multilevel", (DL_FUNC) &_scran_chan_cluster_multilevel, 1},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 3},
-    {"_scran_chan_add_new_block", (DL_FUNC) &_scran_chan_add_new_block, 6},
+    {"_scran_chan_add_new_block", (DL_FUNC) &_scran_chan_add_new_block, 7},
     {"_scran_chan_finalize_all_blocks", (DL_FUNC) &_scran_chan_finalize_all_blocks, 3},
     {"_scran_chan_initialize_from_dgCMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgCMatrix, 5},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 2},

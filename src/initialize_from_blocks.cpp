@@ -20,6 +20,8 @@ struct accumulated_rows {
 
     typedef I index_type;
     typedef V value_type;
+
+    int so_far = 0;
 };
 
 typedef accumulated_rows<uint16_t, int> short_int; 
@@ -45,32 +47,34 @@ SEXP initialize_from_blocks(int nr, int nc, bool is_integer) {
 }
 
 template<class Acc, class Vec>
-SEXP add_new_block_internal(SEXP ptr0, Rcpp::IntegerVector rows, Rcpp::IntegerVector columns, Vec values) {
+SEXP add_new_block_internal(SEXP ptr0, Rcpp::IntegerVector rows, Rcpp::IntegerVector columns, Vec values, int nr_block) {
     Rcpp::XPtr<Acc> ptr(ptr0);
 
     ptr->values.insert(ptr->values.end(), values.begin(), values.end());
     ptr->columns.insert(ptr->columns.end(), columns.begin(), columns.end());
-    
+
+    int& adjustment = ptr->so_far;
     for (auto r : rows) {
-        ++(ptr->offsets[r+1]);
+        ++(ptr->offsets[r + adjustment + 1]); // +1 because we want one-after-the-index.
     }
 
+    adjustment += nr_block;
     return R_NilValue;
 }
 
 //[[Rcpp::export(rng=false)]]
-SEXP add_new_block(SEXP ptr0, Rcpp::IntegerVector rows, Rcpp::IntegerVector columns, SEXP values, int nc, bool is_integer) {
+SEXP add_new_block(SEXP ptr0, Rcpp::IntegerVector rows, Rcpp::IntegerVector columns, SEXP values, int nr_block, int nc, bool is_integer) {
     if (nc <= std::numeric_limits<uint16_t>::max()) {
         if (is_integer) {
-            add_new_block_internal<short_int, Rcpp::IntegerVector>(ptr0, rows, columns, values);
+            add_new_block_internal<short_int, Rcpp::IntegerVector>(ptr0, rows, columns, values, nr_block);
         } else {
-            add_new_block_internal<short_dbl, Rcpp::NumericVector>(ptr0, rows, columns, values);
+            add_new_block_internal<short_dbl, Rcpp::NumericVector>(ptr0, rows, columns, values, nr_block);
         }
     } else {
         if (is_integer) {
-            add_new_block_internal<regular_int, Rcpp::IntegerVector>(ptr0, rows, columns, values);
+            add_new_block_internal<regular_int, Rcpp::IntegerVector>(ptr0, rows, columns, values, nr_block);
         } else {
-            add_new_block_internal<regular_dbl, Rcpp::NumericVector>(ptr0, rows, columns, values);
+            add_new_block_internal<regular_dbl, Rcpp::NumericVector>(ptr0, rows, columns, values, nr_block);
         }
     }
     return R_NilValue;
@@ -83,7 +87,7 @@ SEXP finalize_all_blocks_internal(SEXP ptr0) {
     std::vector<typename Acc::index_type> indices(ptr->columns.begin(), ptr->columns.end());
     std::vector<typename Acc::value_type> values(ptr->values.begin(), ptr->values.end());
 
-    for (size_t i = 1; i < ptr->offsets.size(); ++i) {
+    for (size_t i = 1; i <= ptr->offsets.size(); ++i) {
         ptr->offsets[i] += ptr->offsets[i-1];
     }
 
