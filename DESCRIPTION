@@ -6,7 +6,8 @@ Version: 0.0.1
 Authors@R: person("Aaron", "Lun", email="infinite.monkeys.with.keyboards@gmail.com", role=c("aut", "cre"))
 License: MIT + file LICENSE
 Imports:
-    Rcpp
+    Rcpp,
+    methods
 LinkingTo:
     Rcpp
 Suggests:
@@ -15,9 +16,12 @@ Suggests:
     BiocStyle,
     testthat,
     Matrix,
+    BiocGenerics,
     S4Vectors,
+    DelayedArray,
+    SummarizedExperiment,
     SingleCellExperiment,
-    DelayedArray
+    BiocParallel
 VignetteBuilder: knitr
 SystemRequirements: C++17, git, CMake
 RoxygenNote: 7.1.2

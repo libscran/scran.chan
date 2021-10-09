@@ -11,6 +11,8 @@ clusterSNNGraph.chan(x, num.neighbors = 10, resolution = 1, num.threads = 1)
 
 \item{num.neighbors}{Integer scalar specifying the number of neighbors to use to construct the graph.}
 
+\item{resolution}{Numeric scalar specifying the resolution to use for multi-level clustering.}
+
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{

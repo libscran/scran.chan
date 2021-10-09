@@ -5,6 +5,7 @@
 #' @param x Numeric matrix where rows are dimensions and columns are cells.
 #' @param num.neighbors Integer scalar specifying the number of neighbors to use to construct the graph.
 #' @param num.threads Integer scalar specifying the number of threads to use.
+#' @param resolution Numeric scalar specifying the resolution to use for multi-level clustering.
 #' 
 #' @return A list containing:
 #' \itemize{
