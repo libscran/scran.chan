@@ -87,7 +87,7 @@ SEXP finalize_all_blocks_internal(SEXP ptr0) {
     std::vector<typename Acc::index_type> indices(ptr->columns.begin(), ptr->columns.end());
     std::vector<typename Acc::value_type> values(ptr->values.begin(), ptr->values.end());
 
-    for (size_t i = 1; i <= ptr->offsets.size(); ++i) {
+    for (size_t i = 1; i < ptr->offsets.size(); ++i) {
         ptr->offsets[i] += ptr->offsets[i-1];
     }
 
