@@ -263,6 +263,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// score_markers
+Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups);
+RcppExport SEXP _scran_chan_score_markers(SEXP xSEXP, SEXP groupsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type groups(groupsSEXP);
+    rcpp_result_gen = Rcpp::wrap(score_markers(x, groups));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
@@ -286,6 +297,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 2},
     {"_scran_chan_initialize_umap", (DL_FUNC) &_scran_chan_initialize_umap, 3},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 1},
+    {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 2},
     {NULL, NULL, 0}
 };
 

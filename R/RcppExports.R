@@ -85,3 +85,7 @@ run_umap <- function(init) {
     .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', init)
 }
 
+score_markers <- function(x, groups) {
+    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups)
+}
+
