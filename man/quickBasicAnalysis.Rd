@@ -10,7 +10,7 @@ quickBasicAnalysis(
   qc.nmads = 3,
   trend.span = 0.3,
   hvg.num = 2000,
-  pca.num = 50,
+  pca.num = 25,
   tsne.perplexity = 30,
   umap.num.neighbors = 15,
   cluster.snn.num.neighbors = 10,

@@ -15,7 +15,7 @@
 #' y <- initializeSparseMatrix(x)
 #' normed <- logNormCounts.chan(y)
 #'
-#' df <- scran.chan:::modelGeneVar.chan(normed)
+#' df <- modelGeneVar.chan(normed)
 #' df[1:10,]
 #' plot(df$means, df$variances)
 #' points(df$means, df$fitted, col="red", pch=16, cex=0.5)
