@@ -8,8 +8,9 @@ struct SNNGraph {
     SNNGraph (size_t n, std::deque<scran::BuildSNNGraph::WeightedEdge> s, double r) : ncells(n), store(std::move(s)), resolution(r) {}
 
     auto run() {
-        scran::ClusterSNNGraph runner;
-        return runner.run_multilevel(ncells, store, resolution);
+        scran::ClusterSNNGraphMultiLevel runner;
+        runner.set_resolution(resolution);
+        return runner.run(ncells, store);
     }
 
     template<class V>
