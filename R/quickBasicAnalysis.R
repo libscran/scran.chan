@@ -74,6 +74,9 @@ quickBasicAnalysis <- function(x,
         cluster.snn.resolution=cluster.snn.resolution, 
         num.threads=num.threads)
 
+    marker.out <- scoreMarkers.chan(x, neighbor.out$cluster.snn$membership[[neighbor.out$cluster.snn$best]])
+
     results <- c(results, neighbor.out)
+    results$markers <- marker.out
     results
 }
