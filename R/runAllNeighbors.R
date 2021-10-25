@@ -37,7 +37,7 @@ runAllNeighbors <- function(x,
     num.threads=1) 
 {
     neighbors <- build_nn_index(x)
-    tsne.init <- initialize_tsne(neighbors, tsne.perplexity, num.threads, 100)
+    tsne.init <- initialize_tsne(neighbors, tsne.perplexity, tsne.interpolate, num.threads)
     umap.init <- initialize_umap(neighbors, umap.num.neighbors, num.threads)
     snn.graph <- build_graph(neighbors, cluster.snn.num.neighbors, cluster.snn.resolution, num.threads)
 
