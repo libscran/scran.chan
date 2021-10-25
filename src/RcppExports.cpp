@@ -219,14 +219,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // initialize_tsne
-SEXP initialize_tsne(SEXP nnptr, double perplexity, int nthreads);
-RcppExport SEXP _scran_chan_initialize_tsne(SEXP nnptrSEXP, SEXP perplexitySEXP, SEXP nthreadsSEXP) {
+SEXP initialize_tsne(SEXP nnptr, double perplexity, int interpolate, int nthreads);
+RcppExport SEXP _scran_chan_initialize_tsne(SEXP nnptrSEXP, SEXP perplexitySEXP, SEXP interpolateSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
     Rcpp::traits::input_parameter< double >::type perplexity(perplexitySEXP);
+    Rcpp::traits::input_parameter< int >::type interpolate(interpolateSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_tsne(nnptr, perplexity, nthreads));
+    rcpp_result_gen = Rcpp::wrap(initialize_tsne(nnptr, perplexity, interpolate, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -293,7 +294,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},
     {"_scran_chan_run_all_neighbors", (DL_FUNC) &_scran_chan_run_all_neighbors, 4},
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 4},
-    {"_scran_chan_initialize_tsne", (DL_FUNC) &_scran_chan_initialize_tsne, 3},
+    {"_scran_chan_initialize_tsne", (DL_FUNC) &_scran_chan_initialize_tsne, 4},
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 2},
     {"_scran_chan_initialize_umap", (DL_FUNC) &_scran_chan_initialize_umap, 3},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 1},

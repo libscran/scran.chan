@@ -4,12 +4,14 @@
 \alias{runTSNE.chan}
 \title{Run an approximate t-SNE}
 \usage{
-runTSNE.chan(x, perplexity = 30, num.threads = 1)
+runTSNE.chan(x, perplexity = 30, interpolate = 200, num.threads = 1)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
 \item{perplexity}{Numeric scalar specifying the perplexity to use in the t-SNE algorithm.}
+
+\item{interpolate}{Integer scalar specifying the number of grid points to use for interpolation.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }

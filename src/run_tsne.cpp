@@ -6,14 +6,14 @@
 #endif
 
 //[[Rcpp::export(rng=false)]]
-SEXP initialize_tsne(SEXP nnptr, double perplexity, int nthreads) {
+SEXP initialize_tsne(SEXP nnptr, double perplexity, int interpolate, int nthreads) {
 #ifdef _OPENMP
     omp_set_num_threads(nthreads);
 #endif
     KnncollePtr nns(nnptr);
 
     MyTsne runner;
-    runner.set_perplexity(perplexity).set_max_depth(7).set_interpolation(100);
+    runner.set_perplexity(perplexity).set_max_depth(7).set_interpolation(interpolate);
     auto status = runner.initialize(nns.get());
 
     std::vector<float> embedding(2 * nns->nobs());

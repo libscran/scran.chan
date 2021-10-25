@@ -69,8 +69,8 @@ run_pca <- function(x, ndim, features, nthreads) {
     .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, nthreads)
 }
 
-initialize_tsne <- function(nnptr, perplexity, nthreads) {
-    .Call('_scran_chan_initialize_tsne', PACKAGE = 'scran.chan', nnptr, perplexity, nthreads)
+initialize_tsne <- function(nnptr, perplexity, interpolate, nthreads) {
+    .Call('_scran_chan_initialize_tsne', PACKAGE = 'scran.chan', nnptr, perplexity, interpolate, nthreads)
 }
 
 run_tsne <- function(init, nthreads) {

@@ -7,6 +7,7 @@
 runAllNeighbors(
   x,
   tsne.perplexity = 30,
+  tsne.interpolate = 200,
   umap.num.neighbors = 15,
   cluster.snn.num.neighbors = 10,
   cluster.snn.resolution = 1,
@@ -17,7 +18,7 @@ runAllNeighbors(
 \item{x}{Numeric matrix containing dimensions in the rows and cells in the columns.
 This is typically a matrix of principal components.}
 
-\item{tsne.perplexity}{Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.}
+\item{tsne.perplexity, tsne.interpolate}{Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.}
 
 \item{umap.num.neighbors}{Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.}
 
