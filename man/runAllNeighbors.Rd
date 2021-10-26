@@ -9,7 +9,8 @@ runAllNeighbors(
   tsne.perplexity = 30,
   umap.num.neighbors = 15,
   cluster.snn.num.neighbors = 10,
-  cluster.snn.resolution = 1,
+  cluster.snn.method = c("multilevel", "leiden", "walktrap"),
+  cluster.snn.resolution = NULL,
   num.threads = 1
 )
 }

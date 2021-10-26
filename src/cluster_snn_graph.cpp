@@ -6,7 +6,7 @@
 #endif
 
 //[[Rcpp::export(rng=false)]]
-SEXP build_graph(SEXP nnptr, int k, double resolution, int nthreads) {
+SEXP build_graph(SEXP nnptr, int k, std::string method, double resolution, int nthreads) {
     KnncollePtr nns(nnptr);
     scran::BuildSNNGraph builder;
     builder.set_neighbors(k);
@@ -14,12 +14,12 @@ SEXP build_graph(SEXP nnptr, int k, double resolution, int nthreads) {
 #ifdef _OPENMP
     omp_set_num_threads(nthreads);
 #endif
-    return Rcpp::XPtr<SNNGraph>(new SNNGraph(nns->nobs(), builder.run(nns.get()), resolution));
+    return Rcpp::XPtr<SNNGraph>(new SNNGraph(nns->nobs(), builder.run(nns.get()), method, resolution));
 }
 
 //[[Rcpp::export(rng=false)]]
-SEXP cluster_multilevel(SEXP ptr) {
+SEXP cluster_graph(SEXP ptr) {
     Rcpp::XPtr<SNNGraph> x(ptr);
-    auto clust = x->run();
-    return x->yield(clust);
+    x->run();
+    return x->yield();
 }

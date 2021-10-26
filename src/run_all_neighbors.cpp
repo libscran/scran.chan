@@ -17,9 +17,9 @@ Rcpp::List run_all_neighbors(SEXP clust_init, SEXP umap_init, SEXP tsne_init, in
     #pragma omp parallel for num_threads(outer)
     for (int i = 0; i < 3; ++i) {
         if (i == 0) {
-            auto clust = cptr->run();
+            cptr->run();
             #pragma omp critical 
-            output[i] = cptr->yield(clust);
+            output[i] = cptr->yield();
         } else if (i == 1) {
             uptr->run();
             #pragma omp critical 

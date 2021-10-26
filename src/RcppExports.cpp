@@ -21,25 +21,26 @@ BEGIN_RCPP
 END_RCPP
 }
 // build_graph
-SEXP build_graph(SEXP nnptr, int k, double resolution, int nthreads);
-RcppExport SEXP _scran_chan_build_graph(SEXP nnptrSEXP, SEXP kSEXP, SEXP resolutionSEXP, SEXP nthreadsSEXP) {
+SEXP build_graph(SEXP nnptr, int k, std::string method, double resolution, int nthreads);
+RcppExport SEXP _scran_chan_build_graph(SEXP nnptrSEXP, SEXP kSEXP, SEXP methodSEXP, SEXP resolutionSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< std::string >::type method(methodSEXP);
     Rcpp::traits::input_parameter< double >::type resolution(resolutionSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_graph(nnptr, k, resolution, nthreads));
+    rcpp_result_gen = Rcpp::wrap(build_graph(nnptr, k, method, resolution, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
-// cluster_multilevel
-SEXP cluster_multilevel(SEXP ptr);
-RcppExport SEXP _scran_chan_cluster_multilevel(SEXP ptrSEXP) {
+// cluster_graph
+SEXP cluster_graph(SEXP ptr);
+RcppExport SEXP _scran_chan_cluster_graph(SEXP ptrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type ptr(ptrSEXP);
-    rcpp_result_gen = Rcpp::wrap(cluster_multilevel(ptr));
+    rcpp_result_gen = Rcpp::wrap(cluster_graph(ptr));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -279,8 +280,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
-    {"_scran_chan_build_graph", (DL_FUNC) &_scran_chan_build_graph, 4},
-    {"_scran_chan_cluster_multilevel", (DL_FUNC) &_scran_chan_cluster_multilevel, 1},
+    {"_scran_chan_build_graph", (DL_FUNC) &_scran_chan_build_graph, 5},
+    {"_scran_chan_cluster_graph", (DL_FUNC) &_scran_chan_cluster_graph, 1},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_blocks", (DL_FUNC) &_scran_chan_initialize_from_blocks, 3},
     {"_scran_chan_add_new_block", (DL_FUNC) &_scran_chan_add_new_block, 7},

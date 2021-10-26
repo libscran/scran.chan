@@ -32,20 +32,25 @@ runAllNeighbors <- function(x,
     tsne.perplexity=30, 
     umap.num.neighbors=15, 
     cluster.snn.num.neighbors=10, 
-    cluster.snn.resolution=1, 
+    cluster.snn.method=c("multilevel", "leiden", "walktrap"), 
+    cluster.snn.resolution=NULL, 
     num.threads=1) 
 {
     neighbors <- build_nn_index(x)
     tsne.init <- initialize_tsne(neighbors, tsne.perplexity, interpolate=-1, max_depth=7, nthreads=num.threads) # defaults from runTSNE.chan.
     umap.init <- initialize_umap(neighbors, umap.num.neighbors, num.threads)
-    snn.graph <- build_graph(neighbors, cluster.snn.num.neighbors, cluster.snn.resolution, num.threads)
+
+    cluster.snn.method <- match.arg(cluster.snn.method)
+    cluster.snn.resolution <- .default_resolution(cluster.snn.method, cluster.snn.resolution)
+    snn.graph <- build_graph(neighbors, 
+        k=cluster.snn.num.neighbors, 
+        method=cluster.snn.method, 
+        resolution=cluster.snn.resolution, 
+        nthreads=num.threads)
 
     output <- run_all_neighbors(snn.graph, umap.init, tsne.init, num.threads)
     names(output) <- c("cluster.snn", "umap", "tsne")
-
-    # Enforce 1-based indexing, see ?clusterSNNGraph.chan.
-    output$cluster.snn$best <- output$cluster.snn$best + 1L
-    output$cluster.snn$membership <- lapply(output$cluster.snn$membership, function(x) x + 1L)
+    output$cluster.snn <- .clean_graph_clustering(cluster.snn.method, output$cluster.snn)
 
     output$umap <- t(output$umap)
     output$tsne <- t(output$tsne)

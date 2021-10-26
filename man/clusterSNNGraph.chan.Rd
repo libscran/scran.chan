@@ -4,24 +4,45 @@
 \alias{clusterSNNGraph.chan}
 \title{Apply graph-based clustering}
 \usage{
-clusterSNNGraph.chan(x, num.neighbors = 10, resolution = 1, num.threads = 1)
+clusterSNNGraph.chan(
+  x,
+  num.neighbors = 10,
+  method = c("multilevel", "leiden", "walktrap"),
+  resolution = NULL,
+  num.threads = 1
+)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
 \item{num.neighbors}{Integer scalar specifying the number of neighbors to use to construct the graph.}
 
-\item{resolution}{Numeric scalar specifying the resolution to use for multi-level clustering.}
+\item{method}{String specifying the community detection method to use.}
+
+\item{resolution}{Numeric scalar specifying the resolution to use for multi-level clustering.
+Defaults to 1 for \code{method="multilevel"} and 0.05 for \code{method="leiden"}.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
-A list containing:
+A list containing \code{membership}, an integer vector with cluster assignments for each cell.
+Each method may also return additional elements.
+For \code{method="multilevel"}, we have:
 \itemize{
-\item \code{membership}, a list of integer vectors with cluster assignments for each cell at each level.
+\item \code{levels}, a list of integer vectors with cluster assignments for each cell at each level.
 Assignments are sorted by decreasing resolution (i.e., fewer, larger clusters).
 \item \code{modularity}, a numeric vector containing the modularity of each level.
 \item \code{best}, the level with the lowest modularity.
+}
+For \code{method="leiden"}, we have:
+\itemize{
+\item \code{quality}, a numeric scalar containing the quality of the clustering (either the modularity or a related score).
+}
+For \code{method="walktrap"}, we have:
+\itemize{
+\item \code{merges}, an integer matrix specifying how the clusters were merged to obtain \code{membership}.
+Each row corresponds to a merge step and contains the IDs of the temporary clusters (not the same as those in \code{membership}). 
+\item \code{modularity}, a numeric vector containing the modularity before and after each merge step. 
 }
 }
 \description{
@@ -31,7 +52,7 @@ Perform multi-level (i.e., Louvain) clustering on a shared nearest neighbor grap
 x <- t(as.matrix(iris[,1:4]))
 clustering <- clusterSNNGraph.chan(x)
 clustering$modularity
-lapply(clustering$membership, table)
+table(clustering$membership)
 
 }
 \author{
