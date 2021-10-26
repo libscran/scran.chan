@@ -2,9 +2,15 @@
 #include "scran/differential_analysis/ScoreMarkers.hpp"
 #include "Rcpp.h"
 #include "tatamize.h"
+#ifdef _OPENMP
+#include "omp.h"
+#endif
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups) {
+#ifdef _openmp
+    omp_set_num_threads(nthreads);
+#endif
     auto mat = extract_NumericMatrix(x);
     const int ngroups = (groups.size() ? *std::max_element(groups.begin(), groups.end()) + 1 : 1);
 
