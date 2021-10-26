@@ -4,14 +4,24 @@
 \alias{runTSNE.chan}
 \title{Run an approximate t-SNE}
 \usage{
-runTSNE.chan(x, perplexity = 30, interpolate = 200, num.threads = 1)
+runTSNE.chan(
+  x,
+  perplexity = 30,
+  interpolate = -1,
+  max.depth = 7,
+  num.threads = 1
+)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
 \item{perplexity}{Numeric scalar specifying the perplexity to use in the t-SNE algorithm.}
 
-\item{interpolate}{Integer scalar specifying the number of grid points to use for interpolation.}
+\item{interpolate}{Integer scalar specifying the grid resolution for interpolating repulsive forces (larger is slower but more accurate).
+A value of zero disables interpolation, while a value of -1 only uses interpolation for large datasets.}
+
+\item{max.depth}{Integer scalar specifying the maximum depth of the Barnes-Hut quad trees (larger is slower but more accurate).
+Set to a large integer (e.g., 1000) to eliminate depth restrictions.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }

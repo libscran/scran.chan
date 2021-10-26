@@ -4,7 +4,7 @@
 #' 
 #' @param x Numeric matrix containing dimensions in the rows and cells in the columns.
 #' This is typically a matrix of principal components.
-#' @param tsne.perplexity,tsne.interpolate Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.
+#' @param tsne.perplexity Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.
 #' @param umap.num.neighbors Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.
 #' @param cluster.snn.num.neighbors,cluster.snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
 #' @param num.threads Integer scalar specifying the number of threads to use.
@@ -30,14 +30,13 @@
 #' @export
 runAllNeighbors <- function(x,
     tsne.perplexity=30, 
-    tsne.interpolate=200, 
     umap.num.neighbors=15, 
     cluster.snn.num.neighbors=10, 
     cluster.snn.resolution=1, 
     num.threads=1) 
 {
     neighbors <- build_nn_index(x)
-    tsne.init <- initialize_tsne(neighbors, tsne.perplexity, tsne.interpolate, num.threads)
+    tsne.init <- initialize_tsne(neighbors, tsne.perplexity, interpolate=-1, max_depth=7, nthreads=num.threads) # defaults from runTSNE.chan.
     umap.init <- initialize_umap(neighbors, umap.num.neighbors, num.threads)
     snn.graph <- build_graph(neighbors, cluster.snn.num.neighbors, cluster.snn.resolution, num.threads)
 

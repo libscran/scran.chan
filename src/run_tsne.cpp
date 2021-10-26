@@ -6,14 +6,23 @@
 #endif
 
 //[[Rcpp::export(rng=false)]]
-SEXP initialize_tsne(SEXP nnptr, double perplexity, int interpolate, int nthreads) {
+SEXP initialize_tsne(SEXP nnptr, double perplexity, int interpolate, int max_depth, int nthreads) {
 #ifdef _OPENMP
     omp_set_num_threads(nthreads);
 #endif
     KnncollePtr nns(nnptr);
 
     MyTsne runner;
-    runner.set_perplexity(perplexity).set_max_depth(7).set_interpolation(interpolate);
+    runner.set_perplexity(perplexity).set_max_depth(max_depth);
+    
+    if (interpolate) {
+        if (interpolate > 0) {
+            runner.set_interpolation(interpolate);
+        } else if (nns->nobs() > 50000) { // deduce it automatically.
+            runner.set_interpolation(200);
+        }
+    }
+
     auto status = runner.initialize(nns.get());
 
     std::vector<float> embedding(2 * nns->nobs());
