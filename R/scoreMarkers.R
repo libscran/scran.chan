@@ -2,7 +2,7 @@
 #'
 #' Score marker genes using a variety of effect sizes from pairwise comparisons.
 #'
-#' @param x A list of matrix data like that produced by \code{\link{logNormCounts}}.
+#' @param x A list of matrix data like that produced by \code{\link{logNormCounts.chan}}.
 #' @param groups A vector specifying the group assignment for each cell in \code{x}.
 #' 
 #' @examples

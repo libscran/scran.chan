@@ -12,7 +12,7 @@ quickBasicAnalysis(
   hvg.num = 2000,
   pca.num = 25,
   ...,
-  score.markers.pref = c("snn", "kmeans"),
+  markers.pref = c("snn", "kmeans"),
   num.threads = 1
 )
 }
@@ -31,7 +31,7 @@ quickBasicAnalysis(
 
 \item{...}{Further arguments to pass to \code{\link{runAllDownstream}}.}
 
-\item{score.markers.pref}{Character vector specifying the preference of clustering to use for marker calculation.
+\item{markers.pref}{Character vector specifying the preference of clustering to use for marker calculation.
 By default, if both graph-based and k-means clusters are available, markers are computed for the former;
 otherwise it will use whatever clustering is available from the parameters in \code{...}.}
 

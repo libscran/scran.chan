@@ -7,7 +7,7 @@
 scoreMarkers.chan(x, groups)
 }
 \arguments{
-\item{x}{A list of matrix data like that produced by \code{\link{logNormCounts}}.}
+\item{x}{A list of matrix data like that produced by \code{\link{logNormCounts.chan}}.}
 
 \item{groups}{A vector specifying the group assignment for each cell in \code{x}.}
 }
