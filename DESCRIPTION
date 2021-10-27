@@ -21,7 +21,8 @@ Suggests:
     DelayedArray,
     SummarizedExperiment,
     SingleCellExperiment,
-    BiocParallel
+    BiocParallel,
+    scRNAseq
 VignetteBuilder: knitr
 SystemRequirements: C++17, git, CMake
 RoxygenNote: 7.1.2
