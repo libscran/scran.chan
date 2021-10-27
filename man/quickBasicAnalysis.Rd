@@ -11,10 +11,8 @@ quickBasicAnalysis(
   trend.span = 0.3,
   hvg.num = 2000,
   pca.num = 25,
-  tsne.perplexity = 30,
-  umap.num.neighbors = 15,
-  cluster.snn.num.neighbors = 10,
-  cluster.snn.resolution = 1,
+  ...,
+  score.markers.pref = c("snn", "kmeans"),
   num.threads = 1
 )
 }
@@ -31,13 +29,11 @@ quickBasicAnalysis(
 
 \item{pca.num}{Number of top PCs, see \code{?\link{runPCA.chan}} for details.}
 
-\item{tsne.perplexity}{Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.}
+\item{...}{Further arguments to pass to \code{\link{runAllDownstream}}.}
 
-\item{umap.num.neighbors}{Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.}
-
-\item{cluster.snn.num.neighbors}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
-
-\item{cluster.snn.resolution}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
+\item{score.markers.pref}{Character vector specifying the preference of clustering to use for marker calculation.
+By default, if both graph-based and k-means clusters are available, markers are computed for the former;
+otherwise it will use whatever clustering is available from the parameters in \code{...}.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
@@ -52,6 +48,10 @@ A list containing the elements:
     \item \code{variances}, a list containing the output of \code{\link{modelGeneVar.chan}}.
     This contains a \code{keep} column indicating whether the gene is retained for PCA.
     \item \code{pca}, a list containing the output of \code{\link{runPCA.chan}}.
+}
+In addition, some or all of the outputs of \code{\link{runAllDownstream}} may be present depending on the arguments in \code{...}.
+By default, this includes:
+\itemize{
     \item \code{cluster.snn}, a list containing the output of \code{\link{clusterSNNGraph.chan}}.
     \item \code{umap}, a list containing the output of \code{\link{runUMAP.chan}}.
     \item \code{tsne}, a list containing the output of \code{\link{runTSNE.chan}}.

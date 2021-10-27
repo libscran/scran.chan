@@ -9,7 +9,11 @@
 #' @param trend.span Trend smoothing, see \code{?\link{modelGeneVar.chan}} for details.
 #' @param hvg.num Integer scalar specifying the number of HVGs to use for PCA.
 #' @param pca.num Number of top PCs, see \code{?\link{runPCA.chan}} for details.
-#' @inheritParams runAllNeighbors
+#' @param ... Further arguments to pass to \code{\link{runAllDownstream}}.
+#' @param markers.pref Character vector specifying the preference of clustering to use for marker calculation.
+#' By default, if both graph-based and k-means clusters are available, markers are computed for the former;
+#' otherwise it will use whatever clustering is available from the parameters in \code{...}.
+#' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return A list containing the elements:
 #' \itemize{
@@ -21,6 +25,10 @@
 #'     \item \code{variances}, a list containing the output of \code{\link{modelGeneVar.chan}}.
 #'     This contains a \code{keep} column indicating whether the gene is retained for PCA.
 #'     \item \code{pca}, a list containing the output of \code{\link{runPCA.chan}}.
+#' }
+#' In addition, some or all of the outputs of \code{\link{runAllDownstream}} may be present depending on the arguments in \code{...}.
+#' By default, this includes:
+#' \itemize{
 #'     \item \code{cluster.snn}, a list containing the output of \code{\link{clusterSNNGraph.chan}}.
 #'     \item \code{umap}, a list containing the output of \code{\link{runUMAP.chan}}.
 #'     \item \code{tsne}, a list containing the output of \code{\link{runTSNE.chan}}.
@@ -40,10 +48,8 @@ quickBasicAnalysis <- function(x,
     trend.span=0.3,
     hvg.num=2000,
     pca.num=25,
-    tsne.perplexity=30, 
-    umap.num.neighbors=15, 
-    cluster.snn.num.neighbors=10, 
-    cluster.snn.resolution=1, 
+    ...,
+    markers.pref=c("snn", "kmeans"),
     num.threads=1
 ) {
     x <- initializeSparseMatrix(x, num.threads=1)
@@ -67,16 +73,20 @@ quickBasicAnalysis <- function(x,
     pcs <- results$pca$components 
     results$pca$components <- t(pcs)
 
-    neighbor.out <- runAllNeighbors(pcs, 
-        tsne.perplexity=tsne.perplexity, 
-        umap.num.neighbors=umap.num.neighbors, 
-        cluster.snn.num.neighbors=cluster.snn.num.neighbors, 
-        cluster.snn.resolution=cluster.snn.resolution, 
-        num.threads=num.threads)
+    downstreams <- runAllDownstream(pcs, ..., num.threads=num.threads)
+    results <- c(results, downstreams)
 
-    marker.out <- scoreMarkers.chan(x, neighbor.out$cluster.snn$membership[[neighbor.out$cluster.snn$best]])
+    for (s in markers.pref) {
+        if (s == "snn") {
+            clusters <- downstreams$cluster.snn$membership 
+        } else {
+            clusters <- downstreams$cluster.kmeans$clusters
+        }
+        if (!is.null(clusters)) {
+            results$markers <- scoreMarkers.chan(x, clusters)
+            break
+        }
+    }
 
-    results <- c(results, neighbor.out)
-    results$markers <- marker.out
     results
 }

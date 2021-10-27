@@ -5,6 +5,10 @@ build_nn_index <- function(data) {
     .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data)
 }
 
+cluster_kmeans <- function(data, nclusters, nthreads) {
+    .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, nthreads)
+}
+
 build_graph <- function(nnptr, k, method, resolution, nthreads) {
     .Call('_scran_chan_build_graph', PACKAGE = 'scran.chan', nnptr, k, method, resolution, nthreads)
 }
@@ -61,8 +65,8 @@ tatami_columns <- function(x, columns, first, last) {
     .Call('_scran_chan_tatami_columns', PACKAGE = 'scran.chan', x, columns, first, last)
 }
 
-run_all_neighbors <- function(clust_init, umap_init, tsne_init, nthreads) {
-    .Call('_scran_chan_run_all_neighbors', PACKAGE = 'scran.chan', clust_init, umap_init, tsne_init, nthreads)
+run_all_downstream <- function(clust_init, umap_init, tsne_init, kmeans_init, nthreads) {
+    .Call('_scran_chan_run_all_downstream', PACKAGE = 'scran.chan', clust_init, umap_init, tsne_init, kmeans_init, nthreads)
 }
 
 run_pca <- function(x, ndim, features, nthreads) {

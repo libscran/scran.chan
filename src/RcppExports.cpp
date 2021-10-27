@@ -20,6 +20,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cluster_kmeans
+SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, int nthreads);
+RcppExport SEXP _scran_chan_cluster_kmeans(SEXP dataSEXP, SEXP nclustersSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int >::type nclusters(nclustersSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cluster_kmeans(data, nclusters, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // build_graph
 SEXP build_graph(SEXP nnptr, int k, std::string method, double resolution, int nthreads);
 RcppExport SEXP _scran_chan_build_graph(SEXP nnptrSEXP, SEXP kSEXP, SEXP methodSEXP, SEXP resolutionSEXP, SEXP nthreadsSEXP) {
@@ -193,16 +205,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// run_all_neighbors
-Rcpp::List run_all_neighbors(SEXP clust_init, SEXP umap_init, SEXP tsne_init, int nthreads);
-RcppExport SEXP _scran_chan_run_all_neighbors(SEXP clust_initSEXP, SEXP umap_initSEXP, SEXP tsne_initSEXP, SEXP nthreadsSEXP) {
+// run_all_downstream
+Rcpp::List run_all_downstream(SEXP clust_init, SEXP umap_init, SEXP tsne_init, SEXP kmeans_init, int nthreads);
+RcppExport SEXP _scran_chan_run_all_downstream(SEXP clust_initSEXP, SEXP umap_initSEXP, SEXP tsne_initSEXP, SEXP kmeans_initSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type clust_init(clust_initSEXP);
     Rcpp::traits::input_parameter< SEXP >::type umap_init(umap_initSEXP);
     Rcpp::traits::input_parameter< SEXP >::type tsne_init(tsne_initSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type kmeans_init(kmeans_initSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_all_neighbors(clust_init, umap_init, tsne_init, nthreads));
+    rcpp_result_gen = Rcpp::wrap(run_all_downstream(clust_init, umap_init, tsne_init, kmeans_init, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -280,6 +293,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
+    {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 3},
     {"_scran_chan_build_graph", (DL_FUNC) &_scran_chan_build_graph, 5},
     {"_scran_chan_cluster_graph", (DL_FUNC) &_scran_chan_cluster_graph, 1},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
@@ -294,7 +308,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},
-    {"_scran_chan_run_all_neighbors", (DL_FUNC) &_scran_chan_run_all_neighbors, 4},
+    {"_scran_chan_run_all_downstream", (DL_FUNC) &_scran_chan_run_all_downstream, 5},
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 4},
     {"_scran_chan_initialize_tsne", (DL_FUNC) &_scran_chan_initialize_tsne, 5},
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 2},
