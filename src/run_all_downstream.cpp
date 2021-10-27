@@ -41,7 +41,8 @@ Rcpp::List run_all_downstream(SEXP clust_init, SEXP umap_init, SEXP tsne_init, S
     Rcpp::List output(4);
 
     #pragma omp parallel for num_threads(outer)
-    for (size_t i = 0; i < jobs.size(); ++i) {
+    for (size_t j = 0; j < jobs.size(); ++j) {
+        auto i = jobs[j];
         if (i == 0) {
             cptr->run();
             #pragma omp critical 
