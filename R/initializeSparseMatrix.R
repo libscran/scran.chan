@@ -40,33 +40,38 @@
 #' str(stuff2)
 #' 
 #' @export
+#' @import methods
 initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, by.column=TRUE, num.threads=1) {
     NR <- nrow(x)
     NC <- ncol(x)
+    ptr <- NULL
+
+    if (is(x, "DelayedArray") && DelayedArray::isPristine(x, ignore.dimnames=TRUE)) {
+        x <- DelayedArray::seed(x)
+    }
 
     if (is(x, "dgCMatrix")) {
         ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy, force_integer=force.integer)
 
     } else if (is(x, "dgRMatrix")) {
-        ptr <- initialize_from_dgRMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy, force_integer=force.integer)
+        ptr <- initialize_from_dgRMatrix(x@x, x@j, x@p, NR, NC, no_copy=no.sparse.copy, force_integer=force.integer)
 
-    } else if (is(x, "H5SparseMatrix")) {
+    } else if (is(x, "H5SparseMatrixSeed")) {
         # Special case handling of sparse HDF5 matrices.
-        s <- DelayedArray::seed(M)
-        
-        indptrs <- s@indptr_ranges
+        indptrs <- x@indptr_ranges
         p <- cumsum(c(0, indptrs$width))
-        x <- rhdf5::h5read(s@filepath, paste0(s@group, "/data"))
-        i <- rhdf5::h5read(s@filepath, paste0(s@group, "/indices"))
+        v <- rhdf5::h5read(x@filepath, paste0(x@group, "/data"))
+        i <- rhdf5::h5read(x@filepath, paste0(x@group, "/indices"))
 
-        if (is(s, "CSC_H5SparseMatrixSeed")) {
-            ptr <- initialize_from_CSC(x, i, p, NR, NC, force.integer)
+        if (is(x, "CSC_H5SparseMatrixSeed")) {
+            ptr <- initialize_from_CSC(v, i, p, NR, NC, force.integer)
         } else {
-            ptr <- initialize_from_CSR(x, i, p, NR, NC, force.integer)
+            ptr <- initialize_from_CSR(v, i, p, NR, NC, force.integer)
         }
+    } 
 
-    } else {
-        # We iterate across blocks and add them bit by bit to the
+    if (is.null(ptr)) { 
+        # Fallback: we iterate across blocks and add them bit by bit to the
         # matrix so that we never have to load the entire matrix into memory.
         if (by.column) {
             grid <- DelayedArray::colAutoGrid(x)

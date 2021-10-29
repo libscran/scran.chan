@@ -22,6 +22,9 @@ This should contain non-negative integers.}
 This is more memory efficient if the data has already been loaded into memory.
 If \code{TRUE}, any setting of \code{force.integer} is ignored.}
 
+\item{by.column}{Logical scalar indicating whether we should load \code{x} into column-major format.
+Only applicable when \code{x} is not a dgCMatrix or a H5SparseMatrix, which define their own format.}
+
 \item{num.threads}{Integer scalar specifying the number of threads to use when initializing \code{x}.
 For dgCMatrix inputs, this is only relevant when \code{no.sparse.copy = FALSE}.}
 }
