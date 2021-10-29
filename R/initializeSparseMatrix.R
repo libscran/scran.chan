@@ -10,6 +10,8 @@
 #' @param no.sparse.copy Logical scalar indicating whether we should avoid a copy when \code{x} is a dgCMatrix.
 #' This is more memory efficient if the data has already been loaded into memory.
 #' If \code{TRUE}, any setting of \code{force.integer} is ignored.
+#' @param by.column Logical scalar indicating whether we should load \code{x} into column-major format.
+#' Only applicable when \code{x} is not a dgCMatrix or a H5SparseMatrix, which define their own format.
 #' @param num.threads Integer scalar specifying the number of threads to use when initializing \code{x}.
 #' For dgCMatrix inputs, this is only relevant when \code{no.sparse.copy = FALSE}.
 #'
@@ -32,16 +34,50 @@
 #' z <- DelayedArray::DelayedArray(y)
 #' stuff2 <- initializeSparseMatrix(z)
 #' str(stuff2)
+#'
+#' # Row-major initialization:
+#' stuff2 <- initializeSparseMatrix(z, by.column=FALSE)
+#' str(stuff2)
 #' 
 #' @export
-initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, num.threads=1) {
-    if (is(x, "dgCMatrix") && no.sparse.copy) {
-        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, nrow(x), ncol(x))
+#' @import methods
+initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, by.column=TRUE, num.threads=1) {
+    NR <- nrow(x)
+    NC <- ncol(x)
+    ptr <- NULL
 
-    } else {
-        # We iterate across row-wise blocks and add them bit by bit to the
+    if (is(x, "DelayedArray") && DelayedArray::isPristine(x, ignore.dimnames=TRUE)) {
+        x <- DelayedArray::seed(x)
+    }
+
+    if (is(x, "dgCMatrix")) {
+        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy, force_integer=force.integer)
+
+    } else if (is(x, "dgRMatrix")) {
+        ptr <- initialize_from_dgRMatrix(x@x, x@j, x@p, NR, NC, no_copy=no.sparse.copy, force_integer=force.integer)
+
+    } else if (is(x, "H5SparseMatrixSeed")) {
+        # Special case handling of sparse HDF5 matrices.
+        indptrs <- x@indptr_ranges
+        p <- cumsum(c(0, indptrs$width))
+        v <- rhdf5::h5read(x@filepath, paste0(x@group, "/data"))
+        i <- rhdf5::h5read(x@filepath, paste0(x@group, "/indices"))
+
+        if (is(x, "CSC_H5SparseMatrixSeed")) {
+            ptr <- initialize_from_CSC(v, i, p, NR, NC, force.integer)
+        } else {
+            ptr <- initialize_from_CSR(v, i, p, NR, NC, force.integer)
+        }
+    } 
+
+    if (is.null(ptr)) { 
+        # Fallback: we iterate across blocks and add them bit by bit to the
         # matrix so that we never have to load the entire matrix into memory.
-        grid <- DelayedArray::rowAutoGrid(x)
+        if (by.column) {
+            grid <- DelayedArray::colAutoGrid(x)
+        } else {
+            grid <- DelayedArray::rowAutoGrid(x)
+        }
 
         i <- 0L
         iterator <- function() {
@@ -53,19 +89,35 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, n
             }
         }
 
-        extractor <- function(vp) {
-            # Doing the sort here, so we can exploit compute in multiple cores.
-            output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
-            nzi <- DelayedArray::nzindex(output)
-            o <- order(nzi[,1], nzi[,2])
-            list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
+        # Doing the sort inside the extractor, so we can exploit compute in multiple cores.
+        if (by.column) {
+            extractor <- function(vp) {
+                output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
+                nzi <- DelayedArray::nzindex(output)
+                o <- order(nzi[,2], nzi[,1])
+                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], ncol=ncol(output))
+            }
+        } else {
+            extractor <- function(vp) {
+                output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
+                nzi <- DelayedArray::nzindex(output)
+                o <- order(nzi[,1], nzi[,2])
+                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
+            }
         }
 
-        NC <- ncol(x)
         is.int <- DelayedArray::type(x) == "integer" || force.integer
-        ptr0 <- initialize_from_blocks(nrow(x), NC, is.int)
-        reduction <- function(ignore, block) {
-            add_new_block(ptr0, block$row, block$column, block$value, block$nrow, NC, is.int)
+
+        if (by.column) {
+            ptr0 <- initialize_from_blocks_CSC(NR, NC, is.int)
+            reduction <- function(ignore, block) {
+                add_new_block_CSC(ptr0, block$row, block$column, block$value, block$ncol)
+            }
+        } else {
+            ptr0 <- initialize_from_blocks_CSR(NR, NC, is.int)
+            reduction <- function(ignore, block) {
+                add_new_block_CSR(ptr0, block$row, block$column, block$value, block$nrow)
+            }
         }
 
         if (num.threads==1) {
@@ -76,8 +128,12 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, n
             BPPARAM <- BiocParallel::MulticoreParam(num.threads)
             BiocParallel::bpiterate(iterator, FUN=extractor, REDUCE=reduction, init=NULL, reduce.in.order=TRUE, BPPARAM=BPPARAM)
         }
-        
-        ptr <- finalize_all_blocks(ptr0, NC, is.int)
+       
+        if (by.column) {
+            ptr <- finalize_all_blocks_CSC(ptr0)
+        } else {
+            ptr <- finalize_all_blocks_CSR(ptr0)
+        }
     }
 
     list(pointer=ptr, rownames=rownames(x), colnames=colnames(x))
