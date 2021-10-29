@@ -28,7 +28,9 @@ test_that("initialization works correctly with a dgRMatrix", {
 })
 
 test_that("initialization works correctly with a DelayedMatrix", {
-    z <- DelayedArray::DelayedArray(y)
+    # Force it to use non-trivial block processing. 
+    DelayedArray::setAutoBlockSize(200)
+    z <- DelayedArray::DelayedArray(y) * 2 
 
     # Column-based.
     stuff2 <- initializeSparseMatrix(z)
