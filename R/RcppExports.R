@@ -21,20 +21,44 @@ filter_cells <- function(x, discard) {
     .Call('_scran_chan_filter_cells', PACKAGE = 'scran.chan', x, discard)
 }
 
-initialize_from_blocks <- function(nr, nc, is_integer) {
-    .Call('_scran_chan_initialize_from_blocks', PACKAGE = 'scran.chan', nr, nc, is_integer)
+initialize_from_CSC <- function(x, i, p, nrow, ncol, forced) {
+    .Call('_scran_chan_initialize_from_CSC', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, forced)
 }
 
-add_new_block <- function(ptr0, rows, columns, values, nr_block, nc, is_integer) {
-    .Call('_scran_chan_add_new_block', PACKAGE = 'scran.chan', ptr0, rows, columns, values, nr_block, nc, is_integer)
+initialize_from_CSR <- function(x, i, p, nrow, ncol, forced) {
+    .Call('_scran_chan_initialize_from_CSR', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, forced)
 }
 
-finalize_all_blocks <- function(ptr0, nc, is_integer) {
-    .Call('_scran_chan_finalize_all_blocks', PACKAGE = 'scran.chan', ptr0, nc, is_integer)
+initialize_from_blocks_CSC <- function(nr, nc, is_integer) {
+    .Call('_scran_chan_initialize_from_blocks_CSC', PACKAGE = 'scran.chan', nr, nc, is_integer)
+}
+
+initialize_from_blocks_CSR <- function(nr, nc, is_integer) {
+    .Call('_scran_chan_initialize_from_blocks_CSR', PACKAGE = 'scran.chan', nr, nc, is_integer)
+}
+
+add_new_block_CSC <- function(ptr0, rows, columns, values, ncolumns) {
+    .Call('_scran_chan_add_new_block_CSC', PACKAGE = 'scran.chan', ptr0, rows, columns, values, ncolumns)
+}
+
+add_new_block_CSR <- function(ptr0, rows, columns, values, nrows) {
+    .Call('_scran_chan_add_new_block_CSR', PACKAGE = 'scran.chan', ptr0, rows, columns, values, nrows)
+}
+
+finalize_all_blocks_CSC <- function(ptr0) {
+    .Call('_scran_chan_finalize_all_blocks_CSC', PACKAGE = 'scran.chan', ptr0)
+}
+
+finalize_all_blocks_CSR <- function(ptr0) {
+    .Call('_scran_chan_finalize_all_blocks_CSR', PACKAGE = 'scran.chan', ptr0)
 }
 
 initialize_from_dgCMatrix <- function(x, i, p, nrow, ncol) {
     .Call('_scran_chan_initialize_from_dgCMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol)
+}
+
+initialize_from_dgRMatrix <- function(x, i, p, nrow, ncol) {
+    .Call('_scran_chan_initialize_from_dgRMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol)
 }
 
 log_norm_counts <- function(x, size_factors) {

@@ -39,10 +39,10 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
     NC <- ncol(x)
 
     if (is(x, "dgCMatrix")) {
-        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy)
+        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, NR, NC)#, no_copy=no.sparse.copy)
 
     } else if (is(x, "dgRMatrix")) {
-        ptr <- initialize_from_dgRMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy)
+        ptr <- initialize_from_dgRMatrix(x@x, x@i, x@p, NR, NC)#, no_copy=no.sparse.copy)
 
     } else if (is(x, "H5SparseMatrix")) {
         # Special case handling of sparse HDF5 matrices.

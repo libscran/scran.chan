@@ -7,8 +7,8 @@
 #include <type_traits>
 
 template<bool byrow, class Incoming>
-SEXP create_integer_matrix(const Incoming& x0, std::vector<int>& i_, std::vector<int>& p_, int nrow, int ncol) {
-    auto maxed = (x0.size() ? *std::max0element(x0.begin(), x0.end()) : 0);
+SEXP create_integer_matrix(const Incoming& x0, std::vector<int> i_, std::vector<int> p_, int nrow, int ncol) {
+    auto maxed = (x0.size() ? *std::max_element(x0.begin(), x0.end()) : 0);
     auto mined = (x0.size() ? *std::min_element(x0.begin(), x0.end()) : 0);
 
     if (mined < 0) {
@@ -38,13 +38,13 @@ SEXP initialize_with_copy(Rcpp::RObject x, Rcpp::IntegerVector i, Rcpp::IntegerV
 
     if (x.sexp_type() == INTSXP) {
         Rcpp::IntegerVector x0(x);
-        return create_integer_matrix(x0, i_, p_, nrow, ncol);
+        return create_integer_matrix<byrow>(x0, std::move(i_), std::move(p_), nrow, ncol);
 
     } else if (x.sexp_type() == REALSXP) {
         Rcpp::NumericVector x0(x);
 
         if (forced) {
-            return create_integer_matrix(x0, i_, p_, nrow, ncol);
+            return create_integer_matrix<byrow>(x0, std::move(i_), std::move(p_), nrow, ncol);
 
         } else {
             std::vector<double> x_(x0.begin(), x0.end());
