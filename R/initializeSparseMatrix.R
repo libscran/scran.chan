@@ -34,14 +34,39 @@
 #' str(stuff2)
 #' 
 #' @export
-initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, num.threads=1) {
-    if (is(x, "dgCMatrix") && no.sparse.copy) {
-        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, nrow(x), ncol(x))
+initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, by.column=TRUE, num.threads=1) {
+    NR <- nrow(x)
+    NC <- ncol(x)
+
+    if (is(x, "dgCMatrix")) {
+        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy)
+
+    } else if (is(x, "dgRMatrix")) {
+        ptr <- initialize_from_dgRMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy)
+
+    } else if (is(x, "H5SparseMatrix")) {
+        # Special case handling of sparse HDF5 matrices.
+        s <- DelayedArray::seed(M)
+        
+        indptrs <- s@indptr_ranges
+        p <- cumsum(c(0, indptrs$width))
+        x <- rhdf5::h5read(s@filepath, paste0(s@group, "/data"))
+        i <- rhdf5::h5read(s@filepath, paste0(s@group, "/indices"))
+
+        if (is(s, "CSC_H5SparseMatrixSeed")) {
+            ptr <- initialize_from_CSC(x, i, p, NR, NC, force.integer)
+        } else {
+            ptr <- initialize_from_CSR(x, i, p, NR, NC, force.integer)
+        }
 
     } else {
-        # We iterate across row-wise blocks and add them bit by bit to the
+        # We iterate across blocks and add them bit by bit to the
         # matrix so that we never have to load the entire matrix into memory.
-        grid <- DelayedArray::rowAutoGrid(x)
+        if (by.column) {
+            grid <- DelayedArray::colAutoGrid(x)
+        } else {
+            grid <- DelayedArray::rowAutoGrid(x)
+        }
 
         i <- 0L
         iterator <- function() {
@@ -53,19 +78,35 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, n
             }
         }
 
-        extractor <- function(vp) {
-            # Doing the sort here, so we can exploit compute in multiple cores.
-            output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
-            nzi <- DelayedArray::nzindex(output)
-            o <- order(nzi[,1], nzi[,2])
-            list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
+        # Doing the sort inside the extractor, so we can exploit compute in multiple cores.
+        if (by.column) {
+            extractor <- function(vp) {
+                output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
+                nzi <- DelayedArray::nzindex(output)
+                o <- order(nzi[,2], nzi[,1])
+                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
+            }
+        } else {
+            extractor <- function(vp) {
+                output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
+                nzi <- DelayedArray::nzindex(output)
+                o <- order(nzi[,1], nzi[,2])
+                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
+            }
         }
 
-        NC <- ncol(x)
         is.int <- DelayedArray::type(x) == "integer" || force.integer
-        ptr0 <- initialize_from_blocks(nrow(x), NC, is.int)
-        reduction <- function(ignore, block) {
-            add_new_block(ptr0, block$row, block$column, block$value, block$nrow, NC, is.int)
+
+        if (by.column) {
+            ptr0 <- initialize_from_blocks_CSC(NR, NC, is.int)
+            reduction <- function(ignore, block) {
+                add_new_block_CSC(ptr0, block$row, block$column, block$value, block$ncol)
+            }
+        } else {
+            ptr0 <- initialize_from_blocks_CSR(NR, NC, is.int)
+            reduction <- function(ignore, block) {
+                add_new_block_CSR(ptr0, block$row, block$column, block$value, block$nrow)
+            }
         }
 
         if (num.threads==1) {
@@ -76,8 +117,12 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, n
             BPPARAM <- BiocParallel::MulticoreParam(num.threads)
             BiocParallel::bpiterate(iterator, FUN=extractor, REDUCE=reduction, init=NULL, reduce.in.order=TRUE, BPPARAM=BPPARAM)
         }
-        
-        ptr <- finalize_all_blocks(ptr0, NC, is.int)
+       
+        if (by.column) {
+            ptr <- finalize_all_blocks_CSC(ptr0)
+        } else {
+            ptr <- finalize_all_blocks_CSR(ptr0)
+        }
     }
 
     list(pointer=ptr, rownames=rownames(x), colnames=colnames(x))

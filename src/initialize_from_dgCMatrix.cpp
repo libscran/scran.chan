@@ -43,4 +43,11 @@ SEXP initialize_from_dgCMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcp
     return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false));
 }
 
-
+//[[Rcpp::export(rng=false)]]
+SEXP initialize_from_dgRMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol) {
+    RcppVectorPlus x_(x);
+    RcppVectorPlus i_(i);
+    RcppVectorPlus p_(p);
+    typedef tatami::CompressedSparseRowMatrix<double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
+    return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false));
+}
