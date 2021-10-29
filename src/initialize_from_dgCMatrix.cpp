@@ -34,20 +34,55 @@ private:
     V vec;
 };
 
-//[[Rcpp::export(rng=false)]]
-SEXP initialize_from_dgCMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol) {
-    RcppVectorPlus x_(x);
-    RcppVectorPlus i_(i);
-    RcppVectorPlus p_(p);
-    typedef tatami::CompressedSparseColumnMatrix<double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
-    return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false));
+template<bool byrow>
+SEXP initialize_from_Matrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol, bool no_copy, bool force_integer) {
+    if (no_copy) {
+        RcppVectorPlus x_(x);
+        RcppVectorPlus i_(i);
+        RcppVectorPlus p_(p);
+        typedef tatami::CompressedSparseMatrix<byrow, double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
+        return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false));
+    } else {
+        std::vector<int> i_(i.begin(), i.end());
+        std::vector<int> p_(p.begin(), p.end());
+
+        if (force_integer) {
+            auto maxed = (x.size() ? *std::max_element(x.begin(), x.end()) : 0);
+            auto mined = (x.size() ? *std::min_element(x.begin(), x.end()) : 0);
+
+            if (mined < 0) {
+                throw std::runtime_error("expression values should be positive");
+
+            } else if (maxed <= std::numeric_limits<uint8_t>::max()) {
+                std::vector<uint8_t> x_(x.begin(), x.end());
+                typedef tatami::CompressedSparseMatrix<byrow, double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
+                return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_)));
+
+            } else if (maxed <= std::numeric_limits<uint16_t>::max()) {
+                std::vector<uint16_t> x_(x.begin(), x.end());
+                typedef tatami::CompressedSparseMatrix<byrow, double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
+                return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_)));
+
+            } else {
+                std::vector<int> x_(x.begin(), x.end());
+                typedef tatami::CompressedSparseMatrix<byrow, double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
+                return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_)));
+            }
+
+        } else {
+            std::vector<double> x_(x.begin(), x.end());
+            typedef tatami::CompressedSparseMatrix<byrow, double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
+            return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false));
+        }
+    }
 }
 
 //[[Rcpp::export(rng=false)]]
-SEXP initialize_from_dgRMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol) {
-    RcppVectorPlus x_(x);
-    RcppVectorPlus i_(i);
-    RcppVectorPlus p_(p);
-    typedef tatami::CompressedSparseRowMatrix<double, int, decltype(x_), decltype(i_), decltype(p_)> SparseMat;
-    return new_MatrixChan(new SparseMat(nrow, ncol, std::move(x_), std::move(i_), std::move(p_), false));
+SEXP initialize_from_dgCMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol, bool no_copy, bool force_integer) {
+    return initialize_from_Matrix<false>(x, i, p, nrow, ncol, no_copy, force_integer);
+}
+
+//[[Rcpp::export(rng=false)]]
+SEXP initialize_from_dgRMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol, bool no_copy, bool force_integer) {
+    return initialize_from_Matrix<true>(x, i, p, nrow, ncol, no_copy, force_integer);
 }

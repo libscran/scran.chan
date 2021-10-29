@@ -10,6 +10,8 @@
 #' @param no.sparse.copy Logical scalar indicating whether we should avoid a copy when \code{x} is a dgCMatrix.
 #' This is more memory efficient if the data has already been loaded into memory.
 #' If \code{TRUE}, any setting of \code{force.integer} is ignored.
+#' @param by.column Logical scalar indicating whether we should load \code{x} into column-major format.
+#' Only applicable when \code{x} is not a dgCMatrix or a H5SparseMatrix, which define their own format.
 #' @param num.threads Integer scalar specifying the number of threads to use when initializing \code{x}.
 #' For dgCMatrix inputs, this is only relevant when \code{no.sparse.copy = FALSE}.
 #'
@@ -32,6 +34,10 @@
 #' z <- DelayedArray::DelayedArray(y)
 #' stuff2 <- initializeSparseMatrix(z)
 #' str(stuff2)
+#'
+#' # Row-major initialization:
+#' stuff2 <- initializeSparseMatrix(z, by.column=FALSE)
+#' str(stuff2)
 #' 
 #' @export
 initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, by.column=TRUE, num.threads=1) {
@@ -39,10 +45,10 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
     NC <- ncol(x)
 
     if (is(x, "dgCMatrix")) {
-        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, NR, NC)#, no_copy=no.sparse.copy)
+        ptr <- initialize_from_dgCMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy, force_integer=force.integer)
 
     } else if (is(x, "dgRMatrix")) {
-        ptr <- initialize_from_dgRMatrix(x@x, x@i, x@p, NR, NC)#, no_copy=no.sparse.copy)
+        ptr <- initialize_from_dgRMatrix(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy, force_integer=force.integer)
 
     } else if (is(x, "H5SparseMatrix")) {
         # Special case handling of sparse HDF5 matrices.
@@ -84,7 +90,7 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
                 output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
                 nzi <- DelayedArray::nzindex(output)
                 o <- order(nzi[,2], nzi[,1])
-                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
+                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], ncol=ncol(output))
             }
         } else {
             extractor <- function(vp) {

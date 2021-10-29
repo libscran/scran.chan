@@ -53,12 +53,12 @@ finalize_all_blocks_CSR <- function(ptr0) {
     .Call('_scran_chan_finalize_all_blocks_CSR', PACKAGE = 'scran.chan', ptr0)
 }
 
-initialize_from_dgCMatrix <- function(x, i, p, nrow, ncol) {
-    .Call('_scran_chan_initialize_from_dgCMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol)
+initialize_from_dgCMatrix <- function(x, i, p, nrow, ncol, no_copy, force_integer) {
+    .Call('_scran_chan_initialize_from_dgCMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, force_integer)
 }
 
-initialize_from_dgRMatrix <- function(x, i, p, nrow, ncol) {
-    .Call('_scran_chan_initialize_from_dgRMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol)
+initialize_from_dgRMatrix <- function(x, i, p, nrow, ncol, no_copy, force_integer) {
+    .Call('_scran_chan_initialize_from_dgRMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, force_integer)
 }
 
 log_norm_counts <- function(x, size_factors) {

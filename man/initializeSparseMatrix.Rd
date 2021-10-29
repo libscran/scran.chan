@@ -8,6 +8,7 @@ initializeSparseMatrix(
   x,
   force.integer = TRUE,
   no.sparse.copy = TRUE,
+  by.column = TRUE,
   num.threads = 1
 )
 }
@@ -48,6 +49,10 @@ str(stuff)
 # Trying with a DelayedArray:
 z <- DelayedArray::DelayedArray(y)
 stuff2 <- initializeSparseMatrix(z)
+str(stuff2)
+
+# Row-major initialization:
+stuff2 <- initializeSparseMatrix(z, by.column=FALSE)
 str(stuff2)
 
 }
