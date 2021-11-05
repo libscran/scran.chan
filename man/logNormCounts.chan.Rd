@@ -4,13 +4,16 @@
 \alias{logNormCounts.chan}
 \title{Log-normalize the counts}
 \usage{
-logNormCounts.chan(x, size.factors = NULL)
+logNormCounts.chan(x, size.factors = NULL, batch = NULL)
 }
 \arguments{
 \item{x}{A list of matrix data like that produced by \code{\link{initializeSparseMatrix}}.}
 
 \item{size.factors}{A numeric vector of length equal to the number of cells in \code{x},
 containing positive size factors for all cells.}
+
+\item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
+Alternatively \code{NULL} if all cells belong to the same batch.}
 }
 \value{
 A list like \code{x} where the count matrix is replaced with a log-expression matrix.

@@ -61,16 +61,16 @@ initialize_from_dgRMatrix <- function(x, i, p, nrow, ncol, no_copy, force_intege
     .Call('_scran_chan_initialize_from_dgRMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, force_integer)
 }
 
-log_norm_counts <- function(x, size_factors) {
-    .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors)
+log_norm_counts <- function(x, size_factors, batch) {
+    .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors, batch)
 }
 
-model_gene_var <- function(x, span, nthreads) {
-    .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, span, nthreads)
+model_gene_var <- function(x, batch, span, nthreads) {
+    .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, batch, span, nthreads)
 }
 
-per_cell_qc_filters <- function(sums, detected, subsets, nmads) {
-    .Call('_scran_chan_per_cell_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, nmads)
+per_cell_qc_filters <- function(sums, detected, subsets, batch, nmads) {
+    .Call('_scran_chan_per_cell_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, batch, nmads)
 }
 
 per_cell_qc_metrics <- function(x, subsets, nthreads) {
@@ -113,7 +113,7 @@ run_umap <- function(init) {
     .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', init)
 }
 
-score_markers <- function(x, groups) {
-    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups)
+score_markers <- function(x, groups, batch) {
+    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch)
 }
 

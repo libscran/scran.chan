@@ -4,7 +4,7 @@
 \alias{perCellQCFilters.chan}
 \title{Compute per-cell QC metrics}
 \usage{
-perCellQCFilters.chan(sums, detected, subsets, nmads = 3)
+perCellQCFilters.chan(sums, detected, subsets, batch = NULL, nmads = 3)
 }
 \arguments{
 \item{sums}{Numeric vector containing the sum of counts for each cell.}
@@ -12,6 +12,9 @@ perCellQCFilters.chan(sums, detected, subsets, nmads = 3)
 \item{detected}{Integer vector containing the total number of detected features for each cell.}
 
 \item{subsets}{List of numeric vectors containing the proportion of counts assigned to each feature subset in each cell.}
+
+\item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
+Alternatively \code{NULL} if all cells belong to the same batch.}
 
 \item{nmads}{Numeric scalar specifying the number of median absolute deviations to be used to detect outliers.}
 }
@@ -28,7 +31,7 @@ A list containing:
     All logical vectors are of length equal to the number of cells.
     \item \code{thresholds}, a list containing:
     \itemize{
-        \item \code{sums}, a numeric vector containing the minimum threshold on the total count.
+        \item \code{sums}, a numeric vector containing the minimum threshold on the total count (in each batch, if \code{batch} is not \code{NULL}).
         \item \code{detected}, a numeric vector containing the minimum threshold on the number of detected features.
         \item \code{subsets}, a list of numeric vectors containing the maximum threshold on each feature subset proportion.
     }

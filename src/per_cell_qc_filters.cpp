@@ -1,8 +1,9 @@
 #include "Rcpp.h"
 #include "scran/quality_control/PerCellQCFilters.hpp"
+#include "ResolvedBatch.h"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List per_cell_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, double nmads) {
+Rcpp::List per_cell_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, Rcpp::Nullable<Rcpp::IntegerVector> batch, double nmads) {
     std::vector<const double*> in_sub_ptrs;
     std::vector<Rcpp::NumericVector> in_subsets;
     const size_t nsubs = subsets.size();
@@ -13,6 +14,9 @@ Rcpp::List per_cell_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector det
     for (const auto& s : in_subsets) {
         in_sub_ptrs.push_back(s.begin());
     }
+
+    auto batch_info = ResolvedBatch(batch);
+    auto bptr = batch_info.ptr;
 
     // Setting up the outputs.
     const size_t N = sums.size();
@@ -29,7 +33,8 @@ Rcpp::List per_cell_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector det
 
     scran::PerCellQCFilters qc;
     qc.set_nmads(nmads);
-    auto thresh = qc.run(N, 
+    auto thresh = qc.run_blocked(N, 
+        bptr,
         static_cast<const double*>(sums.begin()),
         static_cast<const int*>(detected.begin()),
         std::move(in_sub_ptrs),

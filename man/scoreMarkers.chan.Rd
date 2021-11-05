@@ -4,12 +4,34 @@
 \alias{scoreMarkers.chan}
 \title{Score marker genes}
 \usage{
-scoreMarkers.chan(x, groups)
+scoreMarkers.chan(x, groups, batch = NULL)
 }
 \arguments{
 \item{x}{A list of matrix data like that produced by \code{\link{logNormCounts.chan}}.}
 
 \item{groups}{A vector specifying the group assignment for each cell in \code{x}.}
+
+\item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
+Alternatively \code{NULL} if all cells belong to the same batch.}
+}
+\value{
+A list containing \code{statistics}, a list of data frame of marker statistics. 
+Each data frame corresponds to a group in \code{groups} and contains:
+\itemize{
+\item \code{mean}, the mean expression across all cells in the current group.
+\item \code{detected}, proportion of cells with detectable expression in the current group.
+\item \code{cohen.min}, the smallest Cohen's d across all pairwise comparisons involving the current group.
+\item \code{cohen.mean}, the mean Cohen's d across all pairwise comparisons involving the current group.
+\item \code{cohen.rank}, the minimum rank of the Cohen's d across all pairwise comparisons.
+\item \code{auc.min}, the smallest AUC across all pairwise comparisons involving the current group.
+\item \code{auc.mean}, the mean AUC across all pairwise comparisons involving the current group.
+\item \code{auc.rank}, the minimum rank of the AUC across all pairwise comparisons.
+}
+Data frames are sorted by \code{cohen.rank} by default,
+
+If \code{batch} is supplied, this list will also contain \code{per.batch}.
+This is a list containing \code{mean} and \code{detected}, each of which are lists of data frames containing the batch-specific statistics for each group.
+(In this case, \code{statistics} contains the averaged statistics for each gene across batches.)
 }
 \description{
 Score marker genes using a variety of effect sizes from pairwise comparisons.

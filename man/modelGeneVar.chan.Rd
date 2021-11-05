@@ -4,7 +4,7 @@
 \alias{modelGeneVar.chan}
 \title{Model per-gene variance}
 \usage{
-modelGeneVar.chan(x, span = 0.3, num.threads = 1)
+modelGeneVar.chan(x, span = 0.3, num.threads = 1, batch = NULL)
 }
 \arguments{
 \item{x}{A list containing the log-expression matrix, typically produced by \code{\link{logNormCounts.chan}}.}
@@ -12,9 +12,15 @@ modelGeneVar.chan(x, span = 0.3, num.threads = 1)
 \item{span}{Numeric scalar containing the span to use for LOWESS smoothing of the trend.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
+
+\item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
+Alternatively \code{NULL} if all cells belong to the same batch.}
 }
 \value{
-A data.frame of statistics for each gene in \code{x}.
+A list containing \code{statistics}, a data frame of statistics for each gene in \code{x}.
+
+If \code{batch} is supplied, this list will also contain \code{per.batch}, a list of data frames with statistics for each batch.
+(In that case, \code{statistics} contains the averaged statistics for each gene across batches.)
 }
 \description{
 Model the per-gene variance in log-expression values, accounting for the mean-variance trend.
@@ -25,7 +31,8 @@ x <- round(abs(rsparsematrix(1000, 100, 0.1) * 100))
 y <- initializeSparseMatrix(x)
 normed <- logNormCounts.chan(y)
 
-df <- modelGeneVar.chan(normed)
+dfl <- modelGeneVar.chan(normed)
+df <- dfl$statistics
 df[1:10,]
 plot(df$means, df$variances)
 points(df$means, df$fitted, col="red", pch=16, cex=0.5)

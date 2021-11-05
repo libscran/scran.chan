@@ -5,6 +5,8 @@
 #' @param sums Numeric vector containing the sum of counts for each cell.
 #' @param detected Integer vector containing the total number of detected features for each cell.
 #' @param subsets List of numeric vectors containing the proportion of counts assigned to each feature subset in each cell.
+#' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
+#' Alternatively \code{NULL} if all cells belong to the same batch.
 #' @param nmads Numeric scalar specifying the number of median absolute deviations to be used to detect outliers.
 #'
 #' @return A list containing:
@@ -19,7 +21,7 @@
 #'     All logical vectors are of length equal to the number of cells.
 #'     \item \code{thresholds}, a list containing:
 #'     \itemize{
-#'         \item \code{sums}, a numeric vector containing the minimum threshold on the total count.
+#'         \item \code{sums}, a numeric vector containing the minimum threshold on the total count (in each batch, if \code{batch} is not \code{NULL}).
 #'         \item \code{detected}, a numeric vector containing the minimum threshold on the number of detected features.
 #'         \item \code{subsets}, a list of numeric vectors containing the maximum threshold on each feature subset proportion.
 #'     }
@@ -42,9 +44,18 @@
 #' str(filters)
 #'
 #' @export
-perCellQCFilters.chan <- function(sums, detected, subsets, nmads=3) {
-    filters <- per_cell_qc_filters(sums, detected, subsets, nmads=nmads)
+perCellQCFilters.chan <- function(sums, detected, subsets, batch=NULL, nmads=3) {
+    batch <- transform_factor(batch)
+    filters <- per_cell_qc_filters(sums, detected, subsets, batch=batch$index, nmads=nmads)
+
     names(filters$filters$subsets) <- names(subsets)
     names(filters$thresholds$subsets) <- names(subsets)
+
+    names(filters$thresholds$sum) <- batch$names
+    names(filters$thresholds$detected) <- batch$names
+    for (i in seq_along(subsets)) {
+        names(filters$thresholds$subsets[[i]]) <- batch$names
+    }
+
     filters
 }

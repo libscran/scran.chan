@@ -1,9 +1,10 @@
 #include "scran/normalization/LogNormCounts.hpp"
 #include "Rcpp.h"
 #include "tatamize.h"
+#include "ResolvedBatch.h"
 
 //[[Rcpp::export(rng=false)]]
-SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors) {
+SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors, Rcpp::Nullable<Rcpp::IntegerVector> batch) {
     auto mat = extract_NumericMatrix_shared(x);
     scran::LogNormCounts norm;
 
@@ -15,5 +16,8 @@ SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors) {
         sf = tatami::column_sums(mat.get());
     }
 
-    return new_MatrixChan(norm.run(std::move(mat), std::move(sf)));
+    auto batch_info = ResolvedBatch(batch);
+    auto bptr = batch_info.ptr;
+
+    return new_MatrixChan(norm.run_blocked(std::move(mat), std::move(sf), bptr));
 }
