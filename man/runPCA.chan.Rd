@@ -22,6 +22,13 @@ runPCA.chan(
 If \code{NULL}, all features in \code{x} are used.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
+
+\item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
+Alternatively \code{NULL} if all cells belong to the same batch.}
+
+\item{batch.method}{String indicating how \code{batch} should be handled (if it is supplied).
+\code{"block"} is equivalent to linear regression on \code{x} prior to PCA,
+while \code{"weight"} will only weight each batch so that they contribute equally to the PCA.}
 }
 \value{
 List containing \code{components}, containing the top principal components (note, columns correspond to cells);
