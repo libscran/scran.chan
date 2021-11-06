@@ -36,21 +36,7 @@ perCellQCMetrics.chan <- function(x, subsets, num.threads = 1) {
 
     # Converting to the expected logical vector.
     subsets <- as.list(subsets)
-    for (i in seq_along(subsets)) {
-        current <- subsets[[i]]
-        if (is.logical(current)) {
-            stopifnot(identical(length(current), nr))
-        } else if (is.numeric(current)) {
-            stopifnot(min(current) >= 1 && max(current) <= nr)
-            tmp <- logical(nr)
-            tmp[current] <- TRUE
-            current <- tmp
-        } else if (is.character(current)) {
-            stopifnot(!is.null(x$rownames))
-            current <- x$rownames %in% current
-        }
-        subsets[[i]] <- current
-    }
+    subsets <- lapply(subsets, to_logical, n=nr, names=x$rownames)
  
     # Slapping on some names.
     output <- per_cell_qc_metrics(x$pointer, subsets, nthreads=num.threads)
