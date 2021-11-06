@@ -25,6 +25,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(scran)
 
 FetchContent_Declare(
+  mnncorrect 
+  GIT_REPOSITORY https://github.com/LTLA/CppMnnCorrect
+  GIT_TAG master
+)
+FetchContent_MakeAvailable(mnncorrect)
+
+FetchContent_Declare(
   qdtsne
   GIT_REPOSITORY https://github.com/LTLA/qdtsne
   GIT_TAG master
@@ -40,6 +47,6 @@ FetchContent_MakeAvailable(umappp)
 
 add_library(dummy INTERFACE)
 
-target_link_libraries(dummy INTERFACE scran qdtsne umappp igraph)
+target_link_libraries(dummy INTERFACE scran mnncorrect qdtsne umappp igraph)
 
 set_property(TARGET igraph PROPERTY POSITION_INDEPENDENT_CODE ON)
