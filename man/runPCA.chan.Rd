@@ -4,7 +4,14 @@
 \alias{runPCA.chan}
 \title{Principal components analysis}
 \usage{
-runPCA.chan(x, num.comp = 50, subset = NULL, num.threads = 1)
+runPCA.chan(
+  x,
+  num.comp = 50,
+  subset = NULL,
+  num.threads = 1,
+  batch = NULL,
+  batch.method = c("block", "weight")
+)
 }
 \arguments{
 \item{x}{A list containing a log-expression matrix like that produced by \code{\link{logNormCounts.chan}}.}
@@ -31,6 +38,11 @@ normed <- logNormCounts.chan(y)
 
 pcs <- runPCA.chan(normed)
 barplot(pcs$prop.variance)
+
+# Handling batch effects by blocking (i.e., regression)
+# or by weighting to equalize contributions. 
+b <- sample(1:3, ncol(x), replace=TRUE)
+blocked <- runPCA.chan(normed, bl
 
 }
 \author{
