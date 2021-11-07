@@ -66,7 +66,7 @@ quickBasicAnalysis <- function(x,
     x <- logNormCounts.chan(x, sf)
 
     results$variances <- modelGeneVar.chan(x, span = trend.span, num.threads=num.threads)
-    keep <- rank(-results$variances$residuals, ties.method="first") <= hvg.num
+    keep <- rank(-results$variances$statistics$residuals, ties.method="first") <= hvg.num
     results$variances$keep <- keep
 
     results$pca <- runPCA.chan(x, num.comp=pca.num, subset=keep, num.threads=num.threads)

@@ -35,7 +35,7 @@ modelGeneVar.chan <- function(x, span = 0.3, num.threads = 1, batch=NULL) {
     if (!is.null(batch$index)) {
         names(output$per.batch) <- batch$names
         for (i in seq_along(output$per.batch)) {
-            names(output$per.batch[i]) <- x$rownames
+            rownames(output$per.batch[[i]]) <- x$rownames
         }
     }
 
