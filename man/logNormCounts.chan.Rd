@@ -4,7 +4,12 @@
 \alias{logNormCounts.chan}
 \title{Log-normalize the counts}
 \usage{
-logNormCounts.chan(x, size.factors = NULL, batch = NULL)
+logNormCounts.chan(
+  x,
+  size.factors = NULL,
+  batch = NULL,
+  batch.mode = c("lowest", "perbatch")
+)
 }
 \arguments{
 \item{x}{A list of matrix data like that produced by \code{\link{initializeSparseMatrix}}.}
@@ -14,6 +19,10 @@ containing positive size factors for all cells.}
 
 \item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 Alternatively \code{NULL} if all cells belong to the same batch.}
+
+\item{batch.mode}{String indicating how \code{batch} should be handled.
+If \code{"lowest"}, we downscale to the coverage of the lowest batch.
+If \code{"perblock"}, we scale each batch to a mean of 1.}
 }
 \value{
 A list like \code{x} where the count matrix is replaced with a log-expression matrix.

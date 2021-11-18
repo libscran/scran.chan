@@ -4,9 +4,13 @@
 #include "ResolvedBatch.h"
 
 //[[Rcpp::export(rng=false)]]
-SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors, Rcpp::Nullable<Rcpp::IntegerVector> batch) {
+SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors, Rcpp::Nullable<Rcpp::IntegerVector> batch, std::string batch_mode) {
     auto mat = extract_NumericMatrix_shared(x);
+
     scran::LogNormCounts norm;
+    if (batch_mode == "perblock") {
+        norm.set_block_mode(scran::CenterSizeFactors::PER_BLOCK);
+    }
 
     std::vector<double> sf;
     if (size_factors.isNotNull()) {

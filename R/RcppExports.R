@@ -65,8 +65,8 @@ initialize_from_dgRMatrix <- function(x, i, p, nrow, ncol, no_copy, force_intege
     .Call('_scran_chan_initialize_from_dgRMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, force_integer)
 }
 
-log_norm_counts <- function(x, size_factors, batch) {
-    .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors, batch)
+log_norm_counts <- function(x, size_factors, batch, batch_mode) {
+    .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors, batch, batch_mode)
 }
 
 mnn_correct <- function(x, batch, k, nmads) {
