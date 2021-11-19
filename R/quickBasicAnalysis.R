@@ -61,9 +61,8 @@ quickBasicAnalysis <- function(x,
     x <- filterCells.chan(x, results$qc.discard)
 
     sf <- qc.metrics$sums[!qc.filters$filters$overall]
-    sf <- sf/mean(sf)
-    results$size.factors <- sf
     x <- logNormCounts.chan(x, sf)
+    results$size.factors <- x$size.factors
 
     results$variances <- modelGeneVar.chan(x, span = trend.span, num.threads=num.threads)
     keep <- rank(-results$variances$statistics$residuals, ties.method="first") <= hvg.num
