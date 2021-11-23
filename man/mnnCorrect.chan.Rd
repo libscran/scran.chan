@@ -10,8 +10,7 @@ mnnCorrect.chan(x, batch, k = 15, nmads = 3)
 \item{x}{Numeric matrix where rows are dimensions and columns are cells,
 typically generated from \code{\link{runPCA.chan}}.}
 
-\item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
-Alternatively \code{NULL} if all cells belong to the same batch.}
+\item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.}
 
 \item{k}{Integer scalar specifying the number of neighbors to use when identifying MNN pairs.}
 

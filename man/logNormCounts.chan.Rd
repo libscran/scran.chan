@@ -8,7 +8,7 @@ logNormCounts.chan(
   x,
   size.factors = NULL,
   batch = NULL,
-  batch.mode = c("lowest", "perbatch")
+  batch.mode = c("lowest", "perblock")
 )
 }
 \arguments{
