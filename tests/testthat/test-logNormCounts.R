@@ -8,7 +8,7 @@ test_that("logNormCounts works as expected in basic usage", {
     y <- initializeSparseMatrix(x)
     normed <- logNormCounts.chan(y)
 
-    expected <- colSums(x)
+    expected <- Matrix::colSums(x)
     expected <- expected / mean(expected)
     expect_equal(expected, normed$size.factors)
 
@@ -31,7 +31,7 @@ test_that("logNormCounts works as expected when dealing with blocks", {
     block <- sample(3, ncol(x), replace=TRUE)
     normed <- logNormCounts.chan(y, batch=block)
 
-    expected <- colSums(x)
+    expected <- Matrix::colSums(x)
     scale <- min(vapply(split(expected, block), mean, 0))
     expected <- expected / scale
     expect_equal(expected, normed$size.factors)
@@ -43,7 +43,7 @@ test_that("logNormCounts works as expected when dealing with blocks", {
 
     # Trying again with the other batch mode.
     normed <- logNormCounts.chan(y, batch=block, batch.mode="perblock")
-    expected <- colSums(x)
+    expected <- Matrix::colSums(x)
     scale <- vapply(split(expected, factor(block, seq_len(3))), mean, 0)
     expected <- expected / unname(scale)[block]
     expect_equal(expected, normed$size.factors)
