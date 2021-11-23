@@ -1,5 +1,4 @@
 *.swp
 *.so
 *.o
-src/libscran
-src/static/build
+src/dependencies/build
