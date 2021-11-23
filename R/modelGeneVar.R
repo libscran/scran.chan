@@ -28,7 +28,7 @@
 #' 
 #' @export
 modelGeneVar.chan <- function(x, span = 0.3, num.threads = 1, batch=NULL) {
-    batch <- transform_factor(batch)
+    batch <- transform_factor(batch, n = tatami_ncol(x))
     output <- model_gene_var(x$pointer, span, nthreads=num.threads, batch=batch$index)
 
     rownames(output$statistics) <- x$rownames

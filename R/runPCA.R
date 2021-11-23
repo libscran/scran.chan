@@ -50,7 +50,7 @@ runPCA.chan <- function(x, num.comp=50, subset=NULL, num.threads=1, batch=NULL, 
         run_pca(x$pointer, num.comp, subset, nthreads=num.threads)
     } else {
         batch.method <- match.arg(batch.method)
-        batch <- transform_factor(batch)
+        batch <- transform_factor(batch, n = tatami_ncol(x))
 
         if (batch.method == "block") {
             run_blocked_pca(x$pointer, num.comp, batch$index, subset, nthreads=num.threads)

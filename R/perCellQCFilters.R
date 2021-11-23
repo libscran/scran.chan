@@ -45,7 +45,7 @@
 #'
 #' @export
 perCellQCFilters.chan <- function(sums, detected, subsets, batch=NULL, nmads=3) {
-    batch <- transform_factor(batch)
+    batch <- transform_factor(batch, n = length(sums))
     filters <- per_cell_qc_filters(sums, detected, subsets, batch=batch$index, nmads=nmads)
 
     names(filters$filters$subsets) <- names(subsets)

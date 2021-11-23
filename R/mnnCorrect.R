@@ -5,7 +5,6 @@
 #' @param x Numeric matrix where rows are dimensions and columns are cells,
 #' typically generated from \code{\link{runPCA.chan}}.
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
-#' Alternatively \code{NULL} if all cells belong to the same batch.
 #' @param k Integer scalar specifying the number of neighbors to use when identifying MNN pairs.
 #' @param nmads Numeric scalar specifying the number of MADs to use when computing correction vectors.
 #'
@@ -28,7 +27,7 @@
 #'
 #' @export
 mnnCorrect.chan <- function(x, batch, k=15, nmads=3) {
-    batch <- transform_factor(batch)
+    batch <- transform_factor(batch, n = ncol(x))
     output <- mnn_correct(x, batch$index, k=k, nmads=nmads)
     output$merge.order <- batch$names[output$merge.order + 1L]
     output

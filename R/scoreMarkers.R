@@ -40,8 +40,8 @@
 #'
 #' @export
 scoreMarkers.chan <- function(x, groups, batch=NULL) {
-    groups <- transform_factor(groups)
-    batch <- transform_factor(batch)
+    groups <- transform_factor(groups, n = tatami_ncol(x))
+    batch <- transform_factor(batch, n = tatami_ncol(x))
     output <- score_markers(x$pointer, groups$index, batch$index)
 
     formatted <- vector("list", length(groups$names))

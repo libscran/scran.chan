@@ -1,8 +1,19 @@
-transform_factor <- function(batch) {
-    if (is.null(batch)) {
+tatami_nrow <- function(x) {
+    tatami_dim(x$pointer)[1]
+}
+
+tatami_ncol <- function(x) {
+    tatami_dim(x$pointer)[2]
+}
+
+transform_factor <- function(f, n = NULL) {
+    if (is.null(f)) {
         list(index=NULL, names=NULL)
     } else {
-        f <- factor(batch)
+        if (!is.null(n)) {
+            stopifnot(length(f) == n, !anyNA(f))
+        }
+        f <- factor(f)
         list(index=as.integer(f) - 1L, names=levels(f))
     }
 }

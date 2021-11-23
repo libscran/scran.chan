@@ -24,7 +24,11 @@
 #'
 #' @export
 logNormCounts.chan <- function(x, size.factors=NULL, batch=NULL, batch.mode=c("lowest", "perblock")) {
-    batch <- transform_factor(batch)
+    batch <- transform_factor(batch, n = tatami_ncol(x))
+    if (!is.null(size.factors)) {
+        stopifnot(tatami_ncol(x) == length(size.factors))
+    }
+
     norm <- log_norm_counts(x$pointer, size.factors, batch=batch$index, batch_mode=match.arg(batch.mode))
     x$pointer <- norm$pointer
     x$size.factors <- norm$size_factors
