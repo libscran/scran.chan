@@ -14,7 +14,7 @@
 #endif
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch) {
+Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, double lfc) {
 #ifdef _openmp
     omp_set_num_threads(nthreads);
 #endif
@@ -68,6 +68,7 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
     }
 
     scran::ScoreMarkers runner;
+    runner.set_threshold(lfc);
     runner.run_blocked(mat, static_cast<const int*>(groups.begin()), bptr, std::move(mptrs), std::move(dptrs), std::move(cptrs), std::move(aptrs));
 
     // Organizing the output.

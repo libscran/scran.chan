@@ -6,6 +6,7 @@
 #' @param groups A vector specifying the group assignment for each cell in \code{x}.
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 #' Alternatively \code{NULL} if all cells belong to the same batch.
+#' @param lfc Non-negative numeric scalar specifying the log-fold change threshold to use.
 #'
 #' @return A list containing \code{statistics}, a list of data frame of marker statistics. 
 #' Each data frame corresponds to a group in \code{groups} and contains:
@@ -39,10 +40,10 @@
 #' head(markers[[1]])
 #'
 #' @export
-scoreMarkers.chan <- function(x, groups, batch=NULL) {
+scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0) {
     groups <- transform_factor(groups, n = tatami_ncol(x))
     batch <- transform_factor(batch, n = tatami_ncol(x))
-    output <- score_markers(x$pointer, groups$index, batch$index)
+    output <- score_markers(x$pointer, groups$index, batch$index, lfc=lfc)
 
     formatted <- vector("list", length(groups$names))
     for (i in seq_along(formatted)) {
