@@ -29,7 +29,7 @@ Each data frame corresponds to a group in \code{groups} and contains:
 \item \code{auc.mean}, the mean AUC across all pairwise comparisons involving the current group.
 \item \code{auc.rank}, the minimum rank of the AUC across all pairwise comparisons.
 }
-Data frames are sorted by \code{cohen.rank} by default,
+Data frames are sorted by \code{cohen.rank} by default.
 
 If \code{batch} is supplied, this list will also contain \code{per.batch}.
 This is a list containing \code{mean} and \code{detected}, each of which are lists of data frames containing the batch-specific statistics for each group.
@@ -37,6 +37,16 @@ This is a list containing \code{mean} and \code{detected}, each of which are lis
 }
 \description{
 Score marker genes using a variety of effect sizes from pairwise comparisons.
+}
+\details{
+\code{min} is the most stringent summary statistic for identifying upregulated genes, 
+as a gene must be strongly upregulated in every pairwise comparison to achieve a large \code{min} effect.
+\code{rank} is the most generous as a gene may be highly ranked in any one pairwise comparison to achieve a high \code{rank},
+and is useful for identifying the combination of best genes that distinguish a cluster from the others.
+\code{mean} lies in between these two extremes.
+
+Cohen's d and the AUC are generally give quite similar rankings,
+but both are reported for some verisimilitude.
 }
 \examples{
 # Mocking a matrix:
@@ -51,4 +61,9 @@ markers <- scoreMarkers.chan(normed, g)
 names(markers)
 head(markers[[1]])
 
+}
+\references{
+Lun A (2021).
+scran::ScoreMarkers Class Reference.
+\url{https://ltla.github.io/libscran/classscran_1_1ScoreMarkers.html}
 }
