@@ -13,6 +13,7 @@
 #' @param markers.pref Character vector specifying the preference of clustering to use for marker calculation.
 #' By default, if both graph-based and k-means clusters are available, markers are computed for the former;
 #' otherwise it will use whatever clustering is available from the parameters in \code{...}.
+#' @param markers.lfc Log-fold change threshold, see \code{?\link{scoreMarkers.chan}} for details.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return A list containing the elements:
@@ -50,6 +51,7 @@ quickBasicAnalysis <- function(x,
     pca.num=25,
     ...,
     markers.pref=c("snn", "kmeans"),
+    markers.lfc=0,
     num.threads=1
 ) {
     x <- initializeSparseMatrix(x, num.threads=1)
@@ -82,7 +84,7 @@ quickBasicAnalysis <- function(x,
             clusters <- downstreams$cluster.kmeans$clusters
         }
         if (!is.null(clusters)) {
-            results$markers <- scoreMarkers.chan(x, clusters)
+            results$markers <- scoreMarkers.chan(x, clusters, lfc=markers.lfc)
             break
         }
     }
