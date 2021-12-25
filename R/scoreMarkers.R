@@ -13,6 +13,8 @@
 #' \itemize{
 #' \item \code{mean}, the mean expression across all cells in the current group.
 #' \item \code{detected}, proportion of cells with detectable expression in the current group.
+#' \item \code{lfc}, the mean of the log-fold changes in expression compared to other groups.
+#' \item \code{delta.detected}, the mean of the difference in the detected proportions compared to other groups.
 #' \item \code{cohen.min}, the smallest Cohen's d across all pairwise comparisons involving the current group.
 #' \item \code{cohen.mean}, the mean Cohen's d across all pairwise comparisons involving the current group.
 #' \item \code{cohen.rank}, the minimum rank of the Cohen's d across all pairwise comparisons.
@@ -47,7 +49,7 @@
 #' g <- sample(4, ncol(x), replace=TRUE)
 #' markers <- scoreMarkers.chan(normed, g)
 #' names(markers)
-#' head(markers[[1]])
+#' head(markers$statistics[[1]])
 #'
 #' @references
 #' Lun A (2021).

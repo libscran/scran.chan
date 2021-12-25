@@ -26,7 +26,7 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
     auto bptr = batch_info.ptr;
     size_t nbatches = batch_info.number();
 
-    // Setting up all the damn output vectors.
+    // Setting up all the damn output vectors (I) - for mean & detected
     std::vector<std::vector<Rcpp::NumericVector> > means(ngroups), detected(ngroups);
     for (int g = 0; g < ngroups; ++g) {
         means[g].reserve(nbatches);
@@ -43,6 +43,20 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
         dptrs[g] = vector_to_pointers<double>(detected[g]);
     }
 
+    // Setting up all the damn output vectors (II) - for log-FC & delta-detected
+    std::vector<Rcpp::NumericVector> logfc, delta_detected;
+    std::vector<std::vector<double*> > lptrs(scran::differential_analysis::n_summaries);
+    lptrs[scran::differential_analysis::MEAN].resize(ngroups);
+    auto ddptrs = lptrs;
+
+    for (int g = 0; g < ngroups; ++g) {
+        logfc.emplace_back(NR);
+        lptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(logfc.back().begin());
+        delta_detected.emplace_back(NR);
+        ddptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(delta_detected.back().begin());
+    }
+
+    // Setting up all the damn output vectors (III) - Cohen & AUC
     std::vector<std::vector<Rcpp::NumericVector> > cohens(ngroups), aucs(ngroups);
     std::vector<std::vector<double*> > cptrs(scran::differential_analysis::n_summaries);
     cptrs[scran::differential_analysis::MIN].resize(ngroups);
@@ -67,9 +81,10 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
         aptrs[scran::differential_analysis::MIN_RANK][g] = static_cast<double*>(aucs[g][2].begin());
     }
 
+    // Running the marker scoring.
     scran::ScoreMarkers runner;
     runner.set_threshold(lfc);
-    runner.run_blocked(mat, static_cast<const int*>(groups.begin()), bptr, std::move(mptrs), std::move(dptrs), std::move(cptrs), std::move(aptrs));
+    runner.run_blocked(mat, static_cast<const int*>(groups.begin()), bptr, std::move(mptrs), std::move(dptrs), std::move(cptrs), std::move(aptrs), std::move(lptrs), std::move(ddptrs));
 
     // Organizing the output.
     Rcpp::List output(ngroups), raw_means(ngroups), raw_detected(ngroups);
@@ -91,6 +106,8 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
         output[g] = Rcpp::DataFrame::create(
             Rcpp::Named("mean") = outmean,
             Rcpp::Named("detected") = outdet,
+            Rcpp::Named("logFC") = logfc[g],
+            Rcpp::Named("delta.detected") = delta_detected[g],
             Rcpp::Named("cohen.min") = cohens[g][0],
             Rcpp::Named("cohen.mean") = cohens[g][1],
             Rcpp::Named("cohen.rank") = cohens[g][2],
