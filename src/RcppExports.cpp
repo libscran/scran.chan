@@ -383,14 +383,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // initialize_umap
-SEXP initialize_umap(SEXP nnptr, int num_neighbors, int nthreads);
-RcppExport SEXP _scran_chan_initialize_umap(SEXP nnptrSEXP, SEXP num_neighborsSEXP, SEXP nthreadsSEXP) {
+SEXP initialize_umap(SEXP nnptr, int num_neighbors, double min_dist, int nthreads);
+RcppExport SEXP _scran_chan_initialize_umap(SEXP nnptrSEXP, SEXP num_neighborsSEXP, SEXP min_distSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
     Rcpp::traits::input_parameter< int >::type num_neighbors(num_neighborsSEXP);
+    Rcpp::traits::input_parameter< double >::type min_dist(min_distSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_umap(nnptr, num_neighbors, nthreads));
+    rcpp_result_gen = Rcpp::wrap(initialize_umap(nnptr, num_neighbors, min_dist, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -448,7 +449,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 4},
     {"_scran_chan_initialize_tsne", (DL_FUNC) &_scran_chan_initialize_tsne, 5},
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 2},
-    {"_scran_chan_initialize_umap", (DL_FUNC) &_scran_chan_initialize_umap, 3},
+    {"_scran_chan_initialize_umap", (DL_FUNC) &_scran_chan_initialize_umap, 4},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 1},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 4},
     {NULL, NULL, 0}
