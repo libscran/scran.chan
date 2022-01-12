@@ -9,9 +9,9 @@
 #' @param do.cluster.snn Logical scalar, should we perform graph-based clustering?
 #' @param do.cluster.kmeans Logical scalar, should we perform k-means clustering?
 #' @param tsne.perplexity Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.
-#' @param umap.num.neighbors Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.
+#' @param umap.num.neighbors,umap.min.dist Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.
 #' @param cluster.kmeans.k Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.
-#' @param cluster.snn.num.neighbors,cluster.snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
+#' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
 #' @return A list containing \code{"cluster.snn"}, \code{"umap"} and \code{"tsne"},
@@ -40,6 +40,7 @@ runAllDownstream <- function(x,
     do.cluster.kmeans=FALSE,
     tsne.perplexity=30, 
     umap.num.neighbors=15, 
+    umap.min.dist=0.01,
     cluster.snn.num.neighbors=10, 
     cluster.snn.method=c("multilevel", "leiden", "walktrap"), 
     cluster.snn.resolution=NULL, 
@@ -53,7 +54,7 @@ runAllDownstream <- function(x,
         tsne.init <- initialize_tsne(neighbors, tsne.perplexity, interpolate=-1, max_depth=7, nthreads=num.threads) # defaults from runTSNE.chan.
     }
     if (do.umap) {
-        umap.init <- initialize_umap(neighbors, umap.num.neighbors, num.threads)
+        umap.init <- initialize_umap(neighbors, umap.num.neighbors, umap.min.dist, num.threads)
     }
     if (do.cluster.snn) {
         cluster.snn.method <- match.arg(cluster.snn.method)

@@ -12,6 +12,7 @@ runAllDownstream(
   do.cluster.kmeans = FALSE,
   tsne.perplexity = 30,
   umap.num.neighbors = 15,
+  umap.min.dist = 0.01,
   cluster.snn.num.neighbors = 10,
   cluster.snn.method = c("multilevel", "leiden", "walktrap"),
   cluster.snn.resolution = NULL,
@@ -33,9 +34,9 @@ This is typically a matrix of principal components.}
 
 \item{tsne.perplexity}{Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.}
 
-\item{umap.num.neighbors}{Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.}
+\item{umap.num.neighbors, umap.min.dist}{Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.}
 
-\item{cluster.snn.num.neighbors, cluster.snn.resolution}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
+\item{cluster.snn.num.neighbors, cluster.snn.method, cluster.snn.resolution}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
 
 \item{cluster.kmeans.k}{Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.}
 

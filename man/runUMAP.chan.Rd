@@ -4,12 +4,14 @@
 \alias{runUMAP.chan}
 \title{Run UMAP}
 \usage{
-runUMAP.chan(x, num.neighbors = 15, num.threads = 1)
+runUMAP.chan(x, num.neighbors = 15, min.dist = 0.01, num.threads = 1)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
 \item{num.neighbors}{Integer scalar specifying the number of neighbors to use in the UMAP algorithm.}
+
+\item{min.dist}{Numeric scalar specifying the minimum distance between points.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
