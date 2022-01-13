@@ -57,3 +57,19 @@ test_that("initialization works correctly with H5SparseMatrices", {
     z <- initializeSparseMatrix(A)
     am_i_ok(A, z)
 })
+
+test_that("initialization preserves row and column names", {
+    rownames(y) <- seq_len(nrow(y))
+    colnames(y) <- paste0("G", seq_len(ncol(y)))
+    ptr <- initializeSparseMatrix(y)
+    expect_identical(rownames(y), ptr$rownames)
+    expect_identical(colnames(y), ptr$colnames)
+
+    rownames(A) <- seq_len(nrow(y))
+    colnames(A) <- paste0("G", seq_len(ncol(y)))
+    z <- initializeSparseMatrix(A)
+    expect_identical(rownames(A), z$rownames)
+    expect_identical(colnames(A), z$colnames)
+})
+
+

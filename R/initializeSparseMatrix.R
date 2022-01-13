@@ -45,6 +45,7 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
     NR <- nrow(x)
     NC <- ncol(x)
     ptr <- NULL
+    dim.names <- list(rownames=rownames(x), colnames=colnames(x))
 
     if (is(x, "DelayedArray") && DelayedArray::isPristine(x, ignore.dimnames=TRUE)) {
         x <- DelayedArray::seed(x)
@@ -136,5 +137,5 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
         }
     }
 
-    list(pointer=ptr, rownames=rownames(x), colnames=colnames(x))
+    c(list(pointer=ptr), dim.names)
 }
