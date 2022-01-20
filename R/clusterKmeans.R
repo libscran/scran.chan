@@ -28,6 +28,6 @@ clusterKmeans.chan <- function(x, k=10, num.threads=1) {
 }
 
 .clean_kmeans_clustering <- function(clustering) {
-    clustering$clusters <- clustering$clusters + 1L
+    clustering$clusters <- factor(clustering$clusters + 1L)
     clustering 
 }

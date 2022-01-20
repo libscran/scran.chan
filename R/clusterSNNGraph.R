@@ -68,11 +68,11 @@ clusterSNNGraph.chan <- function(x,
 }
 
 .clean_graph_clustering <- function(method, clustering) { 
-    clustering$membership <- clustering$membership + 1L
+    clustering$membership <- factor(clustering$membership + 1L)
 
     if (method=="multilevel") {
         clustering$best <- clustering$best + 1L
-        clustering$levels <- lapply(clustering$levels, function(x) x + 1L)
+        clustering$levels <- lapply(clustering$levels, function(x) factor(x + 1L))
     } else if (method=="walktrap") {
         clustering$merges <- clustering$merges + 1L
     }
