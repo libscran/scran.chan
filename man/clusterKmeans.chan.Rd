@@ -4,12 +4,15 @@
 \alias{clusterKmeans.chan}
 \title{K-means clustering}
 \usage{
-clusterKmeans.chan(x, k = 10, num.threads = 1)
+clusterKmeans.chan(x, k = 10, init.method = "pca-part", num.threads = 1)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
 \item{k}{Integer scalar specifying the number of clusters.}
+
+\item{init.method}{String specifying the initialization method:
+PCA partitioning (\code{"pca-part"}), kmeans++ (\code{"kmeans++"}) or random initialization (\code{"random"}).}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }

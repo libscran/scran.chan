@@ -32,7 +32,7 @@ Rcpp::List run_all_downstream(SEXP clust_init, SEXP umap_init, SEXP tsne_init, S
     std::unique_ptr<Kmeans> kptr;
     if (!Rf_isNull(kmeans_init)) {
         Rcpp::List klist(kmeans_init);
-        kptr.reset(new Kmeans(klist[0], Rcpp::IntegerVector(klist[1])[0]));
+        kptr.reset(new Kmeans(klist[0], Rcpp::IntegerVector(klist[1])[0], Rcpp::IntegerVector(klist[2])[0]));
         jobs.push_back(3);
     }
 

@@ -17,6 +17,7 @@ runAllDownstream(
   cluster.snn.method = c("multilevel", "leiden", "walktrap"),
   cluster.snn.resolution = NULL,
   cluster.kmeans.k = 10,
+  cluster.kmeans.init = "pca-part",
   num.threads = 1
 )
 }
@@ -38,7 +39,7 @@ This is typically a matrix of principal components.}
 
 \item{cluster.snn.num.neighbors, cluster.snn.method, cluster.snn.resolution}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
 
-\item{cluster.kmeans.k}{Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.}
+\item{cluster.kmeans.k, cluster.kmeans.init}{Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }

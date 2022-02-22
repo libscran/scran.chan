@@ -35,14 +35,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // cluster_kmeans
-SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, int nthreads);
-RcppExport SEXP _scran_chan_cluster_kmeans(SEXP dataSEXP, SEXP nclustersSEXP, SEXP nthreadsSEXP) {
+SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, int init_method, int nthreads);
+RcppExport SEXP _scran_chan_cluster_kmeans(SEXP dataSEXP, SEXP nclustersSEXP, SEXP init_methodSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
     Rcpp::traits::input_parameter< int >::type nclusters(nclustersSEXP);
+    Rcpp::traits::input_parameter< int >::type init_method(init_methodSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cluster_kmeans(data, nclusters, nthreads));
+    rcpp_result_gen = Rcpp::wrap(cluster_kmeans(data, nclusters, init_method, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -422,7 +423,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_blocked_pca", (DL_FUNC) &_scran_chan_run_blocked_pca, 5},
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
-    {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 3},
+    {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 4},
     {"_scran_chan_build_graph", (DL_FUNC) &_scran_chan_build_graph, 5},
     {"_scran_chan_cluster_graph", (DL_FUNC) &_scran_chan_cluster_graph, 1},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},

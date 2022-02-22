@@ -10,7 +10,7 @@
 #' @param do.cluster.kmeans Logical scalar, should we perform k-means clustering?
 #' @param tsne.perplexity Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.
 #' @param umap.num.neighbors,umap.min.dist Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.
-#' @param cluster.kmeans.k Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.
+#' @param cluster.kmeans.k,cluster.kmeans.init Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.
 #' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
@@ -45,6 +45,7 @@ runAllDownstream <- function(x,
     cluster.snn.method=c("multilevel", "leiden", "walktrap"), 
     cluster.snn.resolution=NULL, 
     cluster.kmeans.k=10,
+    cluster.kmeans.init="pca-part",
     num.threads=1) 
 {
     neighbors <- build_nn_index(x)
@@ -66,7 +67,7 @@ runAllDownstream <- function(x,
             nthreads=num.threads)
     }
     if (do.cluster.kmeans) {
-        kmeans.info <- list(x, cluster.kmeans.k)
+        kmeans.info <- list(x, cluster.kmeans.k, .kmeans_init_choice(cluster.kmeans.init))
     }
 
     output <- run_all_downstream(snn.graph, umap.init, tsne.init, kmeans.info, num.threads)
