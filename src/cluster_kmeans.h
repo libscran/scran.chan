@@ -2,9 +2,12 @@
 #define CLUSTER_KMEANS_H
 #include "scran/clustering/ClusterKmeans.hpp"
 #include "kmeans/InitializePCAPartition.hpp"
-#include <deque>
+
 #include "Rcpp.h"
+
+#include <deque>
 #include <string>
+#include <memory>
 
 struct Kmeans {
     Kmeans(Rcpp::NumericMatrix data, int nc, int init) : 
