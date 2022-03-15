@@ -230,15 +230,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // mnn_correct
-Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads);
-RcppExport SEXP _scran_chan_mnn_correct(SEXP xSEXP, SEXP batchSEXP, SEXP kSEXP, SEXP nmadsSEXP) {
+Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads);
+RcppExport SEXP _scran_chan_mnn_correct(SEXP xSEXP, SEXP batchSEXP, SEXP kSEXP, SEXP nmadsSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type batch(batchSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     Rcpp::traits::input_parameter< double >::type nmads(nmadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(mnn_correct(x, batch, k, nmads));
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(mnn_correct(x, batch, k, nmads, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -438,7 +439,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_initialize_from_dgCMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgCMatrix, 7},
     {"_scran_chan_initialize_from_dgRMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgRMatrix, 7},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 4},
-    {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 4},
+    {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 5},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 5},
     {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 3},

@@ -7,6 +7,7 @@
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 #' @param k Integer scalar specifying the number of neighbors to use when identifying MNN pairs.
 #' @param nmads Numeric scalar specifying the number of MADs to use when computing correction vectors.
+#' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return List containing:
 #' \itemize{
@@ -26,9 +27,9 @@
 #' str(corrected)
 #'
 #' @export
-mnnCorrect.chan <- function(x, batch, k=15, nmads=3) {
+mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1) {
     batch <- transform_factor(batch, n = ncol(x))
-    output <- mnn_correct(x, batch$index, k=k, nmads=nmads)
+    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads)
     output$merge.order <- batch$names[output$merge.order + 1L]
     output
 }

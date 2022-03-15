@@ -69,8 +69,8 @@ log_norm_counts <- function(x, size_factors, batch, batch_mode) {
     .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors, batch, batch_mode)
 }
 
-mnn_correct <- function(x, batch, k, nmads) {
-    .Call('_scran_chan_mnn_correct', PACKAGE = 'scran.chan', x, batch, k, nmads)
+mnn_correct <- function(x, batch, k, nmads, nthreads) {
+    .Call('_scran_chan_mnn_correct', PACKAGE = 'scran.chan', x, batch, k, nmads, nthreads)
 }
 
 model_gene_var <- function(x, batch, span, nthreads) {

@@ -2,7 +2,11 @@
 #include "Rcpp.h"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads) {
+Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads) {
+#ifdef _openmp
+    omp_set_num_threads(nthreads);
+#endif
+
     mnncorrect::MnnCorrect<> runner;
     runner.set_num_neighbors(k).set_num_mads(nmads);
 
