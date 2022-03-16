@@ -10,6 +10,18 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// aggregate_across_cells
+SEXP aggregate_across_cells(SEXP x, Rcpp::List groupings, int nthreads);
+RcppExport SEXP _scran_chan_aggregate_across_cells(SEXP xSEXP, SEXP groupingsSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type groupings(groupingsSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(aggregate_across_cells(x, groupings, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // run_blocked_pca
 Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, int nthreads);
 RcppExport SEXP _scran_chan_run_blocked_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP batchSEXP, SEXP featuresSEXP, SEXP nthreadsSEXP) {
@@ -422,6 +434,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_scran_chan_aggregate_across_cells", (DL_FUNC) &_scran_chan_aggregate_across_cells, 3},
     {"_scran_chan_run_blocked_pca", (DL_FUNC) &_scran_chan_run_blocked_pca, 5},
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
     {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 4},
