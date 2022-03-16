@@ -4,7 +4,7 @@
 \alias{mnnCorrect.chan}
 \title{MNN correction}
 \usage{
-mnnCorrect.chan(x, batch, k = 15, nmads = 3)
+mnnCorrect.chan(x, batch, k = 15, nmads = 3, num.threads = 1)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells,
@@ -15,6 +15,8 @@ typically generated from \code{\link{runPCA.chan}}.}
 \item{k}{Integer scalar specifying the number of neighbors to use when identifying MNN pairs.}
 
 \item{nmads}{Numeric scalar specifying the number of MADs to use when computing correction vectors.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 List containing:

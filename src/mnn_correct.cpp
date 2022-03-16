@@ -1,9 +1,12 @@
 #include "mnncorrect/MnnCorrect.hpp"
 #include "Rcpp.h"
+#ifdef _OPENMP
+#include "omp.h"
+#endif
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads) {
-#ifdef _openmp
+#ifdef _OPENMP
     omp_set_num_threads(nthreads);
 #endif
 
