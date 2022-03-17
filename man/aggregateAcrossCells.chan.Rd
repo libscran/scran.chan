@@ -27,6 +27,8 @@ Rows of this data frame correspond to columns of \code{sums} and \code{detected}
 while columns correspond to the factors in \code{factors}.
 \item \code{counts}, the number of cells associated with each combination.
 Each entry corresponds to a row of \code{combinations}.
+\item \code{index}, an integer vector of length equal to the number of cells in \code{x}.
+This specifies the combination in \code{combinations} to which each cell was assigned.
 }
 }
 \description{

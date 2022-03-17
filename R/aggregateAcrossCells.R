@@ -20,6 +20,8 @@
 #' while columns correspond to the factors in \code{factors}.
 #' \item \code{counts}, the number of cells associated with each combination.
 #' Each entry corresponds to a row of \code{combinations}.
+#' \item \code{index}, an integer vector of length equal to the number of cells in \code{x}.
+#' This specifies the combination in \code{combinations} to which each cell was assigned.
 #' }
 #'
 #' @author Aaron Lun
@@ -54,5 +56,7 @@ aggregateAcrossCells.chan <- function(x, factors, num.threads = 1) {
 
     names(output$combinations) <- names(factors)
     output$combinations <- data.frame(output$combinations)
+    output$index <- output$index + 1L
+
     output
 }

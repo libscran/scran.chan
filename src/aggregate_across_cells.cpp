@@ -29,9 +29,9 @@ SEXP aggregate_across_cells(SEXP x, Rcpp::List groupings, int nthreads) {
         gptrs[g] = static_cast<const int*>(groups[g].begin());
     }
 
-    auto out = scran::AggregateAcrossCells::combine_factors(NC, gptrs);
-    const auto& combined = out.first;
-    const auto& fac = out.second;
+    Rcpp::IntegerVector fac(NC);
+    int * fptr = fac.begin();
+    auto combined = scran::AggregateAcrossCells::combine_factors(NC, gptrs, fptr);
 
     // Copying things over.
     Rcpp::IntegerVector counts(combined.counts.begin(), combined.counts.end());
@@ -55,12 +55,13 @@ SEXP aggregate_across_cells(SEXP x, Rcpp::List groupings, int nthreads) {
     }
 
     scran::AggregateAcrossCells runner;
-    runner.run(mat.get(), fac.data(), sptrs, dptrs);
+    runner.run(mat.get(), fptr, sptrs, dptrs);
 
     return Rcpp::List::create(
         Rcpp::Named("sums") = sums,
         Rcpp::Named("detected") = detected,
         Rcpp::Named("combinations") = factors,
-        Rcpp::Named("counts") = counts
+        Rcpp::Named("counts") = counts,
+        Rcpp::Named("index") = fac
     );
 }
