@@ -8,12 +8,14 @@
 #' @param k Integer scalar specifying the number of neighbors to use when identifying MNN pairs.
 #' @param nmads Numeric scalar specifying the number of MADs to use when computing correction vectors.
 #' @param num.threads Integer scalar specifying the number of threads to use.
+#' @param order Vector containing levels of \code{batch} in the desired merge order.
+#' If \code{NULL}, a suitable merge order is automatically determined.
 #'
 #' @return List containing:
 #' \itemize{
 #' \item \code{corrected}, a numeric matrix of the same dimensions as \code{x}, containing the corrected values.
 #' \item \code{merge.order}, character vector containing the unique levels of \code{batch} in the automatically determined merge order.
-#' The first batch is used as the reference and all other batches are iteratively merged.
+#' The first level in this vector is used as the reference batch; all other batches are iteratively merged to it.
 #' \item \code{num.pairs}, integer vector of length equal to the number of batches minus 1.
 #' This contains the number of MNN pairs at each merge.
 #' }
@@ -27,9 +29,18 @@
 #' str(corrected)
 #'
 #' @export
-mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1) {
+mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1, order=NULL) {
     batch <- transform_factor(batch, n = ncol(x))
-    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads)
+
+    if (!is.null(order)) {
+        order <- match(order, batch$names)
+        if (!identical(sort(order), seq_along(order))) {
+            stop("'order' should contain unique values in 'batch'"); 
+        }
+        order <- order - 1L
+    }
+
+    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads, order=order)
     output$merge.order <- batch$names[output$merge.order + 1L]
     output
 }

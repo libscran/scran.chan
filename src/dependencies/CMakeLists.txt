@@ -12,14 +12,14 @@ include(FetchContent)
 FetchContent_Declare(
   scran
   GIT_REPOSITORY https://github.com/LTLA/libscran
-  GIT_TAG 971400303c6ac39d52b9f7a9ca6b90267d74951d
+  GIT_TAG ae03eaeec82526d0dd68c73cbb57caef4d3bec26
 )
 FetchContent_MakeAvailable(scran)
 
 FetchContent_Declare(
   mnncorrect 
   GIT_REPOSITORY https://github.com/LTLA/CppMnnCorrect
-  GIT_TAG 3da4e85887beaf10d7197b0949c5ac477bf0470b
+  GIT_TAG 6c369354b09d585e247b117d7f9f9d3fcb4a6979
 )
 FetchContent_MakeAvailable(mnncorrect)
 

@@ -5,7 +5,7 @@
 #endif
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads) {
+Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order) {
 #ifdef _OPENMP
     omp_set_num_threads(nthreads);
 #endif
@@ -13,11 +13,20 @@ Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, 
     mnncorrect::MnnCorrect<> runner;
     runner.set_num_neighbors(k).set_num_mads(nmads);
 
+    std::vector<int> ordering;
+    const int* optr = NULL;
+    if (order.isNotNull()) {
+        Rcpp::IntegerVector order_(order);
+        ordering.insert(ordering.end(), order_.begin(), order_.end());
+        optr = ordering.data();
+    }
+
     Rcpp::NumericMatrix output(x.nrow(), x.ncol());
     auto res = runner.run(x.nrow(), x.ncol(), 
         static_cast<const double*>(x.begin()), 
         static_cast<const int*>(batch.begin()), 
-        static_cast<double*>(output.begin()));
+        static_cast<double*>(output.begin()),
+        optr);
 
     return Rcpp::List::create(
         Rcpp::Named("corrected") = output,
