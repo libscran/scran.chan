@@ -5,8 +5,7 @@
 #include <algorithm>
 
 template<class Mat, class Result>
-Rcpp::List format_pca_output(Mat mat, Result& res) {
-    res.pcs.adjointInPlace();
+Rcpp::List format_pca_output(Mat mat, const Result& res) {
     size_t ndim = res.pcs.rows();
 
     size_t ncol = mat->ncol();
