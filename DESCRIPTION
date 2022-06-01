@@ -2,7 +2,8 @@ Package: scran.chan
 Title: A smaller version of the scran package
 Description: A diet version of scran for single-cell RNA-seq data analysis,
     without any of its dependencies.
-Version: 0.0.1
+Version: 0.3.0
+Date: 2022-06-01
 Authors@R: person("Aaron", "Lun", email="infinite.monkeys.with.keyboards@gmail.com", role=c("aut", "cre"))
 License: MIT + file LICENSE
 Imports:
