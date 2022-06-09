@@ -5,7 +5,7 @@
 #endif
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order) {
+Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy) {
 #ifdef _OPENMP
     omp_set_num_threads(nthreads);
 #endif
@@ -19,6 +19,16 @@ Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, 
         Rcpp::IntegerVector order_(order);
         ordering.insert(ordering.end(), order_.begin(), order_.end());
         optr = ordering.data();
+    }
+
+    if (ref_policy == "input") {
+        runner.set_reference_policy(mnncorrect::Input);
+    } else if (ref_policy == "max-variance") {
+        runner.set_reference_policy(mnncorrect::MaxVariance);
+    } else if (ref_policy == "max-rss") {
+        runner.set_reference_policy(mnncorrect::MaxRss);
+    } else if (ref_policy != "max-size") {
+        throw std::runtime_error("unknown reference policy");
     }
 
     Rcpp::NumericMatrix output(x.nrow(), x.ncol());

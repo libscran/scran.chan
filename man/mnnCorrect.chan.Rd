@@ -4,7 +4,15 @@
 \alias{mnnCorrect.chan}
 \title{MNN correction}
 \usage{
-mnnCorrect.chan(x, batch, k = 15, nmads = 3, num.threads = 1)
+mnnCorrect.chan(
+  x,
+  batch,
+  k = 15,
+  nmads = 3,
+  num.threads = 1,
+  order = NULL,
+  reference.method = c("max-size", "max-variance", "max-rss", "input")
+)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells,
@@ -17,13 +25,20 @@ typically generated from \code{\link{runPCA.chan}}.}
 \item{nmads}{Numeric scalar specifying the number of MADs to use when computing correction vectors.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
+
+\item{order}{Vector containing levels of \code{batch} in the desired merge order.
+If \code{NULL}, a suitable merge order is automatically determined.}
+
+\item{reference.policy}{String specifying the policy to use to choose the first reference batch.
+This can be based on the largest batch (\code{"max-size"}), the most variable batch (\code{"max-variance"}), some combination of those two (\code{"max-rss"}) or the first specified input (\code{"input"}).
+Only used for automatic merges, i.e., when \code{order=NULL}.}
 }
 \value{
 List containing:
 \itemize{
 \item \code{corrected}, a numeric matrix of the same dimensions as \code{x}, containing the corrected values.
 \item \code{merge.order}, character vector containing the unique levels of \code{batch} in the automatically determined merge order.
-The first batch is used as the reference and all other batches are iteratively merged.
+The first level in this vector is used as the reference batch; all other batches are iteratively merged to it.
 \item \code{num.pairs}, integer vector of length equal to the number of batches minus 1.
 This contains the number of MNN pairs at each merge.
 }
