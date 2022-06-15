@@ -12,7 +12,7 @@ include(FetchContent)
 FetchContent_Declare(
   scran
   GIT_REPOSITORY https://github.com/LTLA/libscran
-  GIT_TAG 1c5c9da444902df4c5b10d17a5c411352121afed
+  GIT_TAG e127f27ad226edba154175c85a068781c32cc70c
 )
 FetchContent_MakeAvailable(scran)
 
@@ -26,14 +26,14 @@ FetchContent_MakeAvailable(mnncorrect)
 FetchContent_Declare(
   qdtsne
   GIT_REPOSITORY https://github.com/LTLA/qdtsne
-  GIT_TAG 00de30a3b2d45edbab06f34a39771f4333fee1a7 
+  GIT_TAG 2a6fd4d78180625389dd75637939d74929b5668d
 )
 FetchContent_MakeAvailable(qdtsne)
 
 FetchContent_Declare(
   umappp 
   GIT_REPOSITORY https://github.com/LTLA/umappp
-  GIT_TAG 46e169b8df80725abca76e8007840ec17c54c819
+  GIT_TAG e47f81b55c6adda777d22f361ec5def89248e5d7
 )
 FetchContent_MakeAvailable(umappp)
 

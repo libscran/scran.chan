@@ -12,9 +12,17 @@
 #' @param batch.method String indicating how \code{batch} should be handled (if it is supplied).
 #' \code{"block"} is equivalent to linear regression on \code{x} prior to PCA,
 #' while \code{"weight"} will only weight each batch so that they contribute equally to the PCA.
+#' @param rotation Logical scalar indicating whether to report the rotation vectors.
 #'
-#' @return List containing \code{components}, containing the top principal components (note, columns correspond to cells);
-#' and \code{prop.variance}, containing the proportion of variance explained by each component.
+#' @return List containing:
+#' \itemize{
+#' \item \code{components}, a numeric matrix containing the top principal components.
+#' Each row corresponds to a PC and each column corresponds to a cell.
+#' \item \code{prop.variance}, containing the proportion of variance explained by each component.
+#' \item \code{rotation}, a numeric matrix containing the rotation vectors.
+#' Each column corresponds to a PC while each row corresponds to a feature.
+#' If \code{subset} is provided, each row corresponds to a retained feature, ordered by its index in \code{x}.
+#' }
 #'
 #' @author Aaron Lun
 #' @examples
@@ -41,21 +49,31 @@
 #' barplot(weighted$prop.variance)
 #'
 #' @export
-runPCA.chan <- function(x, num.comp=50, subset=NULL, num.threads=1, batch=NULL, batch.method=c("block", "weight")) {
+runPCA.chan <- function(x, num.comp=50, subset=NULL, num.threads=1, batch=NULL, batch.method=c("block", "weight"), rotation=FALSE) {
     if (!is.null(subset)) {
         subset <- to_logical(subset, n=tatami_dim(x$pointer)[1], names=x$rownames)
     }
 
     if (is.null(batch)) {
-        run_pca(x$pointer, num.comp, subset, nthreads=num.threads)
+        output <- run_pca(x$pointer, num.comp, subset, rotation=rotation, nthreads=num.threads)
     } else {
         batch.method <- match.arg(batch.method)
         batch <- transform_factor(batch, n = tatami_ncol(x))
 
         if (batch.method == "block") {
-            run_blocked_pca(x$pointer, num.comp, batch$index, subset, nthreads=num.threads)
+            output <- run_blocked_pca(x$pointer, num.comp, batch$index, subset, rotation=rotation, nthreads=num.threads)
         } else {
-            run_multibatch_pca(x$pointer, num.comp, batch$index, subset, nthreads=num.threads)
+            output <- run_multibatch_pca(x$pointer, num.comp, batch$index, subset, rotation=rotation, nthreads=num.threads)
         }
     }
+
+    if (rotation) {
+        if (is.null(subset)) {
+            rownames(output$rotation) <- x$rownames
+        } else {
+            rownames(output$rotation) <- x$rownames[subset]
+        }
+    }
+
+    output
 }

@@ -10,7 +10,8 @@ runPCA.chan(
   subset = NULL,
   num.threads = 1,
   batch = NULL,
-  batch.method = c("block", "weight")
+  batch.method = c("block", "weight"),
+  rotation = FALSE
 )
 }
 \arguments{
@@ -29,10 +30,19 @@ Alternatively \code{NULL} if all cells belong to the same batch.}
 \item{batch.method}{String indicating how \code{batch} should be handled (if it is supplied).
 \code{"block"} is equivalent to linear regression on \code{x} prior to PCA,
 while \code{"weight"} will only weight each batch so that they contribute equally to the PCA.}
+
+\item{rotation}{Logical scalar indicating whether to report the rotation vectors.}
 }
 \value{
-List containing \code{components}, containing the top principal components (note, columns correspond to cells);
-and \code{prop.variance}, containing the proportion of variance explained by each component.
+List containing:
+\itemize{
+\item \code{components}, a numeric matrix containing the top principal components.
+Each row corresponds to a PC and each column corresponds to a cell.
+\item \code{prop.variance}, containing the proportion of variance explained by each component.
+\item \code{rotation}, a numeric matrix containing the rotation vectors.
+Each column corresponds to a PC while each row corresponds to a feature.
+If \code{subset} is provided, each row corresponds to a retained feature, ordered by its index in \code{x}.
+}
 }
 \description{
 Perform an approximate principal components analysis using IRLBA.

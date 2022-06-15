@@ -5,10 +5,6 @@ aggregate_across_cells <- function(x, groupings, nthreads) {
     .Call('_scran_chan_aggregate_across_cells', PACKAGE = 'scran.chan', x, groupings, nthreads)
 }
 
-run_blocked_pca <- function(x, ndim, batch, features, nthreads) {
-    .Call('_scran_chan_run_blocked_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, nthreads)
-}
-
 build_nn_index <- function(data) {
     .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data)
 }
@@ -105,12 +101,16 @@ run_all_downstream <- function(clust_init, umap_init, tsne_init, kmeans_init, nt
     .Call('_scran_chan_run_all_downstream', PACKAGE = 'scran.chan', clust_init, umap_init, tsne_init, kmeans_init, nthreads)
 }
 
-run_multibatch_pca <- function(x, ndim, batch, features, nthreads) {
-    .Call('_scran_chan_run_multibatch_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, nthreads)
+run_blocked_pca <- function(x, ndim, batch, features, rotation, nthreads) {
+    .Call('_scran_chan_run_blocked_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, rotation, nthreads)
 }
 
-run_pca <- function(x, ndim, features, nthreads) {
-    .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, nthreads)
+run_multibatch_pca <- function(x, ndim, batch, features, rotation, nthreads) {
+    .Call('_scran_chan_run_multibatch_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, rotation, nthreads)
+}
+
+run_pca <- function(x, ndim, features, rotation, nthreads) {
+    .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, rotation, nthreads)
 }
 
 initialize_tsne <- function(nnptr, perplexity, interpolate, max_depth, nthreads) {
