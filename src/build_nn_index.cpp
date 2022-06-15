@@ -1,3 +1,6 @@
+#include "config.h"
+
+#include "Rcpp.h"
 #include "knncolle.h"
 #include "knncolle/Annoy/Annoy.hpp"
 

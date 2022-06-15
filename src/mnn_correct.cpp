@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "mnncorrect/MnnCorrect.hpp"
 #include "Rcpp.h"
 #ifdef _OPENMP

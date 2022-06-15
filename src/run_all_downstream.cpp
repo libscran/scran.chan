@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "run_tsne.h"
 #include "run_umap.h"
 #include "cluster_kmeans.h"

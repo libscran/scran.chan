@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "Rcpp.h"
 #include "knncolle.h"
 #include "run_tsne.h"

@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "Rcpp.h"
 
 #include "scran/dimensionality_reduction/BlockedPCA.hpp"

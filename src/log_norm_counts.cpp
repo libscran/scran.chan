@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "scran/normalization/LogNormCounts.hpp"
 #include "Rcpp.h"
 #include "tatamize.h"
