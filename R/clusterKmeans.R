@@ -14,7 +14,7 @@
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.
 #' 
 #' @return 
-#' If \code{k}, \code{init.method} and \code{seed} are not vectors and \code{drop = TRUE}, a list is returned containing:
+#' By default, a list is returned containing:
 #' \itemize{
 #' \item \code{clusters}, a factor containing the cluster assignments for each cell.
 #' \item \code{centers}, a numeric matrix with the coordinates of the cluster centroids (dimensions in rows, centers in columns).
@@ -22,7 +22,7 @@
 #' \item \code{withinss}, a numeric vector containing the within-cluster sum of squares for each cluster.
 #' }
 #'
-#' Otherwise, we assume that the user is requesting a parameter sweep.
+#' If any of the parameters are vectors or \code{drop = FALSE}, we assume that the user is requesting a parameter sweep.
 #' A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
 #' and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each entry contains the result for the corresponding parameter combination.
 #'
@@ -48,12 +48,11 @@ clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, nu
         init.method <- match.arg(init.method, .kmeans.init.choices)
         clusterKmeans.chan.core(x, k=k, init.method=init.method, seed=seed, num.threads=num.threads)
     } else {
-        params <- .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, .CLUSTER=NULL)
-        njobs <- nrow(params)
-        CLUSTER <- spawnCluster(min(njobs, num.threads))
-        threads.per.job <- max(1, floor(num.threads / njobs))
-        .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, num.threads=threads.per.job, .CLUSTER=CLUSTER)
-        completed <- finishJobs(CLUSTER)
+        sweep <- function(...) .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, ...)
+        params <- sweep(.CLUSTER=NULL)
+        setup <- .quick_setup(params, num.threads)
+        sweep(num.threads=setup$threads.per.node, .CLUSTER=setup$CLUSTER)
+        completed <- finishJobs(setup$CLUSTER)
         list(parameters = params, results = completed$clusterKmeans)
     }
 }

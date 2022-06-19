@@ -56,3 +56,11 @@ finishJobs <- function(env) {
 
     res
 }
+
+.quick_setup <- function(params, num.threads) {
+    nnodes <- nrow(params)
+    CLUSTER <- spawnCluster(min(nnodes, num.threads))
+    threads.per.node <- max(1, floor(num.threads / nnodes))
+    list(CLUSTER=CLUSTER, threads.per.node=threads.per.node)
+}
+

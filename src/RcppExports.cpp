@@ -32,6 +32,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_nearest_neighbors
+Rcpp::List find_nearest_neighbors(SEXP index, int k, int nthreads);
+RcppExport SEXP _scran_chan_find_nearest_neighbors(SEXP indexSEXP, SEXP kSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type index(indexSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_nearest_neighbors(index, k, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cluster_kmeans
 SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, std::string init_method, int seed, int nthreads);
 RcppExport SEXP _scran_chan_cluster_kmeans(SEXP dataSEXP, SEXP nclustersSEXP, SEXP init_methodSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
@@ -319,20 +331,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// run_all_downstream
-Rcpp::List run_all_downstream(SEXP clust_init, SEXP umap_init, SEXP tsne_init, SEXP kmeans_init, int nthreads);
-RcppExport SEXP _scran_chan_run_all_downstream(SEXP clust_initSEXP, SEXP umap_initSEXP, SEXP tsne_initSEXP, SEXP kmeans_initSEXP, SEXP nthreadsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type clust_init(clust_initSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type umap_init(umap_initSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type tsne_init(tsne_initSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type kmeans_init(kmeans_initSEXP);
-    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_all_downstream(clust_init, umap_init, tsne_init, kmeans_init, nthreads));
-    return rcpp_result_gen;
-END_RCPP
-}
 // run_blocked_pca
 Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool rotation, int nthreads);
 RcppExport SEXP _scran_chan_run_blocked_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP batchSEXP, SEXP featuresSEXP, SEXP rotationSEXP, SEXP nthreadsSEXP) {
@@ -377,28 +375,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// initialize_tsne
-SEXP initialize_tsne(SEXP nnptr, double perplexity, int interpolate, int max_depth, int nthreads);
-RcppExport SEXP _scran_chan_initialize_tsne(SEXP nnptrSEXP, SEXP perplexitySEXP, SEXP interpolateSEXP, SEXP max_depthSEXP, SEXP nthreadsSEXP) {
+// run_tsne
+SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int seed, int nthreads);
+RcppExport SEXP _scran_chan_run_tsne(SEXP nnidxSEXP, SEXP nndistSEXP, SEXP perplexitySEXP, SEXP interpolateSEXP, SEXP max_depthSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type nnidx(nnidxSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type nndist(nndistSEXP);
     Rcpp::traits::input_parameter< double >::type perplexity(perplexitySEXP);
     Rcpp::traits::input_parameter< int >::type interpolate(interpolateSEXP);
     Rcpp::traits::input_parameter< int >::type max_depth(max_depthSEXP);
+    Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_tsne(nnptr, perplexity, interpolate, max_depth, nthreads));
+    rcpp_result_gen = Rcpp::wrap(run_tsne(nnidx, nndist, perplexity, interpolate, max_depth, seed, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
-// run_tsne
-SEXP run_tsne(SEXP init, int nthreads);
-RcppExport SEXP _scran_chan_run_tsne(SEXP initSEXP, SEXP nthreadsSEXP) {
+// perplexity_to_neighbors
+int perplexity_to_neighbors(double p);
+RcppExport SEXP _scran_chan_perplexity_to_neighbors(SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type init(initSEXP);
-    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_tsne(init, nthreads));
+    Rcpp::traits::input_parameter< double >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(perplexity_to_neighbors(p));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -442,6 +441,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_aggregate_across_cells", (DL_FUNC) &_scran_chan_aggregate_across_cells, 3},
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
+    {"_scran_chan_find_nearest_neighbors", (DL_FUNC) &_scran_chan_find_nearest_neighbors, 3},
     {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 5},
     {"_scran_chan_build_graph", (DL_FUNC) &_scran_chan_build_graph, 5},
     {"_scran_chan_cluster_graph", (DL_FUNC) &_scran_chan_cluster_graph, 1},
@@ -464,12 +464,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},
-    {"_scran_chan_run_all_downstream", (DL_FUNC) &_scran_chan_run_all_downstream, 5},
     {"_scran_chan_run_blocked_pca", (DL_FUNC) &_scran_chan_run_blocked_pca, 6},
     {"_scran_chan_run_multibatch_pca", (DL_FUNC) &_scran_chan_run_multibatch_pca, 6},
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 5},
-    {"_scran_chan_initialize_tsne", (DL_FUNC) &_scran_chan_initialize_tsne, 5},
-    {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 2},
+    {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 7},
+    {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_initialize_umap", (DL_FUNC) &_scran_chan_initialize_umap, 4},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 1},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 4},

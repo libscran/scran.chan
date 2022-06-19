@@ -31,7 +31,7 @@ This may also be a vector to perform a parameter sweep.}
 \item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.}
 }
 \value{
-If \code{k}, \code{init.method} and \code{seed} are not vectors and \code{drop = TRUE}, a list is returned containing:
+By default, a list is returned containing:
 \itemize{
 \item \code{clusters}, a factor containing the cluster assignments for each cell.
 \item \code{centers}, a numeric matrix with the coordinates of the cluster centroids (dimensions in rows, centers in columns).
@@ -39,7 +39,7 @@ If \code{k}, \code{init.method} and \code{seed} are not vectors and \code{drop =
 \item \code{withinss}, a numeric vector containing the within-cluster sum of squares for each cluster.
 }
 
-Otherwise, we assume that the user is requesting a parameter sweep.
+If any of the parameters are vectors or \code{drop = FALSE}, we assume that the user is requesting a parameter sweep.
 A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
 and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each entry contains the result for the corresponding parameter combination.
 }
@@ -57,6 +57,7 @@ swept <- clusterKmeans.chan(x, k=c(2,5,10),
     seed=c(1,2,3))
 swept$parameters
 length(swept$results)
+table(swept$results[[1]]$clusters)
 
 }
 \author{
