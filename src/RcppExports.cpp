@@ -401,26 +401,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// initialize_umap
-SEXP initialize_umap(SEXP nnptr, int num_neighbors, double min_dist, int nthreads);
-RcppExport SEXP _scran_chan_initialize_umap(SEXP nnptrSEXP, SEXP num_neighborsSEXP, SEXP min_distSEXP, SEXP nthreadsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type nnptr(nnptrSEXP);
-    Rcpp::traits::input_parameter< int >::type num_neighbors(num_neighborsSEXP);
-    Rcpp::traits::input_parameter< double >::type min_dist(min_distSEXP);
-    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_umap(nnptr, num_neighbors, min_dist, nthreads));
-    return rcpp_result_gen;
-END_RCPP
-}
 // run_umap
-SEXP run_umap(SEXP init);
-RcppExport SEXP _scran_chan_run_umap(SEXP initSEXP) {
+SEXP run_umap(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double min_dist, int seed, int nthreads);
+RcppExport SEXP _scran_chan_run_umap(SEXP nnidxSEXP, SEXP nndistSEXP, SEXP min_distSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type init(initSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_umap(init));
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type nnidx(nnidxSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type nndist(nndistSEXP);
+    Rcpp::traits::input_parameter< double >::type min_dist(min_distSEXP);
+    Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_umap(nnidx, nndist, min_dist, seed, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -469,8 +460,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 5},
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 7},
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
-    {"_scran_chan_initialize_umap", (DL_FUNC) &_scran_chan_initialize_umap, 4},
-    {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 1},
+    {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 5},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 4},
     {NULL, NULL, 0}
 };

@@ -28,7 +28,7 @@ SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perp
 
     std::vector<float> embedding(2 * nobs);
     qdtsne::initialize_random(embedding.data(), nobs, seed);
-    runner.run(neighbors, embedding.data());
+    runner.run(std::move(neighbors), embedding.data());
 
     Rcpp::NumericMatrix output(2, nobs);
     std::copy(embedding.begin(), embedding.end(), output.begin());

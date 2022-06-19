@@ -121,12 +121,8 @@ perplexity_to_neighbors <- function(p) {
     .Call('_scran_chan_perplexity_to_neighbors', PACKAGE = 'scran.chan', p)
 }
 
-initialize_umap <- function(nnptr, num_neighbors, min_dist, nthreads) {
-    .Call('_scran_chan_initialize_umap', PACKAGE = 'scran.chan', nnptr, num_neighbors, min_dist, nthreads)
-}
-
-run_umap <- function(init) {
-    .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', init)
+run_umap <- function(nnidx, nndist, min_dist, seed, nthreads) {
+    .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, nthreads)
 }
 
 score_markers <- function(x, groups, batch, lfc) {

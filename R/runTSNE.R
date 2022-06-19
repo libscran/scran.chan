@@ -11,6 +11,8 @@
 #' @param max.depth Integer scalar specifying the maximum depth of the Barnes-Hut quad trees (larger is slower but more accurate).
 #' Set to a large integer (e.g., 1000) to eliminate depth restrictions.
 #' This may also be a vector to perform a parameter sweep.
+#' @param seed Integer scalar specifying the seed to use for generating the initial coordinates.
+#' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when \code{perplexity}, \code{interpolate} and \code{max.depth} are scalars.
 #' 
