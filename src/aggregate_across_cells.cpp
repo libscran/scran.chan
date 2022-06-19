@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "scran/aggregation/AggregateAcrossCells.hpp"
 #include "Rcpp.h"
 #include "tatamize.h"

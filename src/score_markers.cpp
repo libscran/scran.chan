@@ -1,4 +1,4 @@
-#include <iostream>
+#include "config.h"
 
 #include "scran/differential_analysis/ScoreMarkers.hpp"
 #include "scran/utils/average_vectors.hpp"

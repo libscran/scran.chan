@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "tatamize.h"
 #include "scran/quality_control/FilterCells.hpp"
 #include "Rcpp.h"

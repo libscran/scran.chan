@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "tatamize.h"
 #include "Rcpp.h"
 

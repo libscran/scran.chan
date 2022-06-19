@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "Rcpp.h"
 #include "scran/scran.hpp"
 #include "kmeans/InitializePCAPartition.hpp"

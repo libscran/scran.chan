@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "Rcpp.h"
 #include "scran/quality_control/PerCellQCFilters.hpp"
 #include "ResolvedBatch.h"

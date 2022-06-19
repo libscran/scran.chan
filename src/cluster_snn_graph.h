@@ -1,5 +1,6 @@
 #ifndef CLUSTER_SNN_GRAPH_H
 #define CLUSTER_SNN_GRAPH_H
+
 #include "scran/clustering/ClusterSNNGraph.hpp"
 #include <deque>
 #include "Rcpp.h"
