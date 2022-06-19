@@ -4,26 +4,44 @@
 \alias{clusterKmeans.chan}
 \title{K-means clustering}
 \usage{
-clusterKmeans.chan(x, k = 10, init.method = "pca-part", num.threads = 1)
+clusterKmeans.chan(
+  x,
+  k = 10,
+  init.method = "pca-part",
+  seed = 5489L,
+  num.threads = 1,
+  drop = TRUE
+)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
-\item{k}{Integer scalar specifying the number of clusters.}
+\item{k}{Integer scalar specifying the number of clusters.
+This may also be a vector to perform a parameter sweep.}
 
 \item{init.method}{String specifying the initialization method:
-PCA partitioning (\code{"pca-part"}), kmeans++ (\code{"kmeans++"}) or random initialization (\code{"random"}).}
+PCA partitioning (\code{"pca-part"}), kmeans++ (\code{"kmeans++"}) or random initialization (\code{"random"}).
+This may also be a vector to perform a parameter sweep.}
+
+\item{seed}{Integer scalar specifying the seed to use for random or kmeans++ initialization.
+This may also be a vector to perform a parameter sweep.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
+
+\item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.}
 }
 \value{
-A list containing:
+If \code{k}, \code{init.method} and \code{seed} are not vectors and \code{drop = TRUE}, a list is returned containing:
 \itemize{
-\item \code{clusters}, an integer vector containing the cluster assignments.
+\item \code{clusters}, a factor containing the cluster assignments for each cell.
 \item \code{centers}, a numeric matrix with the coordinates of the cluster centroids (dimensions in rows, centers in columns).
 \item \code{iterations}, an integer scalar specifying the number of Hartigan-Wong iterations used.
 \item \code{withinss}, a numeric vector containing the within-cluster sum of squares for each cluster.
 }
+
+Otherwise, we assume that the user is requesting a parameter sweep.
+A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
+and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each entry contains the result for the corresponding parameter combination.
 }
 \description{
 Perform k-means clustering using kmeans++ initialization with the Hartigan-Wong algorithm.
@@ -32,6 +50,13 @@ Perform k-means clustering using kmeans++ initialization with the Hartigan-Wong 
 x <- t(as.matrix(iris[,1:4]))
 clustering <- clusterKmeans.chan(x)
 table(clustering$clusters)
+
+# Parameter sweep mode.
+swept <- clusterKmeans.chan(x, k=c(2,5,10), 
+    init.method=c("pca-part", "random"), 
+    seed=c(1,2,3))
+swept$parameters
+length(swept$results)
 
 }
 \author{

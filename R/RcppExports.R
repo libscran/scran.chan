@@ -9,8 +9,8 @@ build_nn_index <- function(data) {
     .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data)
 }
 
-cluster_kmeans <- function(data, nclusters, init_method, nthreads) {
-    .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, init_method, nthreads)
+cluster_kmeans <- function(data, nclusters, init_method, seed, nthreads) {
+    .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, init_method, seed, nthreads)
 }
 
 build_graph <- function(nnptr, k, method, resolution, nthreads) {
