@@ -38,54 +38,126 @@ runAllDownstream <- function(x,
     do.umap=TRUE,
     do.cluster.snn=TRUE,
     do.cluster.kmeans=FALSE,
-    tsne.perplexity=30, 
-    umap.num.neighbors=15, 
-    umap.min.dist=0.01,
+    tsne.perplexity=NULL,
+    tsne.args=list(),
+    umap.num.neighbors=NULL, 
+    umap.min.dist=NULL,
+    umap.args=list(),
     cluster.snn.num.neighbors=10, 
     cluster.snn.method=c("multilevel", "leiden", "walktrap"), 
     cluster.snn.resolution=NULL, 
-    cluster.kmeans.k=10,
-    cluster.kmeans.init="pca-part",
+    cluster.snn.args=list(),
+    cluster.kmeans.k=NULL,
+    cluster.kmeans.init=NULL,
+    cluster.kmeans.args=list(),
+    drop=TRUE,
     num.threads=1) 
 {
-    neighbors <- build_nn_index(x)
+    # Fixing the parameters.
+    legacy_args <- function(name, legacy, formals, args) {
+        if (!name %in% names(args)) {
+            if (!is.null(legacy)) {
+                args[[name]] <- legacy
+            } else {
+                args[[name]] <- formals[[name]]
+            }
+        }
+        args
+    }
 
-    snn.graph <- umap.init <- tsne.init <- kmeans.info <- NULL
+    default_args <- function(names, formals, args) {
+        for (n in names) {
+            if (!n %in% names(args)) {
+                args[[n]] <- formals[[n]]
+            }
+        }
+        args
+    }
+
     if (do.tsne) {
-        tsne.init <- initialize_tsne(neighbors, tsne.perplexity, interpolate=-1, max_depth=7, nthreads=num.threads) # defaults from runTSNE.chan.
+        tsne.formals <- formals(runTSNE.chan) 
+        tsne.args <- legacy_args("perplexity", tsne.perplexity, tsne.formals, tsne.args)
+        tsne.args <- default_args(c("interpolate", "max.depth", "seed"), tsne.formals, tsne.args)
+    }
+
+    if (do.umap) {
+        umap.formals <- formals(runUMAP.chan) 
+        umap.args <- legacy_args("num.neighbors", umap.num.neighbors, umap.formals, umap.args)
+        umap.args <- legacy_args("min.dist", umap.min.dist, umap.formals, umap.args)
+        umap.args <- default_args("seed", umap.formals, umap.args)
+    }
+
+    if (do.cluster.kmeans) {
+        cluster.kmeans.formals <- formals(clusterKmeans.chan) 
+        cluster.kmeans.args <- legacy_args("k", cluster.kmeans.k, cluster.kmeans.formals, cluster.kmeans.args)
+        cluster.kmeans.args <- legacy_args("init.method", cluster.kmeans.init, cluster.kmeans.formals, cluster.kmeans.args)
+        cluster.kmeans.args <- default_args("seed", cluster.kmeans.formals, cluster.kmeans.args)
+    }
+
+    # Generating the neighbors.
+    all.neighbors <- list() 
+    if (do.tsne || do.umap || do.cluster.snn) {
+        nnbuilt <- build_nn_index(x)
+        if (do.tsne) {
+            all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity=tsne.args$perplexity, num.threads=num.threads, existing=all.neighbors)
+        }
+        if (do.umap) {
+            all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors=umap.args$num.neighbors, num.threads=num.threads, existing=all.neighbors)
+        }
+    }
+
+    # Figuring out how many jobs we have.
+    all.params <- list()
+    if (do.tsne) {
+        all.params$tsne <- do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, list(.CLUSTER=NULL)))
     }
     if (do.umap) {
-        umap.init <- initialize_umap(neighbors, umap.num.neighbors, umap.min.dist, num.threads)
-    }
-    if (do.cluster.snn) {
-        cluster.snn.method <- match.arg(cluster.snn.method)
-        cluster.snn.resolution <- .default_resolution(cluster.snn.method, cluster.snn.resolution)
-        snn.graph <- build_graph(neighbors, 
-            k=cluster.snn.num.neighbors, 
-            method=cluster.snn.method, 
-            resolution=cluster.snn.resolution, 
-            nthreads=num.threads)
+        all.params$umap <- do.call(.umap_sweeper, c(list(all.neighbors), umap.args, list(.CLUSTER=NULL)))
     }
     if (do.cluster.kmeans) {
-        kmeans.info <- list(x, cluster.kmeans.k, .kmeans_init_choice(cluster.kmeans.init))
+        all.params$cluster.kmeans <- do.call(.kmeans_sweeper, c(list(x), cluster.kmeans.args, list(.CLUSTER=NULL)))
     }
 
-    output <- run_all_downstream(snn.graph, umap.init, tsne.init, kmeans.info, num.threads)
-    names(output) <- c("cluster.snn", "umap", "tsne", "cluster.kmeans")
-    output <- output[!vapply(output, is.null, TRUE)]
+    # Setting up the cluster and dispatching the jobs.
+    njobs <- sum(vapply(all.params, nrow, 0L))
+    CLUSTER <- spawnCluster(min(njobs, num.threads))
+    threads.per.node <- max(1, floor(num.threads / njobs))
+    common.args <- list(.CLUSTER=CLUSTER, num.threads=threads.per.node)
 
-    if (do.cluster.snn) {
-        output$cluster.snn <- .clean_graph_clustering(cluster.snn.method, output$cluster.snn)
+    if (do.tsne) {
+        do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, common.args))
     }
     if (do.umap) {
-        output$umap <- t(output$umap)
-    }
-    if (do.tsne) {
-        output$tsne <- t(output$tsne)
+        do.call(.umap_sweeper, c(list(all.neighbors), umap.args, common.args))
     }
     if (do.cluster.kmeans) {
-        output$cluster.kmeans <- .clean_kmeans_clustering(output$cluster.kmeans)
+        do.call(.kmeans_sweeper, c(list(x), cluster.kmeans.args, common.args))
     }
 
-    output
+    # Cleaning up.
+    completed <- finishJobs(CLUSTER)
+    results <- list()
+    droppable <- drop
+
+    for (x in names(completed)) {
+        new.name <- switch(x,
+            clusterKmeans="cluster.kmeans",
+            runTSNE="tsne",
+            runUMAP="umap",
+            clusterSNNGraph="cluster.snn",
+            stop("unknown result type '", x, "'")
+        )
+
+        store <- completed[[x]]
+        if (droppable && length(completed[[x]]) > 1) {
+            droppable <- FALSE
+        }
+        results[[new.name]] <- store
+    }
+
+    if (droppable) {
+        lapply(results, function(x) x[[1]])
+    } else {
+        list(parameters=all.params, results=results[names(all.params)])
+    }
 }
