@@ -46,7 +46,7 @@ submitJob <- function(env, fun, args, type, index) {
 
 finishJobs <- function(env) {
     if (!is.null(env$cluster)) {
-        for (i in seq_along(env$active)) {
+        for (i in seq_len(env$active)) {
             available <- parallel:::recvOneResult(env$cluster)
             .store_results(env, available$value, available$tag)
         }
