@@ -143,10 +143,17 @@ runAllDownstream <- function(x,
 
     # Setting up the cluster and dispatching the jobs.
     njobs <- sum(vapply(all.params, nrow, 0L))
-    nnodes <- min(njobs, num.threads)
-    env <- spawnCluster(nnodes)
-    on.exit(stopCluster(env$cluster))
-    num.threads <- max(1, floor(num.threads / nnodes))
+    if (njobs == 1 || num.threads == 1) {
+        env <- new.env()
+        env$results <- list()
+        env$cluster <- NULL
+        env$active <- 0L
+    } else {
+        nnodes <- min(njobs, num.threads)
+        env <- spawnCluster(nnodes)
+        on.exit(stopCluster(env$cluster))
+        num.threads <- max(1, floor(num.threads / nnodes))
+    }
     common.args <- list(.env=env, num.threads=num.threads)
 
     if (do.tsne) {
