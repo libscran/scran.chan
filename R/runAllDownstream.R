@@ -33,6 +33,7 @@
 #' res <- runAllDownstream(x, num.threads=3)
 #' str(res)
 #' @export
+#' @importFrom parallel stopCluster
 runAllDownstream <- function(x,
     do.tsne=TRUE,
     do.umap=TRUE,
@@ -144,6 +145,7 @@ runAllDownstream <- function(x,
     njobs <- sum(vapply(all.params, nrow, 0L))
     nnodes <- min(njobs, num.threads)
     env <- spawnCluster(nnodes)
+    on.exit(stopCluster(env$cluster))
     num.threads <- max(1, floor(num.threads / nnodes))
     common.args <- list(.env=env, num.threads=num.threads)
 
@@ -173,7 +175,7 @@ runAllDownstream <- function(x,
             stop("unknown result type '", x, "'")
         )
 
-        if (drop && length(completed[[x]]) > 1) {
+        if (drop && length(completed[[x]]) == 1) {
             store <- completed[[x]][[1]]
         } else {
             store <- list(parameters=all.params[[new.name]], results=completed[[x]])
@@ -181,5 +183,5 @@ runAllDownstream <- function(x,
         output[[new.name]] <- store
     }
 
-    output 
+    output[order(names(output))]
 }
