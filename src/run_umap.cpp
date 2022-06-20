@@ -2,7 +2,7 @@
 
 #include "Rcpp.h"
 #include "knncolle.h"
-#include "run_umap.h"
+#include "umappp/Umap.hpp"
 #ifdef _OPENMP
 #include "omp.h"
 #endif
