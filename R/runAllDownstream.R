@@ -30,7 +30,7 @@
 #' 
 #' @examples
 #' x <- t(as.matrix(iris[,1:4]))
-#' res <- runAllDownstream(x)
+#' res <- runAllDownstream(x, num.threads=3)
 #' str(res)
 #' @export
 runAllDownstream <- function(x,
@@ -43,8 +43,8 @@ runAllDownstream <- function(x,
     umap.num.neighbors=NULL, 
     umap.min.dist=NULL,
     umap.args=list(),
-    cluster.snn.num.neighbors=10, 
-    cluster.snn.method=c("multilevel", "leiden", "walktrap"), 
+    cluster.snn.num.neighbors=NULL, 
+    cluster.snn.method=NULL,
     cluster.snn.resolution=NULL, 
     cluster.snn.args=list(),
     cluster.kmeans.k=NULL,
@@ -87,12 +87,21 @@ runAllDownstream <- function(x,
         umap.args <- default_args("seed", umap.formals, umap.args)
     }
 
+    if (do.cluster.snn) {
+        cluster.snn.formals <- formals(clusterSNNGraph.chan) 
+        cluster.snn.args <- legacy_args("num.neighbors", cluster.snn.num.neighbors, cluster.snn.formals, cluster.snn.args)
+        cluster.snn.args <- legacy_args("method", cluster.snn.method, cluster.snn.formals, cluster.snn.args)
+        cluster.snn.args <- legacy_args("resolution", cluster.snn.resolution, cluster.snn.formals, cluster.snn.args)
+        cluster.snn.args <- default_args(c("weight.scheme", "steps", "seed"), cluster.snn.formals, cluster.snn.args)
+    }
+
     if (do.cluster.kmeans) {
         cluster.kmeans.formals <- formals(clusterKmeans.chan) 
         cluster.kmeans.args <- legacy_args("k", cluster.kmeans.k, cluster.kmeans.formals, cluster.kmeans.args)
         cluster.kmeans.args <- legacy_args("init.method", cluster.kmeans.init, cluster.kmeans.formals, cluster.kmeans.args)
         cluster.kmeans.args <- default_args("seed", cluster.kmeans.formals, cluster.kmeans.args)
     }
+
 
     # Generating the neighbors.
     all.neighbors <- list() 
@@ -104,25 +113,32 @@ runAllDownstream <- function(x,
         if (do.umap) {
             all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors=umap.args$num.neighbors, num.threads=num.threads, existing=all.neighbors)
         }
+        if (do.cluster.snn) {
+            all.neighbors <- .find_snn_neighbors(nnbuilt, num.neighbors=cluster.snn.args$num.neighbors, num.threads=num.threads, existing=all.neighbors)
+        }
     }
 
     # Figuring out how many jobs we have.
     all.params <- list()
     if (do.tsne) {
-        all.params$tsne <- do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, list(.CLUSTER=NULL)))
+        all.params$tsne <- do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, list(.env=NULL)))
     }
     if (do.umap) {
-        all.params$umap <- do.call(.umap_sweeper, c(list(all.neighbors), umap.args, list(.CLUSTER=NULL)))
+        all.params$umap <- do.call(.umap_sweeper, c(list(all.neighbors), umap.args, list(.env=NULL)))
+    }
+    if (do.cluster.snn) {
+        all.params$cluster.snn <- do.call(.snn_sweeper, c(list(all.neighbors), cluster.snn.args, list(.env=NULL)))
     }
     if (do.cluster.kmeans) {
-        all.params$cluster.kmeans <- do.call(.kmeans_sweeper, c(list(x), cluster.kmeans.args, list(.CLUSTER=NULL)))
+        all.params$cluster.kmeans <- do.call(.kmeans_sweeper, c(list(x), cluster.kmeans.args, list(.env=NULL)))
     }
 
     # Setting up the cluster and dispatching the jobs.
     njobs <- sum(vapply(all.params, nrow, 0L))
-    CLUSTER <- spawnCluster(min(njobs, num.threads))
-    threads.per.node <- max(1, floor(num.threads / njobs))
-    common.args <- list(.CLUSTER=CLUSTER, num.threads=threads.per.node)
+    nnodes <- min(njobs, num.threads)
+    env <- spawnCluster(nnodes)
+    num.threads <- max(1, floor(num.threads / nnodes))
+    common.args <- list(.env=env, num.threads=num.threads)
 
     if (do.tsne) {
         do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, common.args))
@@ -130,12 +146,15 @@ runAllDownstream <- function(x,
     if (do.umap) {
         do.call(.umap_sweeper, c(list(all.neighbors), umap.args, common.args))
     }
+    if (do.cluster.snn) {
+        do.call(.snn_sweeper, c(list(all.neighbors), cluster.snn.args, common.args))
+    }
     if (do.cluster.kmeans) {
         do.call(.kmeans_sweeper, c(list(x), cluster.kmeans.args, common.args))
     }
 
     # Cleaning up.
-    completed <- finishJobs(CLUSTER)
+    completed <- finishJobs(env)
     results <- list()
     droppable <- drop
 
