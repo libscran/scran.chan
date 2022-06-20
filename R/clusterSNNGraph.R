@@ -62,7 +62,6 @@
 #' table(swept$results[[1]]$membership)
 #'
 #' @export
-#' @importFrom parallel stopCluster
 clusterSNNGraph.chan <- function(x,
     num.neighbors=10,
     weight.scheme="rank",

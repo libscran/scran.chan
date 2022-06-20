@@ -8,23 +8,23 @@
 #' @param do.tsne Logical scalar, should we perform a t-SNE?
 #' @param do.cluster.snn Logical scalar, should we perform graph-based clustering?
 #' @param do.cluster.kmeans Logical scalar, should we perform k-means clustering?
-#' @param tsne.perplexity Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.
-#' @param umap.num.neighbors,umap.min.dist Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.
-#' @param cluster.kmeans.k,cluster.kmeans.init Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.
-#' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
+#' @param tsne.args Named list of t-SNE parameters, see \code{\link{runTSNE.chan}} for details.
+#' @param umap.args Named list of UMAP parameters, see \code{\link{runUMAP.chan}} for details.
+#' @param cluster.kmeans.args Named list of k-means parameters, see \code{\link{clusterKmeans.chan}} for details.
+#' @param cluster.snn.args Named list of SNN parameters, see \code{\link{clusterSNNGraph.chan}} for details.
+#' @param tsne.perplexity Deprecated, use \code{tsne.args} instead.
+#' @param umap.num.neighbors,umap.min.dist Deprecated, use \code{umap.args} instead.
+#' @param cluster.kmeans.k,cluster.kmeans.init Deprecated, use \code{cluster.kmeans.args} instead. 
+#' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Deprecated, use \code{cluster.snn.args} instead.
+#' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
-#' @return A list containing \code{"cluster.snn"}, \code{"umap"} and \code{"tsne"},
+#' @return A list containing \code{"cluster.snn"}, \code{"cluster.kmeans"}, \code{"umap"} and \code{"tsne"},
 #' each of which contains the result of their respective function \code{*.chan} functions.
 #'
 #' @details
 #' By running all of these steps together, we can avoid redundant construction of the nearest neighbor index.
 #' We can also execute some of the single-threaded steps concurrently for further time savings.
-#'
-#' It is tempting to re-use the nearest neighbor search results across the different steps,
-#' subsetting to the number of neighbors required in each step.
-#' However, we do not do so as the approximate nature of the search means that the subsetting may not yield the same results as a direct search for the requested number of neighbors.
-#' This can lead to inconsistent behavior where the results of one step depend on whether other steps were run.
 #'
 #' @author Aaron Lun
 #' 
@@ -38,18 +38,18 @@ runAllDownstream <- function(x,
     do.umap=TRUE,
     do.cluster.snn=TRUE,
     do.cluster.kmeans=FALSE,
-    tsne.perplexity=NULL,
     tsne.args=list(),
+    umap.args=list(),
+    cluster.snn.args=list(),
+    cluster.kmeans.args=list(),
+    tsne.perplexity=NULL,
     umap.num.neighbors=NULL, 
     umap.min.dist=NULL,
-    umap.args=list(),
     cluster.snn.num.neighbors=NULL, 
     cluster.snn.method=NULL,
     cluster.snn.resolution=NULL, 
-    cluster.snn.args=list(),
     cluster.kmeans.k=NULL,
     cluster.kmeans.init=NULL,
-    cluster.kmeans.args=list(),
     drop=TRUE,
     num.threads=1) 
 {
@@ -104,6 +104,13 @@ runAllDownstream <- function(x,
 
 
     # Generating the neighbors.
+    #
+    # It is tempting to re-use the nearest neighbor search results across the
+    # different steps, subsetting to the number of neighbors required in each step.
+    # However, we do not do so as the approximate nature of the search means that
+    # the subsetting may not yield the same results as a direct search for the
+    # requested number of neighbors.  This can lead to inconsistent behavior where
+    # the results of one step depend on whether other steps were run.
     all.neighbors <- list() 
     if (do.tsne || do.umap || do.cluster.snn) {
         nnbuilt <- build_nn_index(x)
@@ -155,8 +162,7 @@ runAllDownstream <- function(x,
 
     # Cleaning up.
     completed <- finishJobs(env)
-    results <- list()
-    droppable <- drop
+    output <- list()
 
     for (x in names(completed)) {
         new.name <- switch(x,
@@ -167,16 +173,13 @@ runAllDownstream <- function(x,
             stop("unknown result type '", x, "'")
         )
 
-        store <- completed[[x]]
-        if (droppable && length(completed[[x]]) > 1) {
-            droppable <- FALSE
+        if (drop && length(completed[[x]]) > 1) {
+            store <- completed[[x]][[1]]
+        } else {
+            store <- list(parameters=all.params[[new.name]], results=completed[[x]])
         }
-        results[[new.name]] <- store
+        output[[new.name]] <- store
     }
 
-    if (droppable) {
-        lapply(results, function(x) x[[1]])
-    } else {
-        list(parameters=all.params, results=results[names(all.params)])
-    }
+    output 
 }
