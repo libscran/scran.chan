@@ -9,8 +9,8 @@ clusterKmeans.chan(
   k = 10,
   init.method = "pca-part",
   seed = 5489L,
-  num.threads = 1,
-  drop = TRUE
+  drop = TRUE,
+  num.threads = 1
 )
 }
 \arguments{
@@ -26,9 +26,9 @@ This may also be a vector to perform a parameter sweep.}
 \item{seed}{Integer scalar specifying the seed to use for random or kmeans++ initialization.
 This may also be a vector to perform a parameter sweep.}
 
-\item{num.threads}{Integer scalar specifying the number of threads to use.}
-
 \item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 By default, a list is returned containing:

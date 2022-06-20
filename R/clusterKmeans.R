@@ -42,19 +42,9 @@
 #' table(swept$results[[1]]$clusters)
 #' 
 #' @export
-clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, num.threads=1, drop=TRUE) {
-    prod <- length(k) * length(init.method) * length(seed)
-    if (prod == 1L && drop) {
-        init.method <- match.arg(init.method, .kmeans.init.choices)
-        clusterKmeans.chan.core(x, k=k, init.method=init.method, seed=seed, num.threads=num.threads)
-    } else {
-        sweep <- function(...) .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, ...)
-        params <- sweep(.CLUSTER=NULL)
-        setup <- .quick_setup(params, num.threads)
-        sweep(num.threads=setup$threads.per.node, .CLUSTER=setup$CLUSTER)
-        completed <- finishJobs(setup$CLUSTER)
-        list(parameters = params, results = completed$clusterKmeans)
-    }
+clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, drop=TRUE, num.threads=1) {
+    sweep <- function(...) .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, ...)
+    .sweep_wrapper(sweep, "clusterKmeans", num.threads=num.threads, drop=drop)
 }
 
 .kmeans.init.choices <- c("pca-part", "kmeans++", "random")
@@ -65,9 +55,9 @@ clusterKmeans.chan.core <- function(x, k, init.method, seed, num.threads) {
     output 
 }
 
-.kmeans_sweeper <- function(x, k, init.method, seed, num.threads, .CLUSTER) {
+.kmeans_sweeper <- function(x, k, init.method, seed, num.threads, .env) {
     counter <- 0L
-    preflight <- is.null(.CLUSTER)
+    preflight <- is.null(.env)
     parameters <- list()
 
     for (init in init.method) {
@@ -78,7 +68,7 @@ clusterKmeans.chan.core <- function(x, k, init.method, seed, num.threads) {
                 if (preflight) {
                     parameters[[counter]] <- data.frame(k = k0, init.method = init, seed = NA_integer_)
                 } else {
-                    submitJob(.CLUSTER, 
+                    submitJob(.env, 
                         fun=clusterKmeans.chan.core, 
                         args=list(x=x, init.method=init, k=k0, seed=0, num.threads=num.threads),
                         type="clusterKmeans", 
@@ -91,7 +81,7 @@ clusterKmeans.chan.core <- function(x, k, init.method, seed, num.threads) {
                     if (preflight) {
                         parameters[[counter]] <- data.frame(k = k0, init.method = init, seed = s)
                     } else {
-                        submitJob(.CLUSTER,
+                        submitJob(.env,
                             fun=clusterKmeans.chan.core, 
                             args=list(x=x, init.method=init, k=k0, seed=s, num.threads=num.threads),
                             type="clusterKmeans", 

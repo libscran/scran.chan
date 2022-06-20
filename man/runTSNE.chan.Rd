@@ -9,8 +9,8 @@ runTSNE.chan(
   perplexity = 30,
   interpolate = -1,
   max.depth = 7,
-  drop = TRUE,
   seed = 42,
+  drop = TRUE,
   num.threads = 1
 )
 }
@@ -28,10 +28,10 @@ This may also be a vector to perform a parameter sweep.}
 Set to a large integer (e.g., 1000) to eliminate depth restrictions.
 This may also be a vector to perform a parameter sweep.}
 
-\item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{perplexity}, \code{interpolate} and \code{max.depth} are scalars.}
-
 \item{seed}{Integer scalar specifying the seed to use for generating the initial coordinates.
 This may also be a vector to perform a parameter sweep.}
+
+\item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{perplexity}, \code{interpolate} and \code{max.depth} are scalars.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }

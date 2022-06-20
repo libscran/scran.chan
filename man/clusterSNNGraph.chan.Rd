@@ -12,8 +12,8 @@ clusterSNNGraph.chan(
   resolution = 1,
   steps = 4,
   seed = 42,
-  num.threads = 1,
-  drop = TRUE
+  drop = TRUE,
+  num.threads = 1
 )
 }
 \arguments{
@@ -38,9 +38,9 @@ This may also be a vector to perform a parameter sweep.}
 \item{seed}{Integer scalar specifying the seed to use for multi-level or Leiden clustering. 
 This may also be a vector to perform a parameter sweep.}
 
-\item{num.threads}{Integer scalar specifying the number of threads to use.}
-
 \item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 By default, a list containing \code{membership}, an integer vector with cluster assignments for each cell.
@@ -85,6 +85,7 @@ swept <- clusterSNNGraph.chan(x,
 swept$parameters
 length(swept$results)
 table(swept$results[[1]]$membership)
+
 }
 \author{
 Aaron Lun

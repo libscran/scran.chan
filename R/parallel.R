@@ -12,12 +12,6 @@ spawnCluster <- function(n) {
     env
 }
 
-mockCluster <- function() {
-    env <- new.env()
-    env$results <- list()
-    env
-}
-
 .store_results <- function(env, value, tag) {
     type <- tag$type
     index <- tag$index
@@ -71,9 +65,32 @@ finishJobs <- function(env) {
     res
 }
 
-.quick_setup <- function(params, num.threads) {
-    nnodes <- nrow(params)
-    CLUSTER <- spawnCluster(min(nnodes, num.threads))
-    threads.per.node <- max(1, floor(num.threads / nnodes))
-    list(CLUSTER=CLUSTER, threads.per.node=threads.per.node)
+#' @importFrom parallel stopCluster
+.sweep_wrapper <- function(sweep, name, num.threads, drop) {
+    params <- sweep(.env=NULL)
+
+    if (nrow(params) == 1L || num.threads==1L) {
+        env <- new.env()
+        env$results <- list()
+        env$cluster <- NULL
+        env$active <- 0L
+    } else {
+        njobs <- nrow(params)
+        nnodes <- min(njobs, num.threads)
+        env <- spawnCluster(nnodes)
+        num.threads <- max(1, floor(num.threads / nnodes))
+        on.exit(stopCluster(env$cluster))
+    }
+
+    sweep(num.threads=num.threads, .env=env)
+    completed <- finishJobs(env)
+
+    if (nrow(params) == 1 && drop) {
+        completed[[name]][[1]]
+    } else {
+        list(parameters = params, results = completed[[name]])
+    }
 }
+
+
+

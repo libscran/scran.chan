@@ -33,22 +33,11 @@
 #' head(swept$results[[1]])
 #'
 #' @export
-runUMAP.chan <- function(x, num.neighbors=15, min.dist=0.01, num.threads=1, seed=1234567890, drop=TRUE) {
+runUMAP.chan <- function(x, num.neighbors=15, min.dist=0.01, seed=1234567890, drop=TRUE, num.threads=1) {
     nnbuilt <- build_nn_index(x)
-
-    prod <- length(num.neighbors) * length(min.dist) * length(seed) 
-    if (prod == 1L && drop) {
-        neighbors <- find_nearest_neighbors(nnbuilt, num.neighbors, nthreads=num.threads)
-        runUMAP.chan.core(neighbors, min.dist=min.dist, seed=seed, num.threads=num.threads)
-    } else {
-        all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
-        sweep <- function(...) .umap_sweeper(all.neighbors, num.neighbors=num.neighbors, min.dist=min.dist, seed=seed, ...)
-        params <- sweep(.CLUSTER=NULL)
-        setup <- .quick_setup(params, num.threads)
-        sweep(num.threads=setup$threads.per.node, .CLUSTER=setup$CLUSTER)
-        completed <- finishJobs(setup$CLUSTER)
-        list(parameters = params, results = completed$runUMAP)
-    }
+    all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
+    sweep <- function(...) .umap_sweeper(all.neighbors, num.neighbors=num.neighbors, min.dist=min.dist, seed=seed, ...)
+    .sweep_wrapper(sweep, "runUMAP", num.threads=num.threads, drop=drop)
 }
 
 .find_umap_neighbors <- function(nnbuilt, num.neighbors, num.threads, existing = list()) {
@@ -72,9 +61,9 @@ runUMAP.chan.core <- function(neighbors, min.dist, seed, num.threads) {
     t(output)
 }
 
-.umap_sweeper <- function(neighbors, num.neighbors, min.dist, seed, num.threads, .CLUSTER) {
+.umap_sweeper <- function(neighbors, num.neighbors, min.dist, seed, num.threads, .env) {
     counter <- 0L
-    preflight <- is.null(.CLUSTER)
+    preflight <- is.null(.env)
     parameters <- list()
 
     for (k in num.neighbors) {
@@ -86,7 +75,7 @@ runUMAP.chan.core <- function(neighbors, min.dist, seed, num.threads) {
                 if (preflight) {
                     parameters[[counter]] <- data.frame(num.neighbors = k, min.dist = d, seed=s)
                 } else {
-                    submitJob(.CLUSTER,
+                    submitJob(.env,
                         fun=runUMAP.chan.core,
                         args=list(neighbors=curneighbors, min.dist=d, seed=s, num.threads=num.threads),
                         type="runUMAP",

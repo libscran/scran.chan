@@ -8,9 +8,9 @@ runUMAP.chan(
   x,
   num.neighbors = 15,
   min.dist = 0.01,
-  num.threads = 1,
   seed = 1234567890,
-  drop = TRUE
+  drop = TRUE,
+  num.threads = 1
 )
 }
 \arguments{
@@ -22,10 +22,10 @@ This may also be a vector to perform a parameter sweep.}
 \item{min.dist}{Numeric scalar specifying the minimum distance between points.
 This may also be a vector to perform a parameter sweep.}
 
-\item{num.threads}{Integer scalar specifying the number of threads to use.}
-
 \item{seed}{Integer scalar specifying the seed to use. 
 This may also be a vector to perform a parameter sweep.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 By default, a numeric matrix where rows are cells and columns are the two dimensions of the embedding.

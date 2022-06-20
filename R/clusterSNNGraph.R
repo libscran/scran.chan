@@ -60,7 +60,9 @@
 #' swept$parameters
 #' length(swept$results)
 #' table(swept$results[[1]]$membership)
+#'
 #' @export
+#' @importFrom parallel stopCluster
 clusterSNNGraph.chan <- function(x,
     num.neighbors=10,
     weight.scheme="rank",
@@ -68,32 +70,13 @@ clusterSNNGraph.chan <- function(x,
     resolution=1, 
     steps=4,
     seed=42,
-    num.threads=1,
-    drop=TRUE)
+    drop=TRUE,
+    num.threads=1)
 {
     nnbuilt <- build_nn_index(x)
-
     all.neighbors <- .find_snn_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
     sweep <- function(...) .snn_sweeper(all.neighbors, num.neighbors=num.neighbors, weight.scheme=weight.scheme, method=method, resolution=resolution, steps=steps, seed=seed, ...)
-    params <- sweep(.env=NULL)
-
-    if (nrow(params) == 1L || num.threads==1L) {
-        # Avoid overhead of process parallelization in this case.
-        env <- mockCluster()
-    } else {
-        setup <- .quick_setup(params, num.threads)
-        env <- setup$CLUSTER
-        num.threads <- setup$threads.per.node
-    }
-
-    sweep(.env=env, num.threads=num.threads)
-    completed <- finishJobs(env)
-
-    if (nrow(params) == 1 && drop) {
-        completed$clusterSNNGraph[[1]]
-    } else {
-        list(parameters = params, results = completed$clusterSNNGraph)
-    }
+    .sweep_wrapper(sweep, "clusterSNNGraph", num.threads=num.threads, drop=drop)
 }
 
 .find_snn_neighbors <- function(nnbuilt, num.neighbors, num.threads, existing = list()) {

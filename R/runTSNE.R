@@ -38,24 +38,11 @@
 #' head(swept$results[[1]])
 #' 
 #' @export
-runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, drop=TRUE, seed=42, num.threads=1) {
+runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, seed=42, drop=TRUE, num.threads=1) {
     nnbuilt <- build_nn_index(x)
-
-    prod <- length(perplexity) * length(interpolate) * length(max.depth)
-    if (prod == 1L && drop) {
-        k <- perplexity_to_neighbors(perplexity)
-        neighbors <- find_nearest_neighbors(nnbuilt, k, nthreads=num.threads)
-        runTSNE.chan.core(neighbors, perplexity=perplexity, interpolate=interpolate, max.depth=max.depth, seed=seed, num.threads=num.threads)
-
-    } else {
-        all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity, num.threads=num.threads)
-        sweep <- function(...) .tsne_sweeper(all.neighbors, perplexity=perplexity, interpolate=interpolate, max.depth=max.depth, seed=seed, ...)
-        params <- sweep(.CLUSTER=NULL)
-        setup <- .quick_setup(params, num.threads)
-        sweep(num.threads=setup$threads.per.node, .CLUSTER=setup$CLUSTER)
-        completed <- finishJobs(setup$CLUSTER)
-        list(parameters = params, results = completed$runTSNE)
-    }
+    all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity, num.threads=num.threads)
+    sweep <- function(...) .tsne_sweeper(all.neighbors, perplexity=perplexity, interpolate=interpolate, max.depth=max.depth, seed=seed, ...)
+    .sweep_wrapper(sweep, "runTSNE", num.threads=num.threads, drop=drop)
 }
 
 .find_tsne_neighbors <- function(nnbuilt, perplexity, num.threads, existing = list()) {
@@ -82,9 +69,9 @@ runTSNE.chan.core <- function(neighbors, perplexity, interpolate, max.depth, see
     t(output)
 }
 
-.tsne_sweeper <- function(neighbors, perplexity, interpolate, max.depth, seed, num.threads, .CLUSTER) {
+.tsne_sweeper <- function(neighbors, perplexity, interpolate, max.depth, seed, num.threads, .env) {
     counter <- 0L
-    preflight <- is.null(.CLUSTER)
+    preflight <- is.null(.env)
     parameters <- list()
 
     for (p in perplexity) {
@@ -98,7 +85,7 @@ runTSNE.chan.core <- function(neighbors, perplexity, interpolate, max.depth, see
                     if (preflight) {
                         parameters[[counter]] <- data.frame(perplexity = p, interpolate = i, max.depth = d, seed=s)
                     } else {
-                        submitJob(.CLUSTER, 
+                        submitJob(.env, 
                             fun=runTSNE.chan.core, 
                             args=list(neighbors=curneighbors, perplexity=p, interpolate=i, max.depth=d, seed=s, num.threads=num.threads),
                             type="runTSNE", 
