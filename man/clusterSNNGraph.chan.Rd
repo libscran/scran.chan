@@ -7,25 +7,43 @@
 clusterSNNGraph.chan(
   x,
   num.neighbors = 10,
-  method = c("multilevel", "leiden", "walktrap"),
-  resolution = NULL,
-  num.threads = 1
+  weight.scheme = "rank",
+  method = "multilevel",
+  resolution = 1,
+  steps = 4,
+  seed = 42,
+  num.threads = 1,
+  drop = TRUE
 )
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
-\item{num.neighbors}{Integer scalar specifying the number of neighbors to use to construct the graph.}
+\item{num.neighbors}{Integer scalar specifying the number of neighbors to use to construct the graph.
+This may also be a vector to perform a parameter sweep.}
 
-\item{method}{String specifying the community detection method to use.}
+\item{weight.scheme}{String specifying the weighting scheme to use for constructing the SNN graph.
+This can be \code{"rank"} (default), \code{"jaccard"} or \code{"number"}.}
 
-\item{resolution}{Numeric scalar specifying the resolution to use for multi-level clustering.
-Defaults to 1 for \code{method="multilevel"} and 0.05 for \code{method="leiden"}.}
+\item{method}{String specifying the community detection method to use.
+Options are multi-level (\code{"multilevel"}), Walktrap (\code{"walktrap"}) or Leiden (\code{"leiden"}).
+This may also be a vector to perform a parameter sweep.}
+
+\item{resolution}{Numeric scalar specifying the resolution to use for multi-level or Leiden clustering.
+This may also be a vector to perform a parameter sweep.}
+
+\item{steps}{Integer scalar specifying the number of steps to use for Walktrap clustering.
+This may also be a vector to perform a parameter sweep.}
+
+\item{seed}{Integer scalar specifying the seed to use for multi-level or Leiden clustering. 
+This may also be a vector to perform a parameter sweep.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
+
+\item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.}
 }
 \value{
-A list containing \code{membership}, an integer vector with cluster assignments for each cell.
+By default, a list containing \code{membership}, an integer vector with cluster assignments for each cell.
 Each method may also return additional elements.
 For \code{method="multilevel"}, we have:
 \itemize{
@@ -44,9 +62,13 @@ For \code{method="walktrap"}, we have:
 Each row corresponds to a merge step and contains the IDs of the temporary clusters (not the same as those in \code{membership}). 
 \item \code{modularity}, a numeric vector containing the modularity before and after each merge step. 
 }
+
+If any of the parameters are vectors or \code{drop = FALSE}, we assume that the user is requesting a parameter sweep.
+A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
+and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each element is itself a list as described above.
 }
 \description{
-Perform multi-level (i.e., Louvain) clustering on a shared nearest neighbor graph.
+Perform community detection on a shared nearest neighbor graph.
 }
 \examples{
 x <- t(as.matrix(iris[,1:4]))
@@ -54,6 +76,15 @@ clustering <- clusterSNNGraph.chan(x)
 clustering$modularity
 table(clustering$membership)
 
+# With a parameter sweep.
+swept <- clusterSNNGraph.chan(x,
+   num.neighbors=c(10, 20),
+   method=c("multilevel", "walktrap"),
+   weight.scheme=c("rank", "jaccard")
+)
+swept$parameters
+length(swept$results)
+table(swept$results[[1]]$membership)
 }
 \author{
 Aaron Lun

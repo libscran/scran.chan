@@ -12,6 +12,12 @@ spawnCluster <- function(n) {
     env
 }
 
+mockCluster <- function() {
+    env <- new.env()
+    env$results <- list()
+    env
+}
+
 .store_results <- function(env, value, tag) {
     type <- tag$type
     index <- tag$index
@@ -25,23 +31,31 @@ spawnCluster <- function(n) {
 }
 
 submitJob <- function(env, fun, args, type, index) {
-    if (env$active == length(env$cluster)) {
-        available <- parallel:::recvOneResult(env$cluster)
-        .store_results(env, available$value, available$tag)
-        to.use <- available$node
-    } else {
-        env$active <- env$active + 1L
-        to.use <- env$active
-    }
-
     tag <- list(type=type, index=index)
-    parallel:::sendCall(env$cluster[[to.use]], fun, args, tag=tag)
+
+    if (is.null(env$cluster)) {
+        res <- do.call(fun, args)
+        .store_results(env, res, tag)
+
+    } else {
+        if (env$active == length(env$cluster)) {
+            available <- parallel:::recvOneResult(env$cluster)
+            .store_results(env, available$value, available$tag)
+            to.use <- available$node
+        } else {
+            env$active <- env$active + 1L
+            to.use <- env$active
+        }
+        parallel:::sendCall(env$cluster[[to.use]], fun, args, tag=tag)
+    }
 }
 
 finishJobs <- function(env) {
-    for (i in seq_along(env$active)) {
-        available <- parallel:::recvOneResult(env$cluster)
-        .store_results(env, available$value, available$tag)
+    if (!is.null(env$cluster)) {
+        for (i in seq_along(env$active)) {
+            available <- parallel:::recvOneResult(env$cluster)
+            .store_results(env, available$value, available$tag)
+        }
     }
 
     # Resorting everything.
@@ -63,4 +77,3 @@ finishJobs <- function(env) {
     threads.per.node <- max(1, floor(num.threads / nnodes))
     list(CLUSTER=CLUSTER, threads.per.node=threads.per.node)
 }
-

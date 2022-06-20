@@ -17,12 +17,8 @@ cluster_kmeans <- function(data, nclusters, init_method, seed, nthreads) {
     .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, init_method, seed, nthreads)
 }
 
-build_graph <- function(nnptr, k, method, resolution, nthreads) {
-    .Call('_scran_chan_build_graph', PACKAGE = 'scran.chan', nnptr, k, method, resolution, nthreads)
-}
-
-cluster_graph <- function(ptr) {
-    .Call('_scran_chan_cluster_graph', PACKAGE = 'scran.chan', ptr)
+cluster_snn_graph <- function(nnidx, weight_scheme, method, resolution, steps, seed, nthreads) {
+    .Call('_scran_chan_cluster_snn_graph', PACKAGE = 'scran.chan', nnidx, weight_scheme, method, resolution, steps, seed, nthreads)
 }
 
 filter_cells <- function(x, discard) {
