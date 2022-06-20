@@ -14,7 +14,7 @@
 #' @param seed Integer scalar specifying the seed to use for generating the initial coordinates.
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
-#' @param drop Logical scalar indicating whether to drop the sweep-based formatting when \code{perplexity}, \code{interpolate} and \code{max.depth} are scalars.
+#' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
 #' 
 #' @return 
 #' By default, a numeric matrix where rows are cells and columns are the two dimensions of the embedding.

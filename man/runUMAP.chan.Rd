@@ -25,6 +25,8 @@ This may also be a vector to perform a parameter sweep.}
 \item{seed}{Integer scalar specifying the seed to use. 
 This may also be a vector to perform a parameter sweep.}
 
+\item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.}
+
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
