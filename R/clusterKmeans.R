@@ -4,17 +4,27 @@
 #'
 #' @param x Numeric matrix where rows are dimensions and columns are cells.
 #' @param k Integer scalar specifying the number of clusters.
+#' This may also be a vector to perform a parameter sweep.
 #' @param init.method String specifying the initialization method:
 #' PCA partitioning (\code{"pca-part"}), kmeans++ (\code{"kmeans++"}) or random initialization (\code{"random"}).
+#' This may also be a vector to perform a parameter sweep.
+#' @param seed Integer scalar specifying the seed to use for random or kmeans++ initialization.
+#' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
+#' @param drop Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.
 #' 
-#' @return A list containing:
+#' @return 
+#' By default, a list is returned containing:
 #' \itemize{
-#' \item \code{clusters}, an integer vector containing the cluster assignments.
+#' \item \code{clusters}, a factor containing the cluster assignments for each cell.
 #' \item \code{centers}, a numeric matrix with the coordinates of the cluster centroids (dimensions in rows, centers in columns).
 #' \item \code{iterations}, an integer scalar specifying the number of Hartigan-Wong iterations used.
 #' \item \code{withinss}, a numeric vector containing the within-cluster sum of squares for each cluster.
 #' }
+#'
+#' If any of the parameters are vectors or \code{drop = FALSE}, we assume that the user is requesting a parameter sweep.
+#' A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
+#' and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each entry contains the result for the corresponding parameter combination.
 #'
 #' @author Aaron Lun
 #'
@@ -22,20 +32,71 @@
 #' x <- t(as.matrix(iris[,1:4]))
 #' clustering <- clusterKmeans.chan(x)
 #' table(clustering$clusters)
+#'
+#' # Parameter sweep mode.
+#' swept <- clusterKmeans.chan(x, k=c(2,5,10), 
+#'     init.method=c("pca-part", "random"), 
+#'     seed=c(1,2,3))
+#' swept$parameters
+#' length(swept$results)
+#' table(swept$results[[1]]$clusters)
 #' 
 #' @export
-clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", num.threads=1) {
-    init.choice <- .kmeans_init_choice(init.method)
-    output <- cluster_kmeans(x, k, init.choice, nthreads=num.threads)
-    .clean_kmeans_clustering(output)
+clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, drop=TRUE, num.threads=1) {
+    sweep <- function(...) .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, ...)
+    .sweep_wrapper(sweep, "clusterKmeans", num.threads=num.threads, drop=drop)
 }
 
-.kmeans_init_choice <- function(choice) {
-    .choices <- c("pca-part", "kmeans++", "random")
-    match(match.arg(choice, .choices), .choices) - 1L
+.kmeans.init.choices <- c("pca-part", "kmeans++", "random")
+
+clusterKmeans.chan.core <- function(x, k, init.method, seed, num.threads) {
+    output <- cluster_kmeans(x, k, init.method, seed=seed, nthreads=num.threads)
+    output$clusters <- factor(output$clusters + 1L)
+    output 
 }
 
-.clean_kmeans_clustering <- function(clustering) {
-    clustering$clusters <- factor(clustering$clusters + 1L)
-    clustering 
+.kmeans_sweeper <- function(x, k, init.method, seed, num.threads, .env) {
+    counter <- 0L
+    preflight <- is.null(.env)
+    parameters <- list()
+
+    for (init in init.method) {
+        init <- match.arg(init, .kmeans.init.choices)
+        for (k0 in k) {
+            if (init == "pca-part") {
+                counter <- counter + 1L
+                if (preflight) {
+                    parameters[[counter]] <- data.frame(k = k0, init.method = init, seed = NA_integer_)
+                } else {
+                    submitJob(.env, 
+                        fun=clusterKmeans.chan.core, 
+                        args=list(x=x, init.method=init, k=k0, seed=0, num.threads=num.threads),
+                        type="clusterKmeans", 
+                        index=counter
+                    )
+                }
+            } else {
+                for (s in seed) {
+                    counter <- counter + 1L
+                    if (preflight) {
+                        parameters[[counter]] <- data.frame(k = k0, init.method = init, seed = s)
+                    } else {
+                        submitJob(.env,
+                            fun=clusterKmeans.chan.core, 
+                            args=list(x=x, init.method=init, k=k0, seed=s, num.threads=num.threads),
+                            type="clusterKmeans", 
+                            index=counter
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    if (preflight) {
+        do.call(rbind, parameters)
+    } else {
+        NULL
+    }
 }
+

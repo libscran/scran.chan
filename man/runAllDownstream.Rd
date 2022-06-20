@@ -10,14 +10,19 @@ runAllDownstream(
   do.umap = TRUE,
   do.cluster.snn = TRUE,
   do.cluster.kmeans = FALSE,
-  tsne.perplexity = 30,
-  umap.num.neighbors = 15,
-  umap.min.dist = 0.01,
-  cluster.snn.num.neighbors = 10,
-  cluster.snn.method = c("multilevel", "leiden", "walktrap"),
+  tsne.args = list(),
+  umap.args = list(),
+  cluster.snn.args = list(),
+  cluster.kmeans.args = list(),
+  tsne.perplexity = NULL,
+  umap.num.neighbors = NULL,
+  umap.min.dist = NULL,
+  cluster.snn.num.neighbors = NULL,
+  cluster.snn.method = NULL,
   cluster.snn.resolution = NULL,
-  cluster.kmeans.k = 10,
-  cluster.kmeans.init = "pca-part",
+  cluster.kmeans.k = NULL,
+  cluster.kmeans.init = NULL,
+  drop = TRUE,
   num.threads = 1
 )
 }
@@ -33,18 +38,28 @@ This is typically a matrix of principal components.}
 
 \item{do.cluster.kmeans}{Logical scalar, should we perform k-means clustering?}
 
-\item{tsne.perplexity}{Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.}
+\item{tsne.args}{Named list of t-SNE parameters, see \code{\link{runTSNE.chan}} for details.}
 
-\item{umap.num.neighbors, umap.min.dist}{Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.}
+\item{umap.args}{Named list of UMAP parameters, see \code{\link{runUMAP.chan}} for details.}
 
-\item{cluster.snn.num.neighbors, cluster.snn.method, cluster.snn.resolution}{Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.}
+\item{cluster.snn.args}{Named list of SNN parameters, see \code{\link{clusterSNNGraph.chan}} for details.}
 
-\item{cluster.kmeans.k, cluster.kmeans.init}{Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.}
+\item{cluster.kmeans.args}{Named list of k-means parameters, see \code{\link{clusterKmeans.chan}} for details.}
+
+\item{tsne.perplexity}{Deprecated, use \code{tsne.args} instead.}
+
+\item{umap.num.neighbors, umap.min.dist}{Deprecated, use \code{umap.args} instead.}
+
+\item{cluster.snn.num.neighbors, cluster.snn.method, cluster.snn.resolution}{Deprecated, use \code{cluster.snn.args} instead.}
+
+\item{cluster.kmeans.k, cluster.kmeans.init}{Deprecated, use \code{cluster.kmeans.args} instead.}
+
+\item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
-A list containing \code{"cluster.snn"}, \code{"umap"} and \code{"tsne"},
+A list containing \code{"cluster.snn"}, \code{"cluster.kmeans"}, \code{"umap"} and \code{"tsne"},
 each of which contains the result of their respective function \code{*.chan} functions.
 }
 \description{
@@ -53,15 +68,10 @@ Run all steps in the basic workflow that are downstream of PCA (but before marke
 \details{
 By running all of these steps together, we can avoid redundant construction of the nearest neighbor index.
 We can also execute some of the single-threaded steps concurrently for further time savings.
-
-It is tempting to re-use the nearest neighbor search results across the different steps,
-subsetting to the number of neighbors required in each step.
-However, we do not do so as the approximate nature of the search means that the subsetting may not yield the same results as a direct search for the requested number of neighbors.
-This can lead to inconsistent behavior where the results of one step depend on whether other steps were run.
 }
 \examples{
 x <- t(as.matrix(iris[,1:4]))
-res <- runAllDownstream(x)
+res <- runAllDownstream(x, num.threads=3)
 str(res)
 }
 \author{

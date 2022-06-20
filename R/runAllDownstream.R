@@ -8,84 +8,187 @@
 #' @param do.tsne Logical scalar, should we perform a t-SNE?
 #' @param do.cluster.snn Logical scalar, should we perform graph-based clustering?
 #' @param do.cluster.kmeans Logical scalar, should we perform k-means clustering?
-#' @param tsne.perplexity Parameters to be used for t-SNE, see \code{\link{runTSNE.chan}} for details.
-#' @param umap.num.neighbors,umap.min.dist Parameters to be used for UMAP, see \code{\link{runUMAP.chan}} for details.
-#' @param cluster.kmeans.k,cluster.kmeans.init Parameters to be used for k-means clustering, see \code{\link{clusterKmeans.chan}} for details.
-#' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Parameters to be used for graph-based clustering, see \code{\link{clusterSNNGraph.chan}} for details.
+#' @param tsne.args Named list of t-SNE parameters, see \code{\link{runTSNE.chan}} for details.
+#' @param umap.args Named list of UMAP parameters, see \code{\link{runUMAP.chan}} for details.
+#' @param cluster.kmeans.args Named list of k-means parameters, see \code{\link{clusterKmeans.chan}} for details.
+#' @param cluster.snn.args Named list of SNN parameters, see \code{\link{clusterSNNGraph.chan}} for details.
+#' @param tsne.perplexity Deprecated, use \code{tsne.args} instead.
+#' @param umap.num.neighbors,umap.min.dist Deprecated, use \code{umap.args} instead.
+#' @param cluster.kmeans.k,cluster.kmeans.init Deprecated, use \code{cluster.kmeans.args} instead. 
+#' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Deprecated, use \code{cluster.snn.args} instead.
+#' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
-#' @return A list containing \code{"cluster.snn"}, \code{"umap"} and \code{"tsne"},
+#' @return A list containing \code{"cluster.snn"}, \code{"cluster.kmeans"}, \code{"umap"} and \code{"tsne"},
 #' each of which contains the result of their respective function \code{*.chan} functions.
 #'
 #' @details
 #' By running all of these steps together, we can avoid redundant construction of the nearest neighbor index.
 #' We can also execute some of the single-threaded steps concurrently for further time savings.
 #'
-#' It is tempting to re-use the nearest neighbor search results across the different steps,
-#' subsetting to the number of neighbors required in each step.
-#' However, we do not do so as the approximate nature of the search means that the subsetting may not yield the same results as a direct search for the requested number of neighbors.
-#' This can lead to inconsistent behavior where the results of one step depend on whether other steps were run.
-#'
 #' @author Aaron Lun
 #' 
 #' @examples
 #' x <- t(as.matrix(iris[,1:4]))
-#' res <- runAllDownstream(x)
+#' res <- runAllDownstream(x, num.threads=3)
 #' str(res)
 #' @export
+#' @importFrom parallel stopCluster
 runAllDownstream <- function(x,
     do.tsne=TRUE,
     do.umap=TRUE,
     do.cluster.snn=TRUE,
     do.cluster.kmeans=FALSE,
-    tsne.perplexity=30, 
-    umap.num.neighbors=15, 
-    umap.min.dist=0.01,
-    cluster.snn.num.neighbors=10, 
-    cluster.snn.method=c("multilevel", "leiden", "walktrap"), 
+    tsne.args=list(),
+    umap.args=list(),
+    cluster.snn.args=list(),
+    cluster.kmeans.args=list(),
+    tsne.perplexity=NULL,
+    umap.num.neighbors=NULL, 
+    umap.min.dist=NULL,
+    cluster.snn.num.neighbors=NULL, 
+    cluster.snn.method=NULL,
     cluster.snn.resolution=NULL, 
-    cluster.kmeans.k=10,
-    cluster.kmeans.init="pca-part",
+    cluster.kmeans.k=NULL,
+    cluster.kmeans.init=NULL,
+    drop=TRUE,
     num.threads=1) 
 {
-    neighbors <- build_nn_index(x)
+    # Fixing the parameters.
+    legacy_args <- function(name, legacy, formals, args) {
+        if (!name %in% names(args)) {
+            if (!is.null(legacy)) {
+                args[[name]] <- legacy
+            } else {
+                args[[name]] <- formals[[name]]
+            }
+        }
+        args
+    }
 
-    snn.graph <- umap.init <- tsne.init <- kmeans.info <- NULL
+    default_args <- function(names, formals, args) {
+        for (n in names) {
+            if (!n %in% names(args)) {
+                args[[n]] <- formals[[n]]
+            }
+        }
+        args
+    }
+
     if (do.tsne) {
-        tsne.init <- initialize_tsne(neighbors, tsne.perplexity, interpolate=-1, max_depth=7, nthreads=num.threads) # defaults from runTSNE.chan.
+        tsne.formals <- formals(runTSNE.chan) 
+        tsne.args <- legacy_args("perplexity", tsne.perplexity, tsne.formals, tsne.args)
+        tsne.args <- default_args(c("interpolate", "max.depth", "seed"), tsne.formals, tsne.args)
+    }
+
+    if (do.umap) {
+        umap.formals <- formals(runUMAP.chan) 
+        umap.args <- legacy_args("num.neighbors", umap.num.neighbors, umap.formals, umap.args)
+        umap.args <- legacy_args("min.dist", umap.min.dist, umap.formals, umap.args)
+        umap.args <- default_args("seed", umap.formals, umap.args)
+    }
+
+    if (do.cluster.snn) {
+        cluster.snn.formals <- formals(clusterSNNGraph.chan) 
+        cluster.snn.args <- legacy_args("num.neighbors", cluster.snn.num.neighbors, cluster.snn.formals, cluster.snn.args)
+        cluster.snn.args <- legacy_args("method", cluster.snn.method, cluster.snn.formals, cluster.snn.args)
+        cluster.snn.args <- legacy_args("resolution", cluster.snn.resolution, cluster.snn.formals, cluster.snn.args)
+        cluster.snn.args <- default_args(c("weight.scheme", "steps", "seed"), cluster.snn.formals, cluster.snn.args)
+    }
+
+    if (do.cluster.kmeans) {
+        cluster.kmeans.formals <- formals(clusterKmeans.chan) 
+        cluster.kmeans.args <- legacy_args("k", cluster.kmeans.k, cluster.kmeans.formals, cluster.kmeans.args)
+        cluster.kmeans.args <- legacy_args("init.method", cluster.kmeans.init, cluster.kmeans.formals, cluster.kmeans.args)
+        cluster.kmeans.args <- default_args("seed", cluster.kmeans.formals, cluster.kmeans.args)
+    }
+
+
+    # Generating the neighbors.
+    #
+    # It is tempting to re-use the nearest neighbor search results across the
+    # different steps, subsetting to the number of neighbors required in each step.
+    # However, we do not do so as the approximate nature of the search means that
+    # the subsetting may not yield the same results as a direct search for the
+    # requested number of neighbors.  This can lead to inconsistent behavior where
+    # the results of one step depend on whether other steps were run.
+    all.neighbors <- list() 
+    if (do.tsne || do.umap || do.cluster.snn) {
+        nnbuilt <- build_nn_index(x)
+        if (do.tsne) {
+            all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity=tsne.args$perplexity, num.threads=num.threads, existing=all.neighbors)
+        }
+        if (do.umap) {
+            all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors=umap.args$num.neighbors, num.threads=num.threads, existing=all.neighbors)
+        }
+        if (do.cluster.snn) {
+            all.neighbors <- .find_snn_neighbors(nnbuilt, num.neighbors=cluster.snn.args$num.neighbors, num.threads=num.threads, existing=all.neighbors)
+        }
+    }
+
+    # Figuring out how many jobs we have.
+    all.params <- list()
+    if (do.tsne) {
+        all.params$tsne <- do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, list(.env=NULL)))
     }
     if (do.umap) {
-        umap.init <- initialize_umap(neighbors, umap.num.neighbors, umap.min.dist, num.threads)
+        all.params$umap <- do.call(.umap_sweeper, c(list(all.neighbors), umap.args, list(.env=NULL)))
     }
     if (do.cluster.snn) {
-        cluster.snn.method <- match.arg(cluster.snn.method)
-        cluster.snn.resolution <- .default_resolution(cluster.snn.method, cluster.snn.resolution)
-        snn.graph <- build_graph(neighbors, 
-            k=cluster.snn.num.neighbors, 
-            method=cluster.snn.method, 
-            resolution=cluster.snn.resolution, 
-            nthreads=num.threads)
+        all.params$cluster.snn <- do.call(.snn_sweeper, c(list(all.neighbors), cluster.snn.args, list(.env=NULL)))
     }
     if (do.cluster.kmeans) {
-        kmeans.info <- list(x, cluster.kmeans.k, .kmeans_init_choice(cluster.kmeans.init))
+        all.params$cluster.kmeans <- do.call(.kmeans_sweeper, c(list(x), cluster.kmeans.args, list(.env=NULL)))
     }
 
-    output <- run_all_downstream(snn.graph, umap.init, tsne.init, kmeans.info, num.threads)
-    names(output) <- c("cluster.snn", "umap", "tsne", "cluster.kmeans")
-    output <- output[!vapply(output, is.null, TRUE)]
+    # Setting up the cluster and dispatching the jobs.
+    njobs <- sum(vapply(all.params, nrow, 0L))
+    if (njobs == 1 || num.threads == 1) {
+        env <- new.env()
+        env$results <- list()
+        env$cluster <- NULL
+        env$active <- 0L
+    } else {
+        nnodes <- min(njobs, num.threads)
+        env <- spawnCluster(nnodes)
+        on.exit(stopCluster(env$cluster))
+        num.threads <- max(1, floor(num.threads / nnodes))
+    }
+    common.args <- list(.env=env, num.threads=num.threads)
 
-    if (do.cluster.snn) {
-        output$cluster.snn <- .clean_graph_clustering(cluster.snn.method, output$cluster.snn)
+    if (do.tsne) {
+        do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, common.args))
     }
     if (do.umap) {
-        output$umap <- t(output$umap)
+        do.call(.umap_sweeper, c(list(all.neighbors), umap.args, common.args))
     }
-    if (do.tsne) {
-        output$tsne <- t(output$tsne)
+    if (do.cluster.snn) {
+        do.call(.snn_sweeper, c(list(all.neighbors), cluster.snn.args, common.args))
     }
     if (do.cluster.kmeans) {
-        output$cluster.kmeans <- .clean_kmeans_clustering(output$cluster.kmeans)
+        do.call(.kmeans_sweeper, c(list(x), cluster.kmeans.args, common.args))
     }
 
-    output
+    # Cleaning up.
+    completed <- finishJobs(env)
+    output <- list()
+
+    for (x in names(completed)) {
+        new.name <- switch(x,
+            clusterKmeans="cluster.kmeans",
+            runTSNE="tsne",
+            runUMAP="umap",
+            clusterSNNGraph="cluster.snn",
+            stop("unknown result type '", x, "'")
+        )
+
+        if (drop && length(completed[[x]]) == 1) {
+            store <- completed[[x]][[1]]
+        } else {
+            store <- list(parameters=all.params[[new.name]], results=completed[[x]])
+        }
+        output[[new.name]] <- store
+    }
+
+    output[order(names(output))]
 }

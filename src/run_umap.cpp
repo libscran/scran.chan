@@ -2,30 +2,26 @@
 
 #include "Rcpp.h"
 #include "knncolle.h"
-#include "run_umap.h"
+#include "umappp/Umap.hpp"
 #ifdef _OPENMP
 #include "omp.h"
 #endif
 
 //[[Rcpp::export(rng=false)]]
-SEXP initialize_umap(SEXP nnptr, int num_neighbors, double min_dist, int nthreads) {
+SEXP run_umap(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double min_dist, int seed, int nthreads) {
 #ifdef _OPENMP
     omp_set_num_threads(nthreads);
 #endif
-    KnncollePtr nns(nnptr);
 
-    umap runner;
-    runner.set_num_neighbors(num_neighbors).set_min_dist(min_dist);
-    std::vector<float> embedding(2 * nns->nobs());
-    auto status = runner.initialize(nns.get(), 2, embedding.data());
+    auto neighbors = unpack_neighbors<int, float>(nnidx, nndist);
+    size_t nobs = neighbors.size();
 
-    return Rcpp::XPtr<InitializedUmap>(new InitializedUmap(std::move(runner), std::move(status), std::move(embedding), nns->nobs()));
+    umappp::Umap<float> runner;
+    runner.set_min_dist(min_dist).set_seed(seed);
+    std::vector<float> embedding(2 * nobs);
+    runner.run(std::move(neighbors), 2, embedding.data());
+
+    Rcpp::NumericMatrix output(2, nobs);
+    std::copy(embedding.begin(), embedding.end(), output.begin());
+    return output;
 }
-
-//[[Rcpp::export(rng=false)]]
-SEXP run_umap(SEXP init) {
-    Rcpp::XPtr<InitializedUmap> ptr(init);
-    ptr->run();
-    return ptr->yield();
-}
-

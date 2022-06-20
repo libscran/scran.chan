@@ -4,19 +4,37 @@
 \alias{runUMAP.chan}
 \title{Run UMAP}
 \usage{
-runUMAP.chan(x, num.neighbors = 15, min.dist = 0.01, num.threads = 1)
+runUMAP.chan(
+  x,
+  num.neighbors = 15,
+  min.dist = 0.01,
+  seed = 1234567890,
+  drop = TRUE,
+  num.threads = 1
+)
 }
 \arguments{
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
-\item{num.neighbors}{Integer scalar specifying the number of neighbors to use in the UMAP algorithm.}
+\item{num.neighbors}{Integer scalar specifying the number of neighbors to use in the UMAP algorithm.
+This may also be a vector to perform a parameter sweep.}
 
-\item{min.dist}{Numeric scalar specifying the minimum distance between points.}
+\item{min.dist}{Numeric scalar specifying the minimum distance between points.
+This may also be a vector to perform a parameter sweep.}
+
+\item{seed}{Integer scalar specifying the seed to use. 
+This may also be a vector to perform a parameter sweep.}
+
+\item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
-A numeric matrix where rows are cells and columns are the two dimensions of the embedding.
+By default, a numeric matrix where rows are cells and columns are the two dimensions of the embedding.
+
+If any of the parameters are vectors or \code{drop = FALSE}, we assume that the user is requesting a parameter sweep.
+A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
+and \code{results}, a list of numeric matrices of length equal to the number of rows of \code{parameters}, containing the embeddings for each combination.
 }
 \description{
 Compute the uniform manifold approximation and projection.
@@ -25,6 +43,13 @@ Compute the uniform manifold approximation and projection.
 x <- t(as.matrix(iris[,1:4]))
 embedding <- runUMAP.chan(x)
 plot(embedding[,1], embedding[,2], col=iris[,5])
+
+# Parameter sweep mode.
+swept <- runUMAP.chan(x, 
+    num.neighbors=c(10, 20),
+    seed=c(123, 456))
+swept$parameters
+head(swept$results[[1]])
 
 }
 \author{

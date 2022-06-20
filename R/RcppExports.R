@@ -9,16 +9,16 @@ build_nn_index <- function(data) {
     .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data)
 }
 
-cluster_kmeans <- function(data, nclusters, init_method, nthreads) {
-    .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, init_method, nthreads)
+find_nearest_neighbors <- function(index, k, nthreads) {
+    .Call('_scran_chan_find_nearest_neighbors', PACKAGE = 'scran.chan', index, k, nthreads)
 }
 
-build_graph <- function(nnptr, k, method, resolution, nthreads) {
-    .Call('_scran_chan_build_graph', PACKAGE = 'scran.chan', nnptr, k, method, resolution, nthreads)
+cluster_kmeans <- function(data, nclusters, init_method, seed, nthreads) {
+    .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, init_method, seed, nthreads)
 }
 
-cluster_graph <- function(ptr) {
-    .Call('_scran_chan_cluster_graph', PACKAGE = 'scran.chan', ptr)
+cluster_snn_graph <- function(nnidx, weight_scheme, method, resolution, steps, seed, nthreads) {
+    .Call('_scran_chan_cluster_snn_graph', PACKAGE = 'scran.chan', nnidx, weight_scheme, method, resolution, steps, seed, nthreads)
 }
 
 filter_cells <- function(x, discard) {
@@ -97,10 +97,6 @@ tatami_columns <- function(x, columns, first, last) {
     .Call('_scran_chan_tatami_columns', PACKAGE = 'scran.chan', x, columns, first, last)
 }
 
-run_all_downstream <- function(clust_init, umap_init, tsne_init, kmeans_init, nthreads) {
-    .Call('_scran_chan_run_all_downstream', PACKAGE = 'scran.chan', clust_init, umap_init, tsne_init, kmeans_init, nthreads)
-}
-
 run_blocked_pca <- function(x, ndim, batch, features, rotation, nthreads) {
     .Call('_scran_chan_run_blocked_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, rotation, nthreads)
 }
@@ -113,20 +109,16 @@ run_pca <- function(x, ndim, features, rotation, nthreads) {
     .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, rotation, nthreads)
 }
 
-initialize_tsne <- function(nnptr, perplexity, interpolate, max_depth, nthreads) {
-    .Call('_scran_chan_initialize_tsne', PACKAGE = 'scran.chan', nnptr, perplexity, interpolate, max_depth, nthreads)
+run_tsne <- function(nnidx, nndist, perplexity, interpolate, max_depth, seed, nthreads) {
+    .Call('_scran_chan_run_tsne', PACKAGE = 'scran.chan', nnidx, nndist, perplexity, interpolate, max_depth, seed, nthreads)
 }
 
-run_tsne <- function(init, nthreads) {
-    .Call('_scran_chan_run_tsne', PACKAGE = 'scran.chan', init, nthreads)
+perplexity_to_neighbors <- function(p) {
+    .Call('_scran_chan_perplexity_to_neighbors', PACKAGE = 'scran.chan', p)
 }
 
-initialize_umap <- function(nnptr, num_neighbors, min_dist, nthreads) {
-    .Call('_scran_chan_initialize_umap', PACKAGE = 'scran.chan', nnptr, num_neighbors, min_dist, nthreads)
-}
-
-run_umap <- function(init) {
-    .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', init)
+run_umap <- function(nnidx, nndist, min_dist, seed, nthreads) {
+    .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, nthreads)
 }
 
 score_markers <- function(x, groups, batch, lfc) {
