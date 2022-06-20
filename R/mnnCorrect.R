@@ -32,7 +32,7 @@
 #' str(corrected)
 #'
 #' @export
-mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1, order=NULL, reference.method=c("max-size", "max-variance", "max-rss", "input")) {
+mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input")) {
     batch <- transform_factor(batch, n = ncol(x))
 
     if (!is.null(order)) {
@@ -43,7 +43,7 @@ mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1, order=NULL, 
         order <- order - 1L
     }
 
-    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads, order=order, ref_policy = match.arg(reference.method))
+    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads, order=order, ref_policy = match.arg(reference.policy))
     output$merge.order <- batch$names[output$merge.order + 1L]
     output
 }
