@@ -1,7 +1,7 @@
 #include "config.h"
 
 #include "Rcpp.h"
-#include "scran/quality_control/PerCellQCFilters.hpp"
+#include "scran/quality_control/PerCellRnaQcFilters.hpp"
 #include "ResolvedBatch.h"
 
 //[[Rcpp::export(rng=false)]]

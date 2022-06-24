@@ -1,7 +1,7 @@
 #include "config.h"
 
 #include "Rcpp.h"
-#include "scran/quality_control/PerCellQCMetrics.hpp"
+#include "scran/quality_control/PerCellRnaQcMetrics.hpp"
 #include "tatamize.h"
 #ifdef _OPENMP
 #include "omp.h"
