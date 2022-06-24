@@ -6,6 +6,7 @@ project(dependencies
     LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(IGRAPH_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 
 include(FetchContent)
 
