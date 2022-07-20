@@ -1,12 +1,13 @@
 #' @importFrom parallel makeCluster
 spawnCluster <- function(n) {
-    if (.Platform$OS.type == "windows") {
-        type <- "PSOCK"
-    } else {
-        type <- "FORK"
-    }
     env <- new.env()
-    env$cluster <- makeCluster(n, type=type)
+
+    # Don't attempt to be smart and use a FORK cluster on Unix-likes to squeeze
+    # out more efficiency, as forking does not play nice with OpenMP; see
+    # https://stackoverflow.com/questions/49049388/understanding-openmp-shortcomings-regarding-fork.
+    # Just keep the PSOCK default.
+    env$cluster <- makeCluster(n)
+
     env$results <- list()
     env$active <- 0L
     env
