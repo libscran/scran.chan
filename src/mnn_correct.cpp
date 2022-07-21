@@ -13,7 +13,7 @@ Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, 
 #endif
 
     mnncorrect::MnnCorrect<> runner;
-    runner.set_num_neighbors(k).set_num_mads(nmads);
+    runner.set_approximate(true).set_num_neighbors(k).set_num_mads(nmads);
 
     std::vector<int> ordering;
     const int* optr = NULL;
