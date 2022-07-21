@@ -57,10 +57,10 @@
 #' \url{https://ltla.github.io/libscran/classscran_1_1ScoreMarkers.html}
 #'
 #' @export
-scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0) {
+scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1) {
     groups <- transform_factor(groups, n = tatami_ncol(x))
     batch <- transform_factor(batch, n = tatami_ncol(x))
-    output <- score_markers(x$pointer, groups$index, batch$index, lfc=lfc)
+    output <- score_markers(x$pointer, groups$index, batch$index, lfc=lfc, nthreads=num.threads)
 
     formatted <- vector("list", length(groups$names))
     for (i in seq_along(formatted)) {

@@ -121,7 +121,7 @@ run_umap <- function(nnidx, nndist, min_dist, seed, nthreads) {
     .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, nthreads)
 }
 
-score_markers <- function(x, groups, batch, lfc) {
-    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, lfc)
+score_markers <- function(x, groups, batch, lfc, nthreads) {
+    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, lfc, nthreads)
 }
 

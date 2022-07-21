@@ -3,16 +3,9 @@
 #include "scran/aggregation/AggregateAcrossCells.hpp"
 #include "Rcpp.h"
 #include "tatamize.h"
-#ifdef _OPENMP
-#include "omp.h"
-#endif
 
 //[[Rcpp::export(rng=false)]]
 SEXP aggregate_across_cells(SEXP x, Rcpp::List groupings, int nthreads) {
-#ifdef _OPENMP
-    omp_set_num_threads(nthreads);
-#endif
-
     auto mat = extract_NumericMatrix_shared(x);
     size_t NC = mat->ncol();
 
@@ -57,6 +50,7 @@ SEXP aggregate_across_cells(SEXP x, Rcpp::List groupings, int nthreads) {
     }
 
     scran::AggregateAcrossCells runner;
+    runner.set_num_threads(nthreads);
     runner.run(mat.get(), fptr, sptrs, dptrs);
 
     return Rcpp::List::create(

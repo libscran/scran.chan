@@ -9,15 +9,8 @@
 #include "vector_to_pointers.h"
 #include "ResolvedBatch.h"
 
-#ifdef _OPENMP
-#include "omp.h"
-#endif
-
 //[[Rcpp::export(rng=false)]]
-Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, double lfc) {
-#ifdef _openmp
-    omp_set_num_threads(nthreads);
-#endif
+Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, double lfc, int nthreads) {
     auto mat = extract_NumericMatrix(x);
     size_t NR = mat->nrow();
     const int ngroups = (groups.size() ? *std::max_element(groups.begin(), groups.end()) + 1 : 1);
@@ -83,6 +76,7 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
 
     // Running the marker scoring.
     scran::ScoreMarkers runner;
+    runner.set_num_threads(nthreads);
     runner.set_threshold(lfc);
     runner.run_blocked(mat, static_cast<const int*>(groups.begin()), bptr, std::move(mptrs), std::move(dptrs), std::move(cptrs), std::move(aptrs), std::move(lptrs), std::move(ddptrs));
 
