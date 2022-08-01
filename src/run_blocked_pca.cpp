@@ -8,18 +8,10 @@
 #include "ResolvedFeatures.h"
 #include "format_pca_output.h"
 
-#ifdef _OPENMP
-#include "omp.h"
-#endif
-
 //[[Rcpp::export(rng=false)]]
 Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool rotation, int nthreads) {
-#ifdef _openmp
-    omp_set_num_threads(nthreads);
-#endif
-
     scran::BlockedPCA pcs;
-    pcs.set_rank(ndim);
+    pcs.set_rank(ndim).set_num_threads(nthreads);
 
     ResolvedFeatures feat(features);
     const int* fptr = feat.ptr;
