@@ -86,32 +86,34 @@ BEGIN_RCPP
 END_RCPP
 }
 // initialize_from_CSC
-SEXP initialize_from_CSC(Rcpp::RObject x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol, bool forced);
-RcppExport SEXP _scran_chan_initialize_from_CSC(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP forcedSEXP) {
+SEXP initialize_from_CSC(Rcpp::RObject x, Rcpp::RObject i, Rcpp::RObject p, int nrow, int ncol, bool no_copy, bool forced);
+RcppExport SEXP _scran_chan_initialize_from_CSC(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP no_copySEXP, SEXP forcedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::RObject >::type x(xSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type i(iSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type i(iSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
     Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< bool >::type no_copy(no_copySEXP);
     Rcpp::traits::input_parameter< bool >::type forced(forcedSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_from_CSC(x, i, p, nrow, ncol, forced));
+    rcpp_result_gen = Rcpp::wrap(initialize_from_CSC(x, i, p, nrow, ncol, no_copy, forced));
     return rcpp_result_gen;
 END_RCPP
 }
 // initialize_from_CSR
-SEXP initialize_from_CSR(Rcpp::RObject x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol, bool forced);
-RcppExport SEXP _scran_chan_initialize_from_CSR(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP forcedSEXP) {
+SEXP initialize_from_CSR(Rcpp::RObject x, Rcpp::RObject i, Rcpp::RObject p, int nrow, int ncol, bool no_copy, bool forced);
+RcppExport SEXP _scran_chan_initialize_from_CSR(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP no_copySEXP, SEXP forcedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::RObject >::type x(xSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type i(iSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type p(pSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type i(iSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
     Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< bool >::type no_copy(no_copySEXP);
     Rcpp::traits::input_parameter< bool >::type forced(forcedSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_from_CSR(x, i, p, nrow, ncol, forced));
+    rcpp_result_gen = Rcpp::wrap(initialize_from_CSR(x, i, p, nrow, ncol, no_copy, forced));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -184,38 +186,6 @@ BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type ptr0(ptr0SEXP);
     rcpp_result_gen = Rcpp::wrap(finalize_all_blocks_CSR(ptr0));
-    return rcpp_result_gen;
-END_RCPP
-}
-// initialize_from_dgCMatrix
-SEXP initialize_from_dgCMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol, bool no_copy, bool force_integer);
-RcppExport SEXP _scran_chan_initialize_from_dgCMatrix(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP no_copySEXP, SEXP force_integerSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type i(iSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
-    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
-    Rcpp::traits::input_parameter< bool >::type no_copy(no_copySEXP);
-    Rcpp::traits::input_parameter< bool >::type force_integer(force_integerSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_from_dgCMatrix(x, i, p, nrow, ncol, no_copy, force_integer));
-    return rcpp_result_gen;
-END_RCPP
-}
-// initialize_from_dgRMatrix
-SEXP initialize_from_dgRMatrix(Rcpp::NumericVector x, Rcpp::IntegerVector i, Rcpp::IntegerVector p, int nrow, int ncol, bool no_copy, bool force_integer);
-RcppExport SEXP _scran_chan_initialize_from_dgRMatrix(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP no_copySEXP, SEXP force_integerSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type i(iSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
-    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
-    Rcpp::traits::input_parameter< bool >::type no_copy(no_copySEXP);
-    Rcpp::traits::input_parameter< bool >::type force_integer(force_integerSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_from_dgRMatrix(x, i, p, nrow, ncol, no_copy, force_integer));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -430,16 +400,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 5},
     {"_scran_chan_cluster_snn_graph", (DL_FUNC) &_scran_chan_cluster_snn_graph, 7},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
-    {"_scran_chan_initialize_from_CSC", (DL_FUNC) &_scran_chan_initialize_from_CSC, 6},
-    {"_scran_chan_initialize_from_CSR", (DL_FUNC) &_scran_chan_initialize_from_CSR, 6},
+    {"_scran_chan_initialize_from_CSC", (DL_FUNC) &_scran_chan_initialize_from_CSC, 7},
+    {"_scran_chan_initialize_from_CSR", (DL_FUNC) &_scran_chan_initialize_from_CSR, 7},
     {"_scran_chan_initialize_from_blocks_CSC", (DL_FUNC) &_scran_chan_initialize_from_blocks_CSC, 3},
     {"_scran_chan_initialize_from_blocks_CSR", (DL_FUNC) &_scran_chan_initialize_from_blocks_CSR, 3},
     {"_scran_chan_add_new_block_CSC", (DL_FUNC) &_scran_chan_add_new_block_CSC, 5},
     {"_scran_chan_add_new_block_CSR", (DL_FUNC) &_scran_chan_add_new_block_CSR, 5},
     {"_scran_chan_finalize_all_blocks_CSC", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSC, 1},
     {"_scran_chan_finalize_all_blocks_CSR", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSR, 1},
-    {"_scran_chan_initialize_from_dgCMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgCMatrix, 7},
-    {"_scran_chan_initialize_from_dgRMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgRMatrix, 7},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 5},
     {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 7},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},

@@ -23,7 +23,8 @@ Suggests:
     SummarizedExperiment,
     SingleCellExperiment,
     BiocParallel,
-    scRNAseq
+    scRNAseq,
+    rhdf5
 VignetteBuilder: knitr
 SystemRequirements: C++17, git, CMake
 RoxygenNote: 7.2.0

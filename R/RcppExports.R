@@ -25,12 +25,12 @@ filter_cells <- function(x, discard) {
     .Call('_scran_chan_filter_cells', PACKAGE = 'scran.chan', x, discard)
 }
 
-initialize_from_CSC <- function(x, i, p, nrow, ncol, forced) {
-    .Call('_scran_chan_initialize_from_CSC', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, forced)
+initialize_from_CSC <- function(x, i, p, nrow, ncol, no_copy, forced) {
+    .Call('_scran_chan_initialize_from_CSC', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, forced)
 }
 
-initialize_from_CSR <- function(x, i, p, nrow, ncol, forced) {
-    .Call('_scran_chan_initialize_from_CSR', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, forced)
+initialize_from_CSR <- function(x, i, p, nrow, ncol, no_copy, forced) {
+    .Call('_scran_chan_initialize_from_CSR', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, forced)
 }
 
 initialize_from_blocks_CSC <- function(nr, nc, is_integer) {
@@ -55,14 +55,6 @@ finalize_all_blocks_CSC <- function(ptr0) {
 
 finalize_all_blocks_CSR <- function(ptr0) {
     .Call('_scran_chan_finalize_all_blocks_CSR', PACKAGE = 'scran.chan', ptr0)
-}
-
-initialize_from_dgCMatrix <- function(x, i, p, nrow, ncol, no_copy, force_integer) {
-    .Call('_scran_chan_initialize_from_dgCMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, force_integer)
-}
-
-initialize_from_dgRMatrix <- function(x, i, p, nrow, ncol, no_copy, force_integer) {
-    .Call('_scran_chan_initialize_from_dgRMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, force_integer)
 }
 
 log_norm_counts <- function(x, size_factors, batch, batch_mode, nthreads) {
