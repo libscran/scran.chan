@@ -11,6 +11,7 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
+#' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' 
 #' @return 
 #' By default, a numeric matrix where rows are cells and columns are the two dimensions of the embedding.
@@ -34,8 +35,8 @@
 #' head(swept$results[[1]])
 #'
 #' @export
-runUMAP.chan <- function(x, num.neighbors=15, min.dist=0.01, seed=1234567890, drop=TRUE, num.threads=1) {
-    nnbuilt <- build_nn_index(x)
+runUMAP.chan <- function(x, num.neighbors=15, min.dist=0.01, seed=1234567890, drop=TRUE, approximate=TRUE, num.threads=1) {
+    nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
     sweep <- function(...) .umap_sweeper(all.neighbors, num.neighbors=num.neighbors, min.dist=min.dist, seed=seed, ...)
     .sweep_wrapper(sweep, "runUMAP", num.threads=num.threads, drop=drop)

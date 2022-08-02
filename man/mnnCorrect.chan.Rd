@@ -9,9 +9,10 @@ mnnCorrect.chan(
   batch,
   k = 15,
   nmads = 3,
-  num.threads = 1,
   order = NULL,
-  reference.policy = c("max-size", "max-variance", "max-rss", "input")
+  reference.policy = c("max-size", "max-variance", "max-rss", "input"),
+  approximate = FALSE,
+  num.threads = 1
 )
 }
 \arguments{
@@ -24,14 +25,18 @@ typically generated from \code{\link{runPCA.chan}}.}
 
 \item{nmads}{Numeric scalar specifying the number of MADs to use when computing correction vectors.}
 
-\item{num.threads}{Integer scalar specifying the number of threads to use.}
-
 \item{order}{Vector containing levels of \code{batch} in the desired merge order.
 If \code{NULL}, a suitable merge order is automatically determined.}
 
 \item{reference.policy}{String specifying the policy to use to choose the first reference batch.
-This can be based on the largest batch (\code{"max-size"}), the most variable batch (\code{"max-variance"}), some combination of those two (\code{"max-rss"}) or the first specified input (\code{"input"}).
+This can be based on the largest batch (\code{"max-size"}), the most variable batch (\code{"max-variance"}), 
+some combination of those two (\code{"max-rss"}) or the first specified input (\code{"input"}).
 Only used for automatic merges, i.e., when \code{order=NULL}.}
+
+\item{approximate}{Logical scalar specifying whether to perform an approximate neighbor search.
+Set to \code{FALSE} for historical reasons.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 List containing:

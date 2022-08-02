@@ -11,6 +11,7 @@ runTSNE.chan(
   max.depth = 7,
   seed = 42,
   drop = TRUE,
+  approximate = TRUE,
   num.threads = 1
 )
 }
@@ -32,6 +33,8 @@ This may also be a vector to perform a parameter sweep.}
 This may also be a vector to perform a parameter sweep.}
 
 \item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.}
+
+\item{approximate}{Logical scalar specifying whether to perform an approximate neighbor search.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }

@@ -2,13 +2,17 @@
 
 #include "Rcpp.h"
 #include "knncolle.h"
-#include "knncolle/Annoy/Annoy.hpp"
+#include "knncolle/knncolle.hpp"
 
 // [[Rcpp::export(rng=false)]]
-SEXP build_nn_index(Rcpp::NumericMatrix data) {
+SEXP build_nn_index(Rcpp::NumericMatrix data, bool approximate) {
     size_t nr = data.nrow(), nc = data.ncol();
     auto ptr = static_cast<const double*>(data.begin());
-    return KnncollePtr(new knncolle::AnnoyEuclidean<int, float>(nr, nc, ptr));
+    if (approximate) {
+        return KnncollePtr(new knncolle::AnnoyEuclidean<int, float>(nr, nc, ptr));
+    } else {
+        return KnncollePtr(new knncolle::VpTreeEuclidean<int, float>(nr, nc, ptr));
+    }
 }
 
 // [[Rcpp::export(rng=false)]]

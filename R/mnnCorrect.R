@@ -11,8 +11,11 @@
 #' @param order Vector containing levels of \code{batch} in the desired merge order.
 #' If \code{NULL}, a suitable merge order is automatically determined.
 #' @param reference.policy String specifying the policy to use to choose the first reference batch.
-#' This can be based on the largest batch (\code{"max-size"}), the most variable batch (\code{"max-variance"}), some combination of those two (\code{"max-rss"}) or the first specified input (\code{"input"}).
+#' This can be based on the largest batch (\code{"max-size"}), the most variable batch (\code{"max-variance"}), 
+#' some combination of those two (\code{"max-rss"}) or the first specified input (\code{"input"}).
 #' Only used for automatic merges, i.e., when \code{order=NULL}. 
+#' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
+#' Set to \code{FALSE} for historical reasons.
 #'
 #' @return List containing:
 #' \itemize{
@@ -32,7 +35,7 @@
 #' str(corrected)
 #'
 #' @export
-mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input")) {
+mnnCorrect.chan <- function(x, batch, k=15, nmads=3, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input"), approximate=FALSE, num.threads=1) {
     batch <- transform_factor(batch, n = ncol(x))
 
     if (!is.null(order)) {
@@ -43,7 +46,7 @@ mnnCorrect.chan <- function(x, batch, k=15, nmads=3, num.threads=1, order=NULL, 
         order <- order - 1L
     }
 
-    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads, order=order, ref_policy = match.arg(reference.policy))
+    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads, order=order, ref_policy=match.arg(reference.policy), approximate=approximate)
     output$merge.order <- batch$names[output$merge.order + 1L]
     output
 }

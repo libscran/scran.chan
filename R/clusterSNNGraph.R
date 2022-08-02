@@ -18,6 +18,7 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.
+#' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' 
 #' @return By default, a list containing \code{membership}, an integer vector with cluster assignments for each cell.
 #' Each method may also return additional elements.
@@ -70,9 +71,10 @@ clusterSNNGraph.chan <- function(x,
     steps=4,
     seed=42,
     drop=TRUE,
+    approximate=TRUE,
     num.threads=1)
 {
-    nnbuilt <- build_nn_index(x)
+    nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_snn_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
     sweep <- function(...) .snn_sweeper(all.neighbors, num.neighbors=num.neighbors, weight.scheme=weight.scheme, method=method, resolution=resolution, steps=steps, seed=seed, ...)
     .sweep_wrapper(sweep, "clusterSNNGraph", num.threads=num.threads, drop=drop)
@@ -92,7 +94,7 @@ clusterSNNGraph.chan <- function(x,
 
 .snn.weight.choices <- c("rank", "number", "jaccard")
 
-clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resolution, steps, seed, num.threads) {
+clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resolution, steps, seed, approximate, num.threads) {
     clustering <- cluster_snn_graph(
         nnidx=neighbors$index,
         weight_scheme=weight.scheme,

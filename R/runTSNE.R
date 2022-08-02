@@ -15,6 +15,7 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
+#' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' 
 #' @return 
 #' By default, a numeric matrix where rows are cells and columns are the two dimensions of the embedding.
@@ -38,8 +39,8 @@
 #' head(swept$results[[1]])
 #' 
 #' @export
-runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, seed=42, drop=TRUE, num.threads=1) {
-    nnbuilt <- build_nn_index(x)
+runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, seed=42, drop=TRUE, approximate=TRUE, num.threads=1) {
+    nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity, num.threads=num.threads)
     sweep <- function(...) .tsne_sweeper(all.neighbors, perplexity=perplexity, interpolate=interpolate, max.depth=max.depth, seed=seed, ...)
     .sweep_wrapper(sweep, "runTSNE", num.threads=num.threads, drop=drop)

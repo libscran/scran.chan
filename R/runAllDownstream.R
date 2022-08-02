@@ -17,6 +17,7 @@
 #' @param cluster.kmeans.k,cluster.kmeans.init Deprecated, use \code{cluster.kmeans.args} instead. 
 #' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Deprecated, use \code{cluster.snn.args} instead.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
+#' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
 #' @return A list containing \code{"cluster.snn"}, \code{"cluster.kmeans"}, \code{"umap"} and \code{"tsne"},
@@ -52,6 +53,7 @@ runAllDownstream <- function(x,
     cluster.kmeans.k=NULL,
     cluster.kmeans.init=NULL,
     drop=TRUE,
+    approximate=TRUE, 
     num.threads=1) 
 {
     # Fixing the parameters.
@@ -114,7 +116,7 @@ runAllDownstream <- function(x,
     # the results of one step depend on whether other steps were run.
     all.neighbors <- list() 
     if (do.tsne || do.umap || do.cluster.snn) {
-        nnbuilt <- build_nn_index(x)
+        nnbuilt <- build_nn_index(x, approximate=approximate)
         if (do.tsne) {
             all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity=tsne.args$perplexity, num.threads=num.threads, existing=all.neighbors)
         }

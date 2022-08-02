@@ -5,8 +5,8 @@ aggregate_across_cells <- function(x, groupings, nthreads) {
     .Call('_scran_chan_aggregate_across_cells', PACKAGE = 'scran.chan', x, groupings, nthreads)
 }
 
-build_nn_index <- function(data) {
-    .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data)
+build_nn_index <- function(data, approximate) {
+    .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data, approximate)
 }
 
 find_nearest_neighbors <- function(index, k, nthreads) {
@@ -61,8 +61,8 @@ log_norm_counts <- function(x, size_factors, batch, batch_mode, nthreads) {
     .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors, batch, batch_mode, nthreads)
 }
 
-mnn_correct <- function(x, batch, k, nmads, nthreads, order, ref_policy) {
-    .Call('_scran_chan_mnn_correct', PACKAGE = 'scran.chan', x, batch, k, nmads, nthreads, order, ref_policy)
+mnn_correct <- function(x, batch, k, nmads, nthreads, order, ref_policy, approximate) {
+    .Call('_scran_chan_mnn_correct', PACKAGE = 'scran.chan', x, batch, k, nmads, nthreads, order, ref_policy, approximate)
 }
 
 model_gene_var <- function(x, batch, span, nthreads) {

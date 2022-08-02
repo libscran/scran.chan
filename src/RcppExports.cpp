@@ -23,12 +23,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // build_nn_index
-SEXP build_nn_index(Rcpp::NumericMatrix data);
-RcppExport SEXP _scran_chan_build_nn_index(SEXP dataSEXP) {
+SEXP build_nn_index(Rcpp::NumericMatrix data, bool approximate);
+RcppExport SEXP _scran_chan_build_nn_index(SEXP dataSEXP, SEXP approximateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_nn_index(data));
+    Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
+    rcpp_result_gen = Rcpp::wrap(build_nn_index(data, approximate));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -204,8 +205,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // mnn_correct
-Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy);
-RcppExport SEXP _scran_chan_mnn_correct(SEXP xSEXP, SEXP batchSEXP, SEXP kSEXP, SEXP nmadsSEXP, SEXP nthreadsSEXP, SEXP orderSEXP, SEXP ref_policySEXP) {
+Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy, bool approximate);
+RcppExport SEXP _scran_chan_mnn_correct(SEXP xSEXP, SEXP batchSEXP, SEXP kSEXP, SEXP nmadsSEXP, SEXP nthreadsSEXP, SEXP orderSEXP, SEXP ref_policySEXP, SEXP approximateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
@@ -215,7 +216,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type order(orderSEXP);
     Rcpp::traits::input_parameter< std::string >::type ref_policy(ref_policySEXP);
-    rcpp_result_gen = Rcpp::wrap(mnn_correct(x, batch, k, nmads, nthreads, order, ref_policy));
+    Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
+    rcpp_result_gen = Rcpp::wrap(mnn_correct(x, batch, k, nmads, nthreads, order, ref_policy, approximate));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -395,7 +397,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_aggregate_across_cells", (DL_FUNC) &_scran_chan_aggregate_across_cells, 3},
-    {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 1},
+    {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 2},
     {"_scran_chan_find_nearest_neighbors", (DL_FUNC) &_scran_chan_find_nearest_neighbors, 3},
     {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 5},
     {"_scran_chan_cluster_snn_graph", (DL_FUNC) &_scran_chan_cluster_snn_graph, 7},
@@ -409,7 +411,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_finalize_all_blocks_CSC", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSC, 1},
     {"_scran_chan_finalize_all_blocks_CSR", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSR, 1},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 5},
-    {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 7},
+    {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 8},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 5},
     {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 3},

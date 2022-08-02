@@ -4,9 +4,9 @@
 #include "Rcpp.h"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy) {
+Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy, bool approximate) {
     mnncorrect::MnnCorrect<> runner;
-    runner.set_approximate(true).set_num_neighbors(k).set_num_mads(nmads);
+    runner.set_approximate(approximate).set_num_neighbors(k).set_num_mads(nmads);
     runner.set_num_threads(nthreads);
 
     std::vector<int> ordering;
