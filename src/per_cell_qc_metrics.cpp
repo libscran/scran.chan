@@ -3,16 +3,9 @@
 #include "Rcpp.h"
 #include "scran/quality_control/PerCellRnaQcMetrics.hpp"
 #include "tatamize.h"
-#ifdef _OPENMP
-#include "omp.h"
-#endif
 
 // [[Rcpp::export(rng=false)]]
 Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads) {
-#ifdef _openmp
-    omp_set_num_threads(nthreads);
-#endif
-    
     std::vector<const int*> in_sub_ptrs;
     std::vector<Rcpp::LogicalVector> in_subsets;
 
@@ -40,6 +33,7 @@ Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads) {
 
     // Running QC code.
     scran::PerCellQCMetrics qc;
+    qc.set_num_threads(nthreads);
     qc.run(mat, 
         std::move(in_sub_ptrs), 
         static_cast<double*>(sums.begin()),

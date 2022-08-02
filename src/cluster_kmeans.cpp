@@ -3,9 +3,6 @@
 #include "Rcpp.h"
 #include "scran/scran.hpp"
 #include "kmeans/InitializePCAPartition.hpp"
-#ifdef _OPENMP
-#include "omp.h"
-#endif
 
 #include <memory>
 #include <string>
@@ -13,10 +10,6 @@
 
 //[[Rcpp::export(rng=false)]]
 SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, std::string init_method, int seed, int nthreads) {
-#ifdef _OPENMP
-    omp_set_num_threads(nthreads);
-#endif
-
     int ndim = data.nrow();
     size_t nobs = data.ncol();
     auto ptr = static_cast<const double*>(data.begin());
@@ -33,7 +26,9 @@ SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, std::string init_me
     if (init_method == "random") {
         iptr.reset(new kmeans::InitializeRandom);
     } else if (init_method == "kmeans++") {
-        iptr.reset(new kmeans::InitializeKmeansPP);
+        auto ptr = new kmeans::InitializeKmeansPP;
+        ptr->set_num_threads(nthreads);
+        iptr.reset(ptr);;
     } else if (init_method == "pca-part") {
         iptr.reset(new kmeans::InitializePCAPartition);
     } else {
@@ -41,6 +36,7 @@ SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, std::string init_me
     }
 
     scran::ClusterKmeans runner;
+    runner.set_num_threads(nthreads);
     auto out = runner.run(ndim, nobs, ptr, nclusters, center_ptr, cluster_ptr, iptr.get());
     std::copy(out.withinss.begin(), out.withinss.end(), ss_ptr);
 

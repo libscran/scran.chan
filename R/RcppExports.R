@@ -65,8 +65,8 @@ initialize_from_dgRMatrix <- function(x, i, p, nrow, ncol, no_copy, force_intege
     .Call('_scran_chan_initialize_from_dgRMatrix', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, force_integer)
 }
 
-log_norm_counts <- function(x, size_factors, batch, batch_mode) {
-    .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors, batch, batch_mode)
+log_norm_counts <- function(x, size_factors, batch, batch_mode, nthreads) {
+    .Call('_scran_chan_log_norm_counts', PACKAGE = 'scran.chan', x, size_factors, batch, batch_mode, nthreads)
 }
 
 mnn_correct <- function(x, batch, k, nmads, nthreads, order, ref_policy) {
@@ -121,7 +121,7 @@ run_umap <- function(nnidx, nndist, min_dist, seed, nthreads) {
     .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, nthreads)
 }
 
-score_markers <- function(x, groups, batch, lfc) {
-    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, lfc)
+score_markers <- function(x, groups, batch, lfc, nthreads) {
+    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, lfc, nthreads)
 }
 

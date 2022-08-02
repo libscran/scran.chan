@@ -8,17 +8,11 @@
 
 #include "ResolvedBatch.h"
 #include "vector_to_pointers.h"
-#ifdef _OPENMP
-#include "omp.h"
-#endif
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::List model_gene_var(SEXP x, Rcpp::Nullable<Rcpp::IntegerVector> batch, double span, int nthreads) {
-#ifdef _OPENMP
-    omp_set_num_threads(nthreads);
-#endif
-
     scran::ModelGeneVar mvar;
+    mvar.set_num_threads(nthreads);
     mvar.set_span(span);
 
     auto mat = extract_NumericMatrix(x);

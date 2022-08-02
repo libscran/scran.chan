@@ -13,28 +13,28 @@ include(FetchContent)
 FetchContent_Declare(
   scran
   GIT_REPOSITORY https://github.com/LTLA/libscran
-  GIT_TAG 899efd34c08ef76545ad5a9b6b5eec5860281788
+  GIT_TAG cb4e937cd978e564855870f800eeffca21f19fc3
 )
 FetchContent_MakeAvailable(scran)
 
 FetchContent_Declare(
   mnncorrect 
   GIT_REPOSITORY https://github.com/LTLA/CppMnnCorrect
-  GIT_TAG ba8c2f5987e1a0eb94b6e0859040301b13e14acf
+  GIT_TAG 7c00002b315d6a7f9d6bead1fce307d539e911ce
 )
 FetchContent_MakeAvailable(mnncorrect)
 
 FetchContent_Declare(
   qdtsne
   GIT_REPOSITORY https://github.com/LTLA/qdtsne
-  GIT_TAG 2a6fd4d78180625389dd75637939d74929b5668d
+  GIT_TAG 9309c2e24180218363a5d898572051aa74a54377
 )
 FetchContent_MakeAvailable(qdtsne)
 
 FetchContent_Declare(
   umappp 
   GIT_REPOSITORY https://github.com/LTLA/umappp
-  GIT_TAG e47f81b55c6adda777d22f361ec5def89248e5d7
+  GIT_TAG ebcf025444fc709c76485cbd1d943d8e13b3507b 
 )
 FetchContent_MakeAvailable(umappp)
 

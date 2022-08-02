@@ -7,6 +7,7 @@
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 #' Alternatively \code{NULL} if all cells belong to the same batch.
 #' @param lfc Non-negative numeric scalar specifying the log-fold change threshold to use.
+#' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return A list containing \code{statistics}, a list of data frame of marker statistics. 
 #' Each data frame corresponds to a group in \code{groups} and contains:
@@ -57,10 +58,10 @@
 #' \url{https://ltla.github.io/libscran/classscran_1_1ScoreMarkers.html}
 #'
 #' @export
-scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0) {
+scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1) {
     groups <- transform_factor(groups, n = tatami_ncol(x))
     batch <- transform_factor(batch, n = tatami_ncol(x))
-    output <- score_markers(x$pointer, groups$index, batch$index, lfc=lfc)
+    output <- score_markers(x$pointer, groups$index, batch$index, lfc=lfc, nthreads=num.threads)
 
     formatted <- vector("list", length(groups$names))
     for (i in seq_along(formatted)) {

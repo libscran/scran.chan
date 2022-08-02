@@ -2,18 +2,12 @@
 
 #include "mnncorrect/MnnCorrect.hpp"
 #include "Rcpp.h"
-#ifdef _OPENMP
-#include "omp.h"
-#endif
 
 //[[Rcpp::export(rng=false)]]
 Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy) {
-#ifdef _OPENMP
-    omp_set_num_threads(nthreads);
-#endif
-
     mnncorrect::MnnCorrect<> runner;
     runner.set_approximate(true).set_num_neighbors(k).set_num_mads(nmads);
+    runner.set_num_threads(nthreads);
 
     std::vector<int> ordering;
     const int* optr = NULL;

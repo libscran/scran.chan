@@ -10,6 +10,7 @@
 #' @param batch.mode String indicating how \code{batch} should be handled when centering the size factors.
 #' If \code{"lowest"}, we downscale all batches to the coverage of the lowest batch.
 #' If \code{"perblock"}, we scale each batch to a mean of 1.
+#' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return A list like \code{x} where the count matrix is replaced with a log-expression matrix.
 #' An additional numeric \code{size.factors} vector is also present containing the (centered) size factors.
@@ -23,13 +24,13 @@
 #' normed <- logNormCounts.chan(y)
 #'
 #' @export
-logNormCounts.chan <- function(x, size.factors=NULL, batch=NULL, batch.mode=c("lowest", "perblock")) {
+logNormCounts.chan <- function(x, size.factors=NULL, batch=NULL, batch.mode=c("lowest", "perblock"), num.threads=1) {
     batch <- transform_factor(batch, n = tatami_ncol(x))
     if (!is.null(size.factors)) {
         stopifnot(tatami_ncol(x) == length(size.factors))
     }
 
-    norm <- log_norm_counts(x$pointer, size.factors, batch=batch$index, batch_mode=match.arg(batch.mode))
+    norm <- log_norm_counts(x$pointer, size.factors, batch=batch$index, batch_mode=match.arg(batch.mode), nthreads=num.threads)
     x$pointer <- norm$pointer
     x$size.factors <- norm$size_factors
     x

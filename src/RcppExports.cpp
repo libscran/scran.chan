@@ -220,15 +220,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // log_norm_counts
-SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors, Rcpp::Nullable<Rcpp::IntegerVector> batch, std::string batch_mode);
-RcppExport SEXP _scran_chan_log_norm_counts(SEXP xSEXP, SEXP size_factorsSEXP, SEXP batchSEXP, SEXP batch_modeSEXP) {
+SEXP log_norm_counts(SEXP x, Rcpp::Nullable<Rcpp::NumericVector> size_factors, Rcpp::Nullable<Rcpp::IntegerVector> batch, std::string batch_mode, int nthreads);
+RcppExport SEXP _scran_chan_log_norm_counts(SEXP xSEXP, SEXP size_factorsSEXP, SEXP batchSEXP, SEXP batch_modeSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::NumericVector> >::type size_factors(size_factorsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
     Rcpp::traits::input_parameter< std::string >::type batch_mode(batch_modeSEXP);
-    rcpp_result_gen = Rcpp::wrap(log_norm_counts(x, size_factors, batch, batch_mode));
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_norm_counts(x, size_factors, batch, batch_mode, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -408,15 +409,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // score_markers
-Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, double lfc);
-RcppExport SEXP _scran_chan_score_markers(SEXP xSEXP, SEXP groupsSEXP, SEXP batchSEXP, SEXP lfcSEXP) {
+Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, double lfc, int nthreads);
+RcppExport SEXP _scran_chan_score_markers(SEXP xSEXP, SEXP groupsSEXP, SEXP batchSEXP, SEXP lfcSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type groups(groupsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
     Rcpp::traits::input_parameter< double >::type lfc(lfcSEXP);
-    rcpp_result_gen = Rcpp::wrap(score_markers(x, groups, batch, lfc));
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(score_markers(x, groups, batch, lfc, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -438,7 +440,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_finalize_all_blocks_CSR", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSR, 1},
     {"_scran_chan_initialize_from_dgCMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgCMatrix, 7},
     {"_scran_chan_initialize_from_dgRMatrix", (DL_FUNC) &_scran_chan_initialize_from_dgRMatrix, 7},
-    {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 4},
+    {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 5},
     {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 7},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 5},
@@ -452,7 +454,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 7},
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 5},
-    {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 4},
+    {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 5},
     {NULL, NULL, 0}
 };
 

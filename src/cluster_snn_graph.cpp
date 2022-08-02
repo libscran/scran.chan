@@ -4,18 +4,11 @@
 #include "knncolle.h"
 #include "scran/clustering/BuildSNNGraph.hpp"
 #include "scran/clustering/ClusterSNNGraph.hpp"
-#ifdef _OPENMP
-#include "omp.h"
-#endif
 
 #include <string>
 
 //[[Rcpp::export(rng=false)]]
 SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std::string method, double resolution, int steps, int seed, int nthreads) {
-#ifdef _OPENMP
-    omp_set_num_threads(nthreads);
-#endif
-
     auto neighbors = unpack_neighbors<int>(nnidx);
     auto ncells = neighbors.size();
 
@@ -31,6 +24,7 @@ SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std
     }
 
     scran::BuildSNNGraph builder;
+    builder.set_num_threads(nthreads);
     auto edges = builder.run(neighbors);
 
     Rcpp::RObject output;

@@ -4,10 +4,6 @@
 #include "knncolle.h"
 #include "knncolle/Annoy/Annoy.hpp"
 
-#ifdef _OPENMP
-#include "omp.h"
-#endif
-
 // [[Rcpp::export(rng=false)]]
 SEXP build_nn_index(Rcpp::NumericMatrix data) {
     size_t nr = data.nrow(), nc = data.ncol();
@@ -17,10 +13,6 @@ SEXP build_nn_index(Rcpp::NumericMatrix data) {
 
 // [[Rcpp::export(rng=false)]]
 Rcpp::List find_nearest_neighbors(SEXP index, int k, int nthreads) {
-#ifdef _OPENMP
-    omp_set_num_threads(nthreads);
-#endif
-
     KnncollePtr nns(index);
     auto nnptr = nns.get();
     size_t nobs = nnptr->nobs();
@@ -30,7 +22,7 @@ Rcpp::List find_nearest_neighbors(SEXP index, int k, int nthreads) {
     Rcpp::IntegerMatrix idxmat(k, nobs);
     int* iptr = static_cast<int*>(idxmat.begin());
 
-    #pragma omp parallel for
+    #pragma omp parallel for num_threads(nthreads)
     for (size_t o = 0; o < nobs; ++o) {
         auto res = nnptr->find_nearest_neighbors(o, k);
         auto dcopy = dptr + o * k;

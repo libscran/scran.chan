@@ -4,21 +4,13 @@
 #include "knncolle.h"
 #include "qdtsne/qdtsne.hpp"
 
-#ifdef _OPENMP
-#include "omp.h"
-#endif
-
 //[[Rcpp::export(rng=false)]]
 SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int seed, int nthreads) {
-#ifdef _OPENMP
-    omp_set_num_threads(nthreads);
-#endif
-
     auto neighbors = unpack_neighbors<int, float>(nnidx, nndist);
     size_t nobs = neighbors.size();
 
     qdtsne::Tsne<2, float> runner;
-    runner.set_perplexity(perplexity).set_max_depth(max_depth);
+    runner.set_perplexity(perplexity).set_max_depth(max_depth).set_num_threads(nthreads);
     
     if (interpolate) {
         if (interpolate > 0) {
