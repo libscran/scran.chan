@@ -19,5 +19,5 @@ Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nu
     auto mat = extract_NumericMatrix(x);
     auto res = pcs.run(mat, static_cast<const int*>(batch.begin()), fptr);
 
-    return format_pca_output(mat, res, rotation);
+    return format_pca_output(mat->ncol(), res, rotation);
 }

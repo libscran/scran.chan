@@ -4,11 +4,10 @@
 #include "Rcpp.h"
 #include <algorithm>
 
-template<class Mat, class Result>
-Rcpp::List format_pca_output(Mat mat, const Result& res, bool rotation) {
+template<class Result>
+Rcpp::List format_pca_output(size_t ncol, const Result& res, bool rotation) {
     size_t ndim = res.pcs.rows();
 
-    size_t ncol = mat->ncol();
     Rcpp::NumericMatrix output_pcs(ndim, ncol);
     std::copy(res.pcs.data(), res.pcs.data() + ndim * ncol, output_pcs.begin());
 

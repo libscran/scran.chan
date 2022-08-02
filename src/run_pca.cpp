@@ -19,5 +19,5 @@ Rcpp::List run_pca(SEXP x, int ndim, Rcpp::Nullable<Rcpp::LogicalVector> feature
     auto mat = extract_NumericMatrix(x);
     auto res = pcs.run(mat, fptr);
 
-    return format_pca_output(mat, res, rotation);
+    return format_pca_output(mat->ncol(), res, rotation);
 }
