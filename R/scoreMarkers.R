@@ -7,6 +7,7 @@
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 #' Alternatively \code{NULL} if all cells belong to the same batch.
 #' @param lfc Non-negative numeric scalar specifying the log-fold change threshold to use.
+#' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return A list containing \code{statistics}, a list of data frame of marker statistics. 
 #' Each data frame corresponds to a group in \code{groups} and contains:

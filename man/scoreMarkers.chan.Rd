@@ -4,7 +4,7 @@
 \alias{scoreMarkers.chan}
 \title{Score marker genes}
 \usage{
-scoreMarkers.chan(x, groups, batch = NULL, lfc = 0)
+scoreMarkers.chan(x, groups, batch = NULL, lfc = 0, num.threads = 1)
 }
 \arguments{
 \item{x}{A list of matrix data like that produced by \code{\link{logNormCounts.chan}}.}
@@ -15,6 +15,8 @@ scoreMarkers.chan(x, groups, batch = NULL, lfc = 0)
 Alternatively \code{NULL} if all cells belong to the same batch.}
 
 \item{lfc}{Non-negative numeric scalar specifying the log-fold change threshold to use.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 A list containing \code{statistics}, a list of data frame of marker statistics. 

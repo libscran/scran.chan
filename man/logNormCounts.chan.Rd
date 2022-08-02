@@ -8,7 +8,8 @@ logNormCounts.chan(
   x,
   size.factors = NULL,
   batch = NULL,
-  batch.mode = c("lowest", "perblock")
+  batch.mode = c("lowest", "perblock"),
+  num.threads = 1
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ Alternatively \code{NULL} if all cells belong to the same batch.}
 \item{batch.mode}{String indicating how \code{batch} should be handled when centering the size factors.
 If \code{"lowest"}, we downscale all batches to the coverage of the lowest batch.
 If \code{"perblock"}, we scale each batch to a mean of 1.}
+
+\item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
 A list like \code{x} where the count matrix is replaced with a log-expression matrix.
