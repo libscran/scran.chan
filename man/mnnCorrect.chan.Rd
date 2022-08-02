@@ -11,7 +11,7 @@ mnnCorrect.chan(
   nmads = 3,
   num.threads = 1,
   order = NULL,
-  reference.method = c("max-size", "max-variance", "max-rss", "input")
+  reference.policy = c("max-size", "max-variance", "max-rss", "input")
 )
 }
 \arguments{
