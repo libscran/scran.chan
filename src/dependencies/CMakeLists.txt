@@ -13,7 +13,7 @@ include(FetchContent)
 FetchContent_Declare(
   scran
   GIT_REPOSITORY https://github.com/LTLA/libscran
-  GIT_TAG cb4e937cd978e564855870f800eeffca21f19fc3
+  GIT_TAG 017098a2341d6b830bf38ae0bb0a41d5fec32c69
 )
 FetchContent_MakeAvailable(scran)
 
