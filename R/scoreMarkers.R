@@ -76,11 +76,17 @@ scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1) {
     if (!is.null(batch$index)) {
         names(output$per.batch$mean) <- groups$names
         names(output$per.batch$detected) <- groups$names
+
         for (i in seq_along(groups$names)) {
-            output$per.batch$mean[[i]] <- data.frame(output$per.batch$mean[[i]])
-            dimnames(output$per.batch$mean[[i]]) <- list(x$rownames, batch$names)
-            output$per.batch$detected[[i]] <- data.frame(output$per.batch$detected[[i]])
-            dimnames(output$per.batch$detected[[i]]) <- list(x$rownames, batch$names)
+            mean.df <- data.frame(output$per.batch$mean[[i]])
+            rownames(mean.df) <- x$rownames # don't use dimnames<- as this can't handle NULL rownames.
+            colnames(mean.df) <- batch$names
+            output$per.batch$mean[[i]] <- mean.df
+
+            detect.df <- data.frame(output$per.batch$detected[[i]])
+            rownames(detect.df) <- x$rownames
+            colnames(detect.df) <- batch$names
+            output$per.batch$detected[[i]] <- detect.df
         }
     }
 
