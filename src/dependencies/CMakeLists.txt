@@ -34,7 +34,7 @@ FetchContent_MakeAvailable(qdtsne)
 FetchContent_Declare(
   umappp 
   GIT_REPOSITORY https://github.com/LTLA/umappp
-  GIT_TAG ebcf025444fc709c76485cbd1d943d8e13b3507b 
+  GIT_TAG b65785b631c73e34008253f6dc2c04a19c8c6795
 )
 FetchContent_MakeAvailable(umappp)
 

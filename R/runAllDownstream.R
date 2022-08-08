@@ -87,7 +87,7 @@ runAllDownstream <- function(x,
         umap.formals <- formals(runUMAP.chan) 
         umap.args <- legacy_args("num.neighbors", umap.num.neighbors, umap.formals, umap.args)
         umap.args <- legacy_args("min.dist", umap.min.dist, umap.formals, umap.args)
-        umap.args <- default_args("seed", umap.formals, umap.args)
+        umap.args <- default_args(c("num.epochs", "seed"), umap.formals, umap.args)
     }
 
     if (do.cluster.snn) {
@@ -104,7 +104,6 @@ runAllDownstream <- function(x,
         cluster.kmeans.args <- legacy_args("init.method", cluster.kmeans.init, cluster.kmeans.formals, cluster.kmeans.args)
         cluster.kmeans.args <- default_args("seed", cluster.kmeans.formals, cluster.kmeans.args)
     }
-
 
     # Generating the neighbors.
     #

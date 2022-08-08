@@ -7,6 +7,7 @@
 runUMAP.chan(
   x,
   num.neighbors = 15,
+  num.epochs = -1,
   min.dist = 0.01,
   seed = 1234567890,
   drop = TRUE,
@@ -18,6 +19,10 @@ runUMAP.chan(
 \item{x}{Numeric matrix where rows are dimensions and columns are cells.}
 
 \item{num.neighbors}{Integer scalar specifying the number of neighbors to use in the UMAP algorithm.
+This may also be a vector to perform a parameter sweep.}
+
+\item{num.epochs}{Integer scalar specifying the number of epochs to perform.
+If set to -1, an appropriate number of epochs is chosen based on \code{ncol(x)}.
 This may also be a vector to perform a parameter sweep.}
 
 \item{min.dist}{Numeric scalar specifying the minimum distance between points.

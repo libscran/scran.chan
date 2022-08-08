@@ -9,6 +9,9 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param seed Integer scalar specifying the seed to use. 
 #' This may also be a vector to perform a parameter sweep.
+#' @param num.epochs Integer scalar specifying the number of epochs to perform.
+#' If set to -1, an appropriate number of epochs is chosen based on \code{ncol(x)}.
+#' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
 #' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
@@ -35,10 +38,10 @@
 #' head(swept$results[[1]])
 #'
 #' @export
-runUMAP.chan <- function(x, num.neighbors=15, min.dist=0.01, seed=1234567890, drop=TRUE, approximate=TRUE, num.threads=1) {
+runUMAP.chan <- function(x, num.neighbors=15, num.epochs=-1, min.dist=0.01, seed=1234567890, drop=TRUE, approximate=TRUE, num.threads=1) {
     nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
-    sweep <- function(...) .umap_sweeper(all.neighbors, num.neighbors=num.neighbors, min.dist=min.dist, seed=seed, ...)
+    sweep <- function(...) .umap_sweeper(all.neighbors, num.neighbors=num.neighbors, num.epochs=num.epochs, min.dist=min.dist, seed=seed, ...)
     .sweep_wrapper(sweep, "runUMAP", num.threads=num.threads, drop=drop)
 }
 
@@ -52,18 +55,19 @@ runUMAP.chan <- function(x, num.neighbors=15, min.dist=0.01, seed=1234567890, dr
     existing
 }
 
-runUMAP.chan.core <- function(neighbors, min.dist, seed, num.threads) {
+runUMAP.chan.core <- function(neighbors, min.dist, seed, num.epochs, num.threads) {
     output <- run_umap(
         nnidx=neighbors$index,
         nndist=neighbors$distance,
         min_dist=min.dist,
         seed=seed,
+        num_epochs=num.epochs,
         nthreads=num.threads
     )
     t(output)
 }
 
-.umap_sweeper <- function(neighbors, num.neighbors, min.dist, seed, num.threads, .env) {
+.umap_sweeper <- function(neighbors, num.neighbors, min.dist, seed, num.epochs, num.threads, .env) {
     counter <- 0L
     preflight <- is.null(.env)
     parameters <- list()
@@ -73,16 +77,18 @@ runUMAP.chan.core <- function(neighbors, min.dist, seed, num.threads) {
 
         for (d in min.dist) {
             for (s in seed) {
-                counter <- counter + 1L
-                if (preflight) {
-                    parameters[[counter]] <- data.frame(num.neighbors = k, min.dist = d, seed=s)
-                } else {
-                    submitJob(.env,
-                        fun=runUMAP.chan.core,
-                        args=list(neighbors=curneighbors, min.dist=d, seed=s, num.threads=num.threads),
-                        type="runUMAP",
-                        index=counter
-                    )
+                for (n in num.epochs) {
+                    counter <- counter + 1L
+                    if (preflight) {
+                        parameters[[counter]] <- data.frame(num.neighbors = k, min.dist = d, num.epochs=n, seed=s)
+                    } else {
+                        submitJob(.env,
+                            fun=runUMAP.chan.core,
+                            args=list(neighbors=curneighbors, min.dist=d, seed=s, num.epochs=n, num.threads=num.threads),
+                            type="runUMAP",
+                            index=counter
+                        )
+                    }
                 }
             }
         }

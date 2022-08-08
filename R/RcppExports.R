@@ -109,8 +109,8 @@ perplexity_to_neighbors <- function(p) {
     .Call('_scran_chan_perplexity_to_neighbors', PACKAGE = 'scran.chan', p)
 }
 
-run_umap <- function(nnidx, nndist, min_dist, seed, nthreads) {
-    .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, nthreads)
+run_umap <- function(nnidx, nndist, min_dist, seed, num_epochs, nthreads) {
+    .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, num_epochs, nthreads)
 }
 
 score_markers <- function(x, groups, batch, lfc, nthreads) {
