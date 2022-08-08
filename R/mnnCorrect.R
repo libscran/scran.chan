@@ -7,6 +7,9 @@
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 #' @param k Integer scalar specifying the number of neighbors to use when identifying MNN pairs.
 #' @param nmads Numeric scalar specifying the number of MADs to use when computing correction vectors.
+#' @param mass.cap Integer scalar specifying the cap on the number of observations to use for center of mass calculations.
+#' A value of 100,000 may be appropriate for speeding up correction of very large datasets.
+#' If this is set to -1, no cap is used.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param order Vector containing levels of \code{batch} in the desired merge order.
 #' If \code{NULL}, a suitable merge order is automatically determined.
@@ -35,7 +38,7 @@
 #' str(corrected)
 #'
 #' @export
-mnnCorrect.chan <- function(x, batch, k=15, nmads=3, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input"), approximate=FALSE, num.threads=1) {
+mnnCorrect.chan <- function(x, batch, k=15, nmads=3, mass.cap=-1, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input"), approximate=FALSE, num.threads=1) {
     batch <- transform_factor(batch, n = ncol(x))
 
     if (!is.null(order)) {
@@ -46,7 +49,18 @@ mnnCorrect.chan <- function(x, batch, k=15, nmads=3, order=NULL, reference.polic
         order <- order - 1L
     }
 
-    output <- mnn_correct(x, batch$index, k=k, nmads=nmads, nthreads=num.threads, order=order, ref_policy=match.arg(reference.policy), approximate=approximate)
+    output <- mnn_correct(
+        x, 
+        batch$index, 
+        k=k, 
+        nmads=nmads,
+        mass_cap=mass.cap,
+        nthreads=num.threads, 
+        order=order, 
+        ref_policy=match.arg(reference.policy), 
+        approximate=approximate
+    )
+
     output$merge.order <- batch$names[output$merge.order + 1L]
     output
 }

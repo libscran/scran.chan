@@ -9,6 +9,7 @@ mnnCorrect.chan(
   batch,
   k = 15,
   nmads = 3,
+  mass.cap = -1,
   order = NULL,
   reference.policy = c("max-size", "max-variance", "max-rss", "input"),
   approximate = FALSE,
@@ -24,6 +25,10 @@ typically generated from \code{\link{runPCA.chan}}.}
 \item{k}{Integer scalar specifying the number of neighbors to use when identifying MNN pairs.}
 
 \item{nmads}{Numeric scalar specifying the number of MADs to use when computing correction vectors.}
+
+\item{mass.cap}{Integer scalar specifying the cap on the number of observations to use for center of mass calculations.
+A value of 100,000 may be appropriate for speeding up correction of very large datasets.
+If this is set to -1, no cap is used.}
 
 \item{order}{Vector containing levels of \code{batch} in the desired merge order.
 If \code{NULL}, a suitable merge order is automatically determined.}

@@ -205,8 +205,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // mnn_correct
-Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy, bool approximate);
-RcppExport SEXP _scran_chan_mnn_correct(SEXP xSEXP, SEXP batchSEXP, SEXP kSEXP, SEXP nmadsSEXP, SEXP nthreadsSEXP, SEXP orderSEXP, SEXP ref_policySEXP, SEXP approximateSEXP) {
+Rcpp::List mnn_correct(Rcpp::NumericMatrix x, Rcpp::IntegerVector batch, int k, double nmads, int nthreads, int mass_cap, Rcpp::Nullable<Rcpp::IntegerVector> order, std::string ref_policy, bool approximate);
+RcppExport SEXP _scran_chan_mnn_correct(SEXP xSEXP, SEXP batchSEXP, SEXP kSEXP, SEXP nmadsSEXP, SEXP nthreadsSEXP, SEXP mass_capSEXP, SEXP orderSEXP, SEXP ref_policySEXP, SEXP approximateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
@@ -214,10 +214,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     Rcpp::traits::input_parameter< double >::type nmads(nmadsSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    Rcpp::traits::input_parameter< int >::type mass_cap(mass_capSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type order(orderSEXP);
     Rcpp::traits::input_parameter< std::string >::type ref_policy(ref_policySEXP);
     Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
-    rcpp_result_gen = Rcpp::wrap(mnn_correct(x, batch, k, nmads, nthreads, order, ref_policy, approximate));
+    rcpp_result_gen = Rcpp::wrap(mnn_correct(x, batch, k, nmads, nthreads, mass_cap, order, ref_policy, approximate));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -412,7 +413,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_finalize_all_blocks_CSC", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSC, 1},
     {"_scran_chan_finalize_all_blocks_CSR", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSR, 1},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 5},
-    {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 8},
+    {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 9},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 5},
     {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 3},
