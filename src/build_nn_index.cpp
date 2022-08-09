@@ -42,3 +42,24 @@ Rcpp::List find_nearest_neighbors(SEXP index, int k, int nthreads) {
         Rcpp::Named("distance") = distmat
     );
 }
+
+// [[Rcpp::export(rng=false)]]
+Rcpp::List find_nearest_neighbor_indices(SEXP index, int k, int nthreads) {
+    KnncollePtr nns(index);
+    auto nnptr = nns.get();
+    size_t nobs = nnptr->nobs();
+
+    Rcpp::IntegerMatrix idxmat(k, nobs);
+    int* iptr = static_cast<int*>(idxmat.begin());
+
+    #pragma omp parallel for num_threads(nthreads)
+    for (size_t o = 0; o < nobs; ++o) {
+        auto res = nnptr->find_nearest_neighbors(o, k);
+        auto icopy = iptr + o * k;
+        for (auto rIt = res.begin(); rIt != res.end(); ++rIt, ++icopy) {
+            *icopy = rIt->first;
+        }
+    }
+
+    return Rcpp::List::create(Rcpp::Named("index") = idxmat);
+}

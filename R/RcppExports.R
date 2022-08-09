@@ -13,6 +13,10 @@ find_nearest_neighbors <- function(index, k, nthreads) {
     .Call('_scran_chan_find_nearest_neighbors', PACKAGE = 'scran.chan', index, k, nthreads)
 }
 
+find_nearest_neighbor_indices <- function(index, k, nthreads) {
+    .Call('_scran_chan_find_nearest_neighbor_indices', PACKAGE = 'scran.chan', index, k, nthreads)
+}
+
 cluster_kmeans <- function(data, nclusters, init_method, seed, nthreads) {
     .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, init_method, seed, nthreads)
 }

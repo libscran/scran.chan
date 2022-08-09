@@ -123,6 +123,11 @@ runAllDownstream <- function(x,
             all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors=umap.args$num.neighbors, num.threads=num.threads, existing=all.neighbors)
         }
         if (do.cluster.snn) {
+            # This MUST be last, as distances are not reported for efficiency.
+            # We don't want to fill 'all.neighbors' with no-distance results at
+            # 'k' that might be used by t-SNE or UMAP. By doing SNN last, we
+            # ensure that no-distance results are only cached into
+            # 'all.neighbors' for 'k' that isn't needed by t-SNE or UMAP.
             all.neighbors <- .find_snn_neighbors(nnbuilt, num.neighbors=cluster.snn.args$num.neighbors, num.threads=num.threads, existing=all.neighbors)
         }
     }

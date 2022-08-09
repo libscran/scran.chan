@@ -84,7 +84,7 @@ clusterSNNGraph.chan <- function(x,
     for (k in num.neighbors) {
         kchar <- as.character(k)
         if (!kchar %in% names(existing)) {
-            existing[[kchar]] <- find_nearest_neighbors(nnbuilt, k, nthreads=num.threads)
+            existing[[kchar]] <- find_nearest_neighbor_indices(nnbuilt, k, nthreads=num.threads)
         }
     }
     existing
@@ -96,7 +96,7 @@ clusterSNNGraph.chan <- function(x,
 
 clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resolution, steps, seed, approximate, num.threads) {
     clustering <- cluster_snn_graph(
-        nnidx=neighbors$index,
+        nnidx=neighbors,
         weight_scheme=weight.scheme,
         method=method,
         resolution=resolution, 
@@ -128,7 +128,7 @@ clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resoluti
     }
 
     for (k in num.neighbors) {
-        curneighbors <- neighbors[[as.character(k)]]
+        curneighbors <- neighbors[[as.character(k)]]$index
 
         for (w in weight.scheme) {
             for (m in method) {

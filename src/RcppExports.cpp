@@ -45,6 +45,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_nearest_neighbor_indices
+Rcpp::List find_nearest_neighbor_indices(SEXP index, int k, int nthreads);
+RcppExport SEXP _scran_chan_find_nearest_neighbor_indices(SEXP indexSEXP, SEXP kSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type index(indexSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_nearest_neighbor_indices(index, k, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cluster_kmeans
 SEXP cluster_kmeans(Rcpp::NumericMatrix data, int nclusters, std::string init_method, int seed, int nthreads);
 RcppExport SEXP _scran_chan_cluster_kmeans(SEXP dataSEXP, SEXP nclustersSEXP, SEXP init_methodSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
@@ -401,6 +413,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_aggregate_across_cells", (DL_FUNC) &_scran_chan_aggregate_across_cells, 3},
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 2},
     {"_scran_chan_find_nearest_neighbors", (DL_FUNC) &_scran_chan_find_nearest_neighbors, 3},
+    {"_scran_chan_find_nearest_neighbor_indices", (DL_FUNC) &_scran_chan_find_nearest_neighbor_indices, 3},
     {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 5},
     {"_scran_chan_cluster_snn_graph", (DL_FUNC) &_scran_chan_cluster_snn_graph, 7},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
