@@ -24,15 +24,15 @@ SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std
     }
 
     scran::BuildSNNGraph builder;
-    builder.set_num_threads(nthreads);
+    builder.set_num_threads(nthreads).set_weighting_scheme(weight);
     auto edges = builder.run(neighbors);
 
     Rcpp::RObject output;
 
     if (method == "multilevel") {
         scran::ClusterSNNGraphMultiLevel runner;
-        runner.set_resolution(resolution).set_seed(seed).set_weighting_scheme(weight);
-        auto res = runner.run(ncells, edges);
+        runner.set_resolution(resolution).set_seed(seed);
+        auto res = runner.run(edges);
 
         Rcpp::List memberships(res.membership.size());
         for (size_t c = 0; c < memberships.size(); ++c) {
@@ -49,8 +49,8 @@ SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std
 
     } else if (method == "leiden") {
         scran::ClusterSNNGraphLeiden runner;
-        runner.set_resolution(resolution).set_seed(seed).set_weighting_scheme(weight);
-        auto res = runner.run(ncells, edges);
+        runner.set_resolution(resolution).set_seed(seed);
+        auto res = runner.run(edges);
 
         output = Rcpp::List::create(
             Rcpp::Named("membership") = Rcpp::IntegerVector(res.membership.begin(), res.membership.end()),
@@ -59,8 +59,7 @@ SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std
 
     } else if (method == "walktrap") {
         scran::ClusterSNNGraphWalktrap runner;
-        runner.set_weighting_scheme(weight);
-        auto res = runner.run(ncells, edges);
+        auto res = runner.run(edges);
 
         Rcpp::IntegerMatrix merges(res.merges.size(), 2);
         for (size_t m = 0; m < res.merges.size(); ++m) {
