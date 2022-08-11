@@ -5,6 +5,10 @@ aggregate_across_cells <- function(x, groupings, nthreads) {
     .Call('_scran_chan_aggregate_across_cells', PACKAGE = 'scran.chan', x, groupings, nthreads)
 }
 
+assign_reference_clusters <- function(ref_data, ref_clusters, test_data, quantile, approximate, nthreads) {
+    .Call('_scran_chan_assign_reference_clusters', PACKAGE = 'scran.chan', ref_data, ref_clusters, test_data, quantile, approximate, nthreads)
+}
+
 build_nn_index <- function(data, approximate) {
     .Call('_scran_chan_build_nn_index', PACKAGE = 'scran.chan', data, approximate)
 }
@@ -23,6 +27,10 @@ cluster_kmeans <- function(data, nclusters, init_method, seed, nthreads) {
 
 cluster_snn_graph <- function(nnidx, weight_scheme, method, resolution, steps, seed, nthreads) {
     .Call('_scran_chan_cluster_snn_graph', PACKAGE = 'scran.chan', nnidx, weight_scheme, method, resolution, steps, seed, nthreads)
+}
+
+downsample_by_neighbors <- function(data, k, approximate, nthreads) {
+    .Call('_scran_chan_downsample_by_neighbors', PACKAGE = 'scran.chan', data, k, approximate, nthreads)
 }
 
 filter_cells <- function(x, discard) {
@@ -79,6 +87,10 @@ per_cell_qc_filters <- function(sums, detected, subsets, batch, nmads) {
 
 per_cell_qc_metrics <- function(x, subsets, nthreads) {
     .Call('_scran_chan_per_cell_qc_metrics', PACKAGE = 'scran.chan', x, subsets, nthreads)
+}
+
+project_neighbor_embedding <- function(ref_index, emb_data, test_data, k, nthreads) {
+    .Call('_scran_chan_project_neighbor_embedding', PACKAGE = 'scran.chan', ref_index, emb_data, test_data, k, nthreads)
 }
 
 tatami_dim <- function(x) {
