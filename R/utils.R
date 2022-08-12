@@ -32,3 +32,7 @@ to_logical <- function(x, n, names) {
     }
     x
 }
+
+do_downsample <- function(downsample) {
+    !is.null(downsample) && downsample >= 1
+}

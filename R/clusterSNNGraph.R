@@ -80,7 +80,8 @@ clusterSNNGraph.chan <- function(x,
     downsample=NULL,
     num.threads=1)
 {
-    if (!is.null(downsample)) {
+    down <- do_downsample(downsample)
+    if (down) {
         original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
         x <- x[,chosen,drop=FALSE]
@@ -102,7 +103,7 @@ clusterSNNGraph.chan <- function(x,
 
     output <- .sweep_wrapper(sweep, "clusterSNNGraph", num.threads=num.threads)
 
-    if (!is.null(downsample)) {
+    if (down) {
         output <- .undownsample_snn(output, x, original, approximate=approximate, num.threads=num.threads)
     }
 

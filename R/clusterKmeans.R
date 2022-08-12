@@ -46,7 +46,8 @@
 #' 
 #' @export
 clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, drop=TRUE, downsample=NULL, num.threads=1) {
-    if (!is.null(downsample)) {
+    down <- do_downsample(downsample)
+    if (down) {
         original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, num.threads=num.threads)
         x <- x[,chosen,drop=FALSE]
@@ -55,7 +56,7 @@ clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, dr
     sweep <- function(...) .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, ...)
     output <- .sweep_wrapper(sweep, "clusterKmeans", num.threads=num.threads)
 
-    if (!is.null(downsample)) {
+    if (down) {
         output <- .undownsample_kmeans(output, x, original, num.threads=num.threads)
     }
 

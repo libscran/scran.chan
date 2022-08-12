@@ -50,7 +50,8 @@ runUMAP.chan <- function(x,
     downsample=NULL,
     num.threads=1)
 {
-    if (!is.null(downsample)) {
+    down <- do_downsample(downsample)
+    if (down) {
         original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
         x <- x[,chosen,drop=FALSE]
@@ -70,7 +71,7 @@ runUMAP.chan <- function(x,
 
     output <- .sweep_wrapper(sweep, "runUMAP", num.threads=num.threads)
 
-    if (!is.null(downsample)) {
+    if (down) {
         output <- .undownsample_embedding(output, nnbuilt, original, approximate=approximate, num.threads=num.threads)
     }
 

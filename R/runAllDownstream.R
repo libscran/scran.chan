@@ -108,7 +108,8 @@ runAllDownstream <- function(x,
         cluster.kmeans.args <- default_args("seed", cluster.kmeans.formals, cluster.kmeans.args)
     }
 
-    if (!is.null(downsample)) {
+    down <- do_downsample(downsample)
+    if (down) {
         original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
         x <- x[,chosen,drop=FALSE]
@@ -199,7 +200,7 @@ runAllDownstream <- function(x,
 
         store <- list(parameters=all.params[[new.name]], results=completed[[n]])
 
-        if (!is.null(downsample)) {
+        if (down) {
             if (new.name == "tsne" || new.name == "umap") {
                 store <- .undownsample_embedding(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
             } else if (new.name == "cluster.snn") {
