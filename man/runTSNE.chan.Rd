@@ -12,6 +12,7 @@ runTSNE.chan(
   seed = 42,
   drop = TRUE,
   approximate = TRUE,
+  downsample = NULL,
   num.threads = 1
 )
 }
@@ -35,6 +36,9 @@ This may also be a vector to perform a parameter sweep.}
 \item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.}
 
 \item{approximate}{Logical scalar specifying whether to perform an approximate neighbor search.}
+
+\item{downsample}{Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+If \code{NULL}, no downsampling is performed.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }

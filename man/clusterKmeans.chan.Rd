@@ -10,6 +10,7 @@ clusterKmeans.chan(
   init.method = "pca-part",
   seed = 5489L,
   drop = TRUE,
+  downsample = NULL,
   num.threads = 1
 )
 }
@@ -28,6 +29,9 @@ This may also be a vector to perform a parameter sweep.}
 
 \item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.}
 
+\item{downsample}{Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+If \code{NULL}, no downsampling is performed.}
+
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
@@ -42,6 +46,8 @@ By default, a list is returned containing:
 If any of the parameters are vectors or \code{drop = FALSE}, we assume that the user is requesting a parameter sweep.
 A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
 and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each entry contains the result for the corresponding parameter combination.
+
+If \code{downsample} is not \code{NULL}, only the \code{clusters} element of the list will be reported.
 }
 \description{
 Perform k-means clustering using kmeans++ initialization with the Hartigan-Wong algorithm.

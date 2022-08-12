@@ -29,3 +29,8 @@ test_that("clusterKmeans works in sweep mode", {
     parallel <- clusterKmeans.chan(x, k=c(3,5), init.method=c("pca-part", "kmeans++"), seed=c(2,6), num.threads=2)
     expect_identical(clustering, parallel)
 })
+
+test_that("clusterKmeans works after downsampling", {
+    clustering <- clusterKmeans.chan(x, downsample=5)
+    expect_identical(length(clustering$clusters), ncol(x))
+})

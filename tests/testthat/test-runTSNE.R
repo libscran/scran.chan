@@ -27,3 +27,8 @@ test_that("runTSNE works in sweep mode", {
     parallel <- runTSNE.chan(x, perplexity=c(10, 20, 30), seed=c(2,6), num.threads=2)
     expect_identical(embed, parallel)
 })
+
+test_that("runTSNE works with downsampling", {
+    umap <- runTSNE.chan(x, downsample=5)
+    expect_identical(nrow(umap), ncol(x))
+})

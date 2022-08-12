@@ -12,6 +12,8 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.
+#' @param downsample Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+#' If \code{NULL}, no downsampling is performed.
 #' 
 #' @return 
 #' By default, a list is returned containing:
@@ -26,6 +28,7 @@
 #' A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
 #' and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each entry contains the result for the corresponding parameter combination.
 #'
+#' If \code{downsample} is not \code{NULL}, only the \code{clusters} element of the list will be reported.
 #' @author Aaron Lun
 #'
 #' @examples
@@ -42,9 +45,21 @@
 #' table(swept$results[[1]]$clusters)
 #' 
 #' @export
-clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, drop=TRUE, num.threads=1) {
+clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, drop=TRUE, downsample=NULL, num.threads=1) {
+    if (!is.null(downsample)) {
+        original <- x
+        chosen <- downsampleByNeighbors.chan(x, downsample, num.threads=num.threads)
+        x <- x[,chosen,drop=FALSE]
+    }
+
     sweep <- function(...) .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, ...)
-    .sweep_wrapper(sweep, "clusterKmeans", num.threads=num.threads, drop=drop)
+    output <- .sweep_wrapper(sweep, "clusterKmeans", num.threads=num.threads)
+
+    if (!is.null(downsample)) {
+        output <- .undownsample_kmeans(output, x, original, num.threads=num.threads)
+    }
+
+    .drop_sweep(output, drop)
 }
 
 .kmeans.init.choices <- c("pca-part", "kmeans++", "random")
@@ -53,6 +68,14 @@ clusterKmeans.chan.core <- function(x, k, init.method, seed, num.threads) {
     output <- cluster_kmeans(x, k, init.method, seed=seed, nthreads=num.threads)
     output$clusters <- factor(output$clusters + 1L)
     output 
+}
+
+.undownsample_kmeans <- function(output, x, original, ...) {
+    for (i in seq_along(output$results)) {
+        full <- assignReferenceClusters.chan(x, output$results[[i]]$clusters, original, ...)
+        output$results[[i]] <- list(clusters=full)
+    }
+    output
 }
 
 .kmeans_sweeper <- function(x, k, init.method, seed, num.threads, .env) {

@@ -14,6 +14,8 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
+#' @param downsample Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+#' If \code{NULL}, no downsampling is performed.
 #' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' 
 #' @return 
@@ -38,11 +40,41 @@
 #' head(swept$results[[1]])
 #'
 #' @export
-runUMAP.chan <- function(x, num.neighbors=15, num.epochs=-1, min.dist=0.01, seed=1234567890, drop=TRUE, approximate=TRUE, num.threads=1) {
+runUMAP.chan <- function(x, 
+    num.neighbors=15, 
+    num.epochs=-1, 
+    min.dist=0.01, 
+    seed=1234567890, 
+    drop=TRUE, 
+    approximate=TRUE, 
+    downsample=NULL,
+    num.threads=1)
+{
+    if (!is.null(downsample)) {
+        original <- x
+        chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
+        x <- x[,chosen,drop=FALSE]
+    }
+
     nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_umap_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
-    sweep <- function(...) .umap_sweeper(all.neighbors, num.neighbors=num.neighbors, num.epochs=num.epochs, min.dist=min.dist, seed=seed, ...)
-    .sweep_wrapper(sweep, "runUMAP", num.threads=num.threads, drop=drop)
+
+    sweep <- function(...) {
+        .umap_sweeper(all.neighbors, 
+            num.neighbors=num.neighbors, 
+            num.epochs=num.epochs, 
+            min.dist=min.dist, 
+            seed=seed, 
+            ...)
+    }
+
+    output <- .sweep_wrapper(sweep, "runUMAP", num.threads=num.threads)
+
+    if (!is.null(downsample)) {
+        output <- .undownsample_embedding(output, nnbuilt, original, approximate=approximate, num.threads=num.threads)
+    }
+
+    .drop_sweep(output, drop)
 }
 
 .find_umap_neighbors <- function(nnbuilt, num.neighbors, num.threads, existing = list()) {
@@ -53,6 +85,13 @@ runUMAP.chan <- function(x, num.neighbors=15, num.epochs=-1, min.dist=0.01, seed
         }
     }
     existing
+}
+
+.undownsample_embedding <- function(output, nnbuilt, original, ...) {
+    for (i in seq_along(output$results)) {
+        output$results[[i]] <- projectNeighborEmbedding.chan(nnbuilt, output$results[[i]], original, ...)
+    }
+    output
 }
 
 runUMAP.chan.core <- function(neighbors, min.dist, seed, num.epochs, num.threads) {

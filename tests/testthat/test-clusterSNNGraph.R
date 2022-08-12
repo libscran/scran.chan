@@ -29,3 +29,8 @@ test_that("clusterSNNGraph works in sweep mode", {
     parallel <- clusterSNNGraph.chan(x, num.neighbors=c(10, 20), resolution=c(0.5, 1.5), seed=c(10, 20), num.threads=2)
     expect_identical(clustering, parallel)
 })
+
+test_that("clusterSNNGraph works after downsampling", {
+    clustering <- clusterSNNGraph.chan(x, downsample=5)
+    expect_identical(length(clustering$membership), ncol(x))
+})

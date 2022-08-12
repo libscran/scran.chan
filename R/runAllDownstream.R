@@ -17,6 +17,8 @@
 #' @param cluster.kmeans.k,cluster.kmeans.init Deprecated, use \code{cluster.kmeans.args} instead. 
 #' @param cluster.snn.num.neighbors,cluster.snn.method,cluster.snn.resolution Deprecated, use \code{cluster.snn.args} instead.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
+#' @param downsample Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+#' If \code{NULL}, no downsampling is performed.
 #' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' 
@@ -53,6 +55,7 @@ runAllDownstream <- function(x,
     cluster.kmeans.k=NULL,
     cluster.kmeans.init=NULL,
     drop=TRUE,
+    downsample=NULL,
     approximate=TRUE, 
     num.threads=1) 
 {
@@ -103,6 +106,12 @@ runAllDownstream <- function(x,
         cluster.kmeans.args <- legacy_args("k", cluster.kmeans.k, cluster.kmeans.formals, cluster.kmeans.args)
         cluster.kmeans.args <- legacy_args("init.method", cluster.kmeans.init, cluster.kmeans.formals, cluster.kmeans.args)
         cluster.kmeans.args <- default_args("seed", cluster.kmeans.formals, cluster.kmeans.args)
+    }
+
+    if (!is.null(downsample)) {
+        original <- x
+        chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
+        x <- x[,chosen,drop=FALSE]
     }
 
     # Generating the neighbors.
@@ -179,8 +188,8 @@ runAllDownstream <- function(x,
     completed <- finishJobs(env)
     output <- list()
 
-    for (x in names(completed)) {
-        new.name <- switch(x,
+    for (n in names(completed)) {
+        new.name <- switch(n,
             clusterKmeans="cluster.kmeans",
             runTSNE="tsne",
             runUMAP="umap",
@@ -188,12 +197,19 @@ runAllDownstream <- function(x,
             stop("unknown result type '", x, "'")
         )
 
-        if (drop && length(completed[[x]]) == 1) {
-            store <- completed[[x]][[1]]
-        } else {
-            store <- list(parameters=all.params[[new.name]], results=completed[[x]])
+        store <- list(parameters=all.params[[new.name]], results=completed[[n]])
+
+        if (!is.null(downsample)) {
+            if (new.name == "tsne" || new.name == "umap") {
+                store <- .undownsample_embedding(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
+            } else if (new.name == "cluster.snn") {
+                store <- .undownsample_snn(store, x, original, approximate=approximate, num.threads=num.threads)
+            } else if (new.name == "cluster.kmeans") {
+                store <- .undownsample_kmeans(store, x, original, approximate=approximate, num.threads=num.threads)
+            }
         }
-        output[[new.name]] <- store
+
+        output[[new.name]] <- .drop_sweep(store, drop)
     }
 
     output[order(names(output))]

@@ -15,6 +15,8 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
+#' @param downsample Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+#' If \code{NULL}, no downsampling is performed.
 #' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' 
 #' @return 
@@ -39,11 +41,32 @@
 #' head(swept$results[[1]])
 #' 
 #' @export
-runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, seed=42, drop=TRUE, approximate=TRUE, num.threads=1) {
+runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, seed=42, drop=TRUE, approximate=TRUE, downsample=NULL, num.threads=1) {
+    if (!is.null(downsample)) {
+        original <- x
+        chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
+        x <- x[,chosen,drop=FALSE]
+    }
+
     nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity, num.threads=num.threads)
-    sweep <- function(...) .tsne_sweeper(all.neighbors, perplexity=perplexity, interpolate=interpolate, max.depth=max.depth, seed=seed, ...)
-    .sweep_wrapper(sweep, "runTSNE", num.threads=num.threads, drop=drop)
+
+    sweep <- function(...) {
+        .tsne_sweeper(all.neighbors, 
+            perplexity=perplexity, 
+            interpolate=interpolate, 
+            max.depth=max.depth, 
+            seed=seed, 
+            ...)
+    }
+
+    output <- .sweep_wrapper(sweep, "runTSNE", num.threads=num.threads)
+
+    if (!is.null(downsample)) {
+        output <- .undownsample_embedding(output, nnbuilt, original, approximate=approximate, num.threads=num.threads)
+    }
+
+    .drop_sweep(output, drop)
 }
 
 .find_tsne_neighbors <- function(nnbuilt, perplexity, num.threads, existing = list()) {

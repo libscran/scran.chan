@@ -21,6 +21,8 @@ test_that("runAllDownstream works correctly with sweeps", {
         cluster.snn.args=list(method=c("leiden", "multilevel"))
     )
 
+    expect_identical(length(res$cluster.kmeans$results[[1]]$clusters), ncol(x))
+
     # Still dropped for non-sweep parameters.
     expect_identical(nrow(res$tsne), ncol(x))
     expect_identical(nrow(res$umap), ncol(x))
@@ -39,4 +41,14 @@ test_that("runAllDownstream works correctly with sweeps", {
         num.threads=3
     )
     expect_identical(res, alt)
+})
+
+test_that("runAllDownstream works correctly with downsampling", {
+    res <- runAllDownstream(x, downsample=5)
+    expect_identical(nrow(res$tsne), ncol(x))
+    expect_identical(nrow(res$umap), ncol(x))
+    expect_identical(length(res$cluster.snn$membership), ncol(x))
+
+    res <- runAllDownstream(x, do.cluster.kmeans=TRUE, do.umap=FALSE, do.tsne=FALSE, do.cluster.snn=FALSE, downsample=5)
+    expect_identical(length(res$cluster.kmeans$clusters), ncol(x))
 })

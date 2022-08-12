@@ -27,3 +27,8 @@ test_that("runUMAP works in sweep mode", {
     parallel <- runUMAP.chan(x, num.neighbors=c(10, 15), min.dist=c(0.01, 0.05), seed=c(2,6), num.threads=2)
     expect_identical(umap, parallel)
 })
+
+test_that("runUMAP works with downsampling", {
+    umap <- runUMAP.chan(x, downsample=5)
+    expect_identical(nrow(umap), ncol(x))
+})

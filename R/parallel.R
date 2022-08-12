@@ -67,7 +67,7 @@ finishJobs <- function(env) {
 }
 
 #' @importFrom parallel stopCluster
-.sweep_wrapper <- function(sweep, name, num.threads, drop) {
+.sweep_wrapper <- function(sweep, name, num.threads) {
     params <- sweep(.env=NULL)
 
     if (nrow(params) == 1L || num.threads==1L) {
@@ -86,12 +86,13 @@ finishJobs <- function(env) {
     sweep(num.threads=num.threads, .env=env)
     completed <- finishJobs(env)
 
-    if (nrow(params) == 1 && drop) {
-        completed[[name]][[1]]
-    } else {
-        list(parameters = params, results = completed[[name]])
-    }
+    list(parameters = params, results = completed[[name]])
 }
 
-
-
+.drop_sweep <- function(swept, drop) {
+    if (nrow(swept$parameters) == 1 && drop) {
+        swept$results[[1]]
+    } else {
+        swept
+    }
+}

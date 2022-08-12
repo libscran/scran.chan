@@ -18,6 +18,8 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when \code{k}, \code{init.method} and \code{seed} are scalars.
+#' @param downsample Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+#' If \code{NULL}, no downsampling is performed.
 #' @param approximate Logical scalar specifying whether to perform an approximate neighbor search.
 #' 
 #' @return By default, a list containing \code{membership}, an integer vector with cluster assignments for each cell.
@@ -44,6 +46,9 @@
 #' A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
 #' and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each element is itself a list as described above.
 #' 
+#' If \code{downsample} is not \code{NULL}, no additional elements are returned for any \code{method}.
+#' Only \code{membership} will be present in the list.
+#'
 #' @author Aaron Lun
 #'
 #' @examples
@@ -72,12 +77,36 @@ clusterSNNGraph.chan <- function(x,
     seed=42,
     drop=TRUE,
     approximate=TRUE,
+    downsample=NULL,
     num.threads=1)
 {
+    if (!is.null(downsample)) {
+        original <- x
+        chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
+        x <- x[,chosen,drop=FALSE]
+    }
+
     nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_snn_neighbors(nnbuilt, num.neighbors, num.threads=num.threads)
-    sweep <- function(...) .snn_sweeper(all.neighbors, num.neighbors=num.neighbors, weight.scheme=weight.scheme, method=method, resolution=resolution, steps=steps, seed=seed, ...)
-    .sweep_wrapper(sweep, "clusterSNNGraph", num.threads=num.threads, drop=drop)
+
+    sweep <- function(...) { 
+        .snn_sweeper(all.neighbors, 
+            num.neighbors=num.neighbors, 
+            weight.scheme=weight.scheme, 
+            method=method, 
+            resolution=resolution, 
+            steps=steps, 
+            seed=seed, 
+            ...)
+    }
+
+    output <- .sweep_wrapper(sweep, "clusterSNNGraph", num.threads=num.threads)
+
+    if (!is.null(downsample)) {
+        output <- .undownsample_snn(output, x, original, approximate=approximate, num.threads=num.threads)
+    }
+
+    .drop_sweep(output, drop)
 }
 
 .find_snn_neighbors <- function(nnbuilt, num.neighbors, num.threads, existing = list()) {
@@ -90,11 +119,19 @@ clusterSNNGraph.chan <- function(x,
     existing
 }
 
+.undownsample_snn <- function(output, x, original, ...) {
+    for (i in seq_along(output$results)) {
+        full <- assignReferenceClusters.chan(x, output$results[[i]]$membership, original, ...)
+        output$results[[i]] <- list(membership = full)
+    }
+    output
+}
+
 .snn.method.choices <- c("multilevel", "leiden", "walktrap")
 
 .snn.weight.choices <- c("rank", "number", "jaccard")
 
-clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resolution, steps, seed, approximate, num.threads) {
+clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resolution, steps, seed, num.threads) {
     clustering <- cluster_snn_graph(
         nnidx=neighbors,
         weight_scheme=weight.scheme,

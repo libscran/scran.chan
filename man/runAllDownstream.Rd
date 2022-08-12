@@ -23,6 +23,7 @@ runAllDownstream(
   cluster.kmeans.k = NULL,
   cluster.kmeans.init = NULL,
   drop = TRUE,
+  downsample = NULL,
   approximate = TRUE,
   num.threads = 1
 )
@@ -56,6 +57,9 @@ This is typically a matrix of principal components.}
 \item{cluster.kmeans.k, cluster.kmeans.init}{Deprecated, use \code{cluster.kmeans.args} instead.}
 
 \item{drop}{Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.}
+
+\item{downsample}{Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+If \code{NULL}, no downsampling is performed.}
 
 \item{approximate}{Logical scalar specifying whether to perform an approximate neighbor search.}
 

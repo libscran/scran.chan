@@ -14,6 +14,7 @@ clusterSNNGraph.chan(
   seed = 42,
   drop = TRUE,
   approximate = TRUE,
+  downsample = NULL,
   num.threads = 1
 )
 }
@@ -43,6 +44,9 @@ This may also be a vector to perform a parameter sweep.}
 
 \item{approximate}{Logical scalar specifying whether to perform an approximate neighbor search.}
 
+\item{downsample}{Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
+If \code{NULL}, no downsampling is performed.}
+
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
@@ -69,6 +73,9 @@ Each row corresponds to a merge step and contains the IDs of the temporary clust
 If any of the parameters are vectors or \code{drop = FALSE}, we assume that the user is requesting a parameter sweep.
 A list is returned containing \code{parameters}, a data.frame with each relevant combination of parameters;
 and \code{results}, a list of length equal to the number of rows of \code{parameters}, where each element is itself a list as described above.
+
+If \code{downsample} is not \code{NULL}, no additional elements are returned for any \code{method}.
+Only \code{membership} will be present in the list.
 }
 \description{
 Perform community detection on a shared nearest neighbor graph.
