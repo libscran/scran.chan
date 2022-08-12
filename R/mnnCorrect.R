@@ -9,7 +9,7 @@
 #' @param nmads Numeric scalar specifying the number of MADs to use when computing correction vectors.
 #' @param mass.cap Integer scalar specifying the cap on the number of observations to use for center of mass calculations.
 #' A value of 100,000 may be appropriate for speeding up correction of very large datasets.
-#' If this is set to -1, no cap is used.
+#' If this is set to NULL, no cap is used.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param order Vector containing levels of \code{batch} in the desired merge order.
 #' If \code{NULL}, a suitable merge order is automatically determined.
@@ -38,7 +38,7 @@
 #' str(corrected)
 #'
 #' @export
-mnnCorrect.chan <- function(x, batch, k=15, nmads=3, mass.cap=-1, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input"), approximate=FALSE, num.threads=1) {
+mnnCorrect.chan <- function(x, batch, k=15, nmads=3, mass.cap=NULL, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input"), approximate=FALSE, num.threads=1) {
     batch <- transform_factor(batch, n = ncol(x))
 
     if (!is.null(order)) {
@@ -47,6 +47,10 @@ mnnCorrect.chan <- function(x, batch, k=15, nmads=3, mass.cap=-1, order=NULL, re
             stop("'order' should contain unique values in 'batch'"); 
         }
         order <- order - 1L
+    }
+
+    if (is.null(mass.cap)) {
+        mass.cap <- -1
     }
 
     output <- mnn_correct(
