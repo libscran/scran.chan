@@ -1,12 +1,13 @@
 #include "config.h"
 
+#include "knncolle.h"
 #include "scran/clustering/AssignReferenceClusters.hpp"
 #include "Rcpp.h"
 
 //[[Rcpp::export(rng=false)]]
-SEXP assign_reference_clusters(Rcpp::NumericMatrix ref_data, Rcpp::IntegerVector ref_clusters, Rcpp::NumericMatrix test_data, double quantile, bool approximate, int nthreads) {
-    size_t ref_nr = ref_data.nrow(), ref_nc = ref_data.ncol();
-    auto ref_ptr = static_cast<const double*>(ref_data.begin());
+SEXP assign_reference_clusters(SEXP ref_index, Rcpp::IntegerVector ref_clusters, Rcpp::NumericMatrix test_data, int k, bool approximate, int nthreads) {
+    KnncollePtr index(ref_index);
+    size_t ref_nr = index->ndim(), ref_nc = index->nobs();
 
     size_t test_nr = test_data.nrow(), test_nc = test_data.ncol();
     auto test_ptr = static_cast<const double*>(test_data.begin());
@@ -16,12 +17,26 @@ SEXP assign_reference_clusters(Rcpp::NumericMatrix ref_data, Rcpp::IntegerVector
 
     scran::AssignReferenceClusters runner;
     runner
-        .set_quantile(quantile)
+        .set_num_neighbors(k)
         .set_approximate(approximate)
         .set_num_threads(nthreads);
 
     Rcpp::IntegerVector output(test_nc);
-    runner.run(ref_nr, ref_nc, ref_ptr, static_cast<const int*>(ref_clusters.begin()), test_nc, test_ptr, static_cast<int*>(output.begin()));
+    Rcpp::NumericVector best_prop(test_nc);
+    Rcpp::NumericVector second_prop(test_nc);
+    runner.run(
+        index.get(),
+        static_cast<const int*>(ref_clusters.begin()), 
+        test_nc, 
+        test_ptr, 
+        static_cast<int*>(output.begin()),
+        static_cast<double*>(best_prop.begin()),
+        static_cast<double*>(second_prop.begin())
+    );
    
-    return output; 
+    return Rcpp::List::create(
+        Rcpp::Named("assigned") = output,
+        Rcpp::Named("best.prop") = best_prop,
+        Rcpp::Named("second.prop") = second_prop
+    );
 }

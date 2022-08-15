@@ -74,7 +74,7 @@ clusterKmeans.chan.core <- function(x, k, init.method, seed, num.threads) {
 .undownsample_kmeans <- function(output, x, original, ...) {
     for (i in seq_along(output$results)) {
         full <- assignReferenceClusters.chan(x, output$results[[i]]$clusters, original, ...)
-        output$results[[i]] <- list(clusters=full)
+        output$results[[i]] <- list(clusters=full$assigned)
     }
     output
 }

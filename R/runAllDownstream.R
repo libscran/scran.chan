@@ -164,13 +164,14 @@ runAllDownstream <- function(x,
         env$results <- list()
         env$cluster <- NULL
         env$active <- 0L
+        threads.per.job <- num.threads
     } else {
         nnodes <- min(njobs, num.threads)
         env <- spawnCluster(nnodes)
         on.exit(stopCluster(env$cluster))
-        num.threads <- max(1, floor(num.threads / nnodes))
+        threads.per.job <- max(1, floor(num.threads / nnodes))
     }
-    common.args <- list(.env=env, num.threads=num.threads)
+    common.args <- list(.env=env, num.threads=threads.per.job)
 
     if (do.tsne) {
         do.call(.tsne_sweeper, c(list(all.neighbors), tsne.args, common.args))
@@ -204,9 +205,10 @@ runAllDownstream <- function(x,
             if (new.name == "tsne" || new.name == "umap") {
                 store <- .undownsample_embedding(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
             } else if (new.name == "cluster.snn") {
-                store <- .undownsample_snn(store, x, original, approximate=approximate, num.threads=num.threads)
+                store <- .undownsample_snn(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
             } else if (new.name == "cluster.kmeans") {
-                store <- .undownsample_kmeans(store, x, original, approximate=approximate, num.threads=num.threads)
+                chosen <- if (length(all.neighbors)) nnbuilt else x
+                store <- .undownsample_kmeans(store, chosen, original, approximate=approximate, num.threads=num.threads)
             }
         }
 

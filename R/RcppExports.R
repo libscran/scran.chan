@@ -5,8 +5,8 @@ aggregate_across_cells <- function(x, groupings, nthreads) {
     .Call('_scran_chan_aggregate_across_cells', PACKAGE = 'scran.chan', x, groupings, nthreads)
 }
 
-assign_reference_clusters <- function(ref_data, ref_clusters, test_data, quantile, approximate, nthreads) {
-    .Call('_scran_chan_assign_reference_clusters', PACKAGE = 'scran.chan', ref_data, ref_clusters, test_data, quantile, approximate, nthreads)
+assign_reference_clusters <- function(ref_index, ref_clusters, test_data, k, approximate, nthreads) {
+    .Call('_scran_chan_assign_reference_clusters', PACKAGE = 'scran.chan', ref_index, ref_clusters, test_data, k, approximate, nthreads)
 }
 
 build_nn_index <- function(data, approximate) {

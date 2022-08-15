@@ -8,7 +8,7 @@ assignReferenceClusters.chan(
   ref,
   clusters,
   test,
-  quantile = 0.2,
+  num.neighbors = 20,
   approximate = TRUE,
   num.threads = 1
 )
@@ -22,7 +22,7 @@ This usually contains PC coordinates from \code{\link{runPCA.chan}} or friends.}
 \item{test}{Numeric matrix for the test dataset, where rows are dimensions and columns are cells.
 This usually contains PC coordinates similar to \code{ref}.}
 
-\item{quantile}{Numeric scalar specifying the quantile to use for converting distances to an assignment score for each cluster.
+\item{num.neighbors}{Integer scalar specifying the number of neighbors in the reference to use. 
 Smaller values focus on local similarities to immediate neighbors while larger values focus on similarities to the bulk of the cluster.}
 
 \item{approximate}{Logical scalar indicating whether an approximate neighbor search should be performed.}
@@ -30,19 +30,24 @@ Smaller values focus on local similarities to immediate neighbors while larger v
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
-Vector or factor of the same type as \code{clusters}, containing cluster assignments for all cells in \code{test}.
+A data frame containing:
+\itemize{
+\item \code{assigned}, a vector or factor of the same type as \code{clusters}, containing cluster assignments for all cells in \code{test}.
+\item \code{best.prop}, numeric vector containing the proportion of neighbors supporting the assignment of each cell in \code{assigned}.
+\item \code{second.prop}, numeric vector containing the second-largest proportion of neighbors. 
+}
 }
 \description{
-Given a set of clusters in a reference dataset, assign cluster labels to cells in a test dataset using a \pkg{SingleR}-like classification scheme.
+Given a set of clusters in a reference dataset, assign cluster labels to cells in a test dataset using a nearest neighbor classification scheme.
 }
 \examples{
 x <- t(as.matrix(iris[,1:4]))
-keep <- downsampleByNeighbors.chan(x, 10)
+keep <- downsampleByNeighbors.chan(x, 5)
 sub <- x[,keep]
 
 labs <- iris[keep,"Species"]
 full <- assignReferenceClusters.chan(sub, labs, x)
-table(full, iris[,"Species"]) # compare to reference
+table(full$assigned, iris[,"Species"]) # compare to reference
 }
 \seealso{
 \code{\link{downsampleByNeighbors.chan}}, which is typically used to generate a reference subsample for easier clustering before assignment of the full (test) dataset.

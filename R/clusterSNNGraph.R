@@ -120,10 +120,10 @@ clusterSNNGraph.chan <- function(x,
     existing
 }
 
-.undownsample_snn <- function(output, x, original, ...) {
+.undownsample_snn <- function(output, nnbuilt, original, ...) {
     for (i in seq_along(output$results)) {
-        full <- assignReferenceClusters.chan(x, output$results[[i]]$membership, original, ...)
-        output$results[[i]] <- list(membership = full)
+        full <- assignReferenceClusters.chan(nnbuilt, output$results[[i]]$membership, original, ...)
+        output$results[[i]] <- list(membership = full$assigned)
     }
     output
 }

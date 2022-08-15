@@ -23,17 +23,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // assign_reference_clusters
-SEXP assign_reference_clusters(Rcpp::NumericMatrix ref_data, Rcpp::IntegerVector ref_clusters, Rcpp::NumericMatrix test_data, double quantile, bool approximate, int nthreads);
-RcppExport SEXP _scran_chan_assign_reference_clusters(SEXP ref_dataSEXP, SEXP ref_clustersSEXP, SEXP test_dataSEXP, SEXP quantileSEXP, SEXP approximateSEXP, SEXP nthreadsSEXP) {
+SEXP assign_reference_clusters(SEXP ref_index, Rcpp::IntegerVector ref_clusters, Rcpp::NumericMatrix test_data, int k, bool approximate, int nthreads);
+RcppExport SEXP _scran_chan_assign_reference_clusters(SEXP ref_indexSEXP, SEXP ref_clustersSEXP, SEXP test_dataSEXP, SEXP kSEXP, SEXP approximateSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type ref_data(ref_dataSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ref_index(ref_indexSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ref_clusters(ref_clustersSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type test_data(test_dataSEXP);
-    Rcpp::traits::input_parameter< double >::type quantile(quantileSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
     Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(assign_reference_clusters(ref_data, ref_clusters, test_data, quantile, approximate, nthreads));
+    rcpp_result_gen = Rcpp::wrap(assign_reference_clusters(ref_index, ref_clusters, test_data, k, approximate, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
