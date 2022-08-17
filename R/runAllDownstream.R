@@ -203,7 +203,7 @@ runAllDownstream <- function(x,
 
         if (down) {
             if (new.name == "tsne" || new.name == "umap") {
-                store <- .undownsample_embedding(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
+                store <- .undownsample_embedding(subset=x, index=nnbuilt, output=store, original=original, approximate=approximate, num.threads=num.threads)
             } else if (new.name == "cluster.snn") {
                 store <- .undownsample_snn(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
             } else if (new.name == "cluster.kmeans") {

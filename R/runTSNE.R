@@ -68,7 +68,7 @@ runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=4
     output <- .sweep_wrapper(sweep, "runTSNE", num.threads=num.threads)
 
     if (down) {
-        output <- .undownsample_embedding(output, nnbuilt, original, approximate=approximate, num.threads=num.threads)
+        output <- .undownsample_embedding(subset=x, index=nnbuilt, output=output, original=original, approximate=approximate, num.threads=num.threads)
     }
 
     .drop_sweep(output, drop)

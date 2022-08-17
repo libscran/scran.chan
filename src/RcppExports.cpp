@@ -302,16 +302,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // project_neighbor_embedding
-SEXP project_neighbor_embedding(SEXP ref_index, Rcpp::NumericMatrix emb_data, Rcpp::NumericMatrix test_data, int k, int nthreads);
-RcppExport SEXP _scran_chan_project_neighbor_embedding(SEXP ref_indexSEXP, SEXP emb_dataSEXP, SEXP test_dataSEXP, SEXP kSEXP, SEXP nthreadsSEXP) {
+SEXP project_neighbor_embedding(Rcpp::NumericMatrix ref_data, SEXP ref_index, Rcpp::NumericMatrix emb_data, Rcpp::NumericMatrix test_data, int k, bool approximate, int nthreads);
+RcppExport SEXP _scran_chan_project_neighbor_embedding(SEXP ref_dataSEXP, SEXP ref_indexSEXP, SEXP emb_dataSEXP, SEXP test_dataSEXP, SEXP kSEXP, SEXP approximateSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type ref_data(ref_dataSEXP);
     Rcpp::traits::input_parameter< SEXP >::type ref_index(ref_indexSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type emb_data(emb_dataSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type test_data(test_dataSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(project_neighbor_embedding(ref_index, emb_data, test_data, k, nthreads));
+    rcpp_result_gen = Rcpp::wrap(project_neighbor_embedding(ref_data, ref_index, emb_data, test_data, k, approximate, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -474,7 +476,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 5},
     {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 3},
-    {"_scran_chan_project_neighbor_embedding", (DL_FUNC) &_scran_chan_project_neighbor_embedding, 5},
+    {"_scran_chan_project_neighbor_embedding", (DL_FUNC) &_scran_chan_project_neighbor_embedding, 7},
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},

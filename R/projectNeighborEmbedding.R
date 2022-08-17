@@ -31,16 +31,14 @@
 #'
 #' @export
 projectNeighborEmbedding.chan <- function(ref, embedding, test, k = 20, approximate = TRUE, num.threads = 1) {
-    if (is.matrix(ref)) {
-        idx <- build_nn_index(ref, approximate=approximate)
-    } else {
-        idx <- ref
-    }
+    idx <- build_nn_index(ref, approximate=approximate)
+    .project_neighbor_embedding(ref, index=idx, embedding=embedding, test=test, k=k, approximate=approximate, num.threads=num.threads)
+}
 
-    out <- project_neighbor_embedding(ref_index=idx, emb_data=t(embedding), test_data=test, k=k, nthreads=num.threads)
+.project_neighbor_embedding <- function(ref, index, embedding, test, k, approximate, num.threads) {
+    out <- project_neighbor_embedding(ref_data=ref, ref_index=index, emb_data=t(embedding), test_data=test, k=k, approximate=approximate, nthreads=num.threads)
     out <- t(out)
     rownames(out) <- colnames(test)
     colnames(out) <- colnames(embedding)
-
     out
 }
