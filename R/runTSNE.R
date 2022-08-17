@@ -6,7 +6,7 @@
 #' @param perplexity Numeric scalar specifying the perplexity to use in the t-SNE algorithm.
 #' This may also be a vector to perform a parameter sweep.
 #' @param interpolate Integer scalar specifying the grid resolution for interpolating repulsive forces (larger is slower but more accurate).
-#' A value of zero disables interpolation, while a value of -1 only uses interpolation for large datasets.
+#' A value of zero disables interpolation, while a value of \code{NULL} only uses interpolation for large datasets.
 #' This may also be a vector to perform a parameter sweep.
 #' @param max.depth Integer scalar specifying the maximum depth of the Barnes-Hut quad trees (larger is slower but more accurate).
 #' Set to a large integer (e.g., 1000) to eliminate depth restrictions.
@@ -41,7 +41,7 @@
 #' head(swept$results[[1]])
 #' 
 #' @export
-runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, seed=42, drop=TRUE, approximate=TRUE, downsample=NULL, num.threads=1) {
+runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=42, drop=TRUE, approximate=TRUE, downsample=NULL, num.threads=1) {
     down <- do_downsample(downsample)
     if (down) {
         original <- x
@@ -51,6 +51,10 @@ runTSNE.chan <- function(x, perplexity=30, interpolate=-1, max.depth=7, seed=42,
 
     nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity, num.threads=num.threads)
+
+    if (is.null(interpolate)) {
+        interpolate <- -1
+    }
 
     sweep <- function(...) {
         .tsne_sweeper(all.neighbors, 

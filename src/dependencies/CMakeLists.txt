@@ -27,7 +27,7 @@ FetchContent_MakeAvailable(mnncorrect)
 FetchContent_Declare(
   qdtsne
   GIT_REPOSITORY https://github.com/LTLA/qdtsne
-  GIT_TAG 9309c2e24180218363a5d898572051aa74a54377
+  GIT_TAG 72c81a00eda97cae2011abe06acce4525ecdd82a
 )
 FetchContent_MakeAvailable(qdtsne)
 

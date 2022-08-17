@@ -7,7 +7,7 @@
 runTSNE.chan(
   x,
   perplexity = 30,
-  interpolate = -1,
+  interpolate = NULL,
   max.depth = 7,
   seed = 42,
   drop = TRUE,
@@ -23,7 +23,7 @@ runTSNE.chan(
 This may also be a vector to perform a parameter sweep.}
 
 \item{interpolate}{Integer scalar specifying the grid resolution for interpolating repulsive forces (larger is slower but more accurate).
-A value of zero disables interpolation, while a value of -1 only uses interpolation for large datasets.
+A value of zero disables interpolation, while a value of \code{NULL} only uses interpolation for large datasets.
 This may also be a vector to perform a parameter sweep.}
 
 \item{max.depth}{Integer scalar specifying the maximum depth of the Barnes-Hut quad trees (larger is slower but more accurate).
