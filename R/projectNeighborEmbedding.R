@@ -30,12 +30,12 @@
 #'     pch=ifelse(seq_len(ncol(x)) %in% keep, 16, 1)) 
 #'
 #' @export
-projectNeighborEmbedding.chan <- function(ref, embedding, test, k = 20, approximate = TRUE, num.threads = 1) {
+projectNeighborEmbedding.chan <- function(ref, embedding, test, k = 10, approximate = TRUE, num.threads = 1) {
     idx <- build_nn_index(ref, approximate=approximate)
     .project_neighbor_embedding(ref, index=idx, embedding=embedding, test=test, k=k, approximate=approximate, num.threads=num.threads)
 }
 
-.project_neighbor_embedding <- function(ref, index, embedding, test, k, approximate, num.threads) {
+.project_neighbor_embedding <- function(ref, index, embedding, test, k = 10, approximate = TRUE, num.threads = 1) {
     out <- project_neighbor_embedding(ref_data=ref, ref_index=index, emb_data=t(embedding), test_data=test, k=k, approximate=approximate, nthreads=num.threads)
     out <- t(out)
     rownames(out) <- colnames(test)
