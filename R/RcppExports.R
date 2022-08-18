@@ -17,6 +17,10 @@ find_nearest_neighbors <- function(index, k, nthreads) {
     .Call('_scran_chan_find_nearest_neighbors', PACKAGE = 'scran.chan', index, k, nthreads)
 }
 
+query_nearest_neighbors <- function(query, index, k, nthreads) {
+    .Call('_scran_chan_query_nearest_neighbors', PACKAGE = 'scran.chan', query, index, k, nthreads)
+}
+
 find_nearest_neighbor_indices <- function(index, k, nthreads) {
     .Call('_scran_chan_find_nearest_neighbor_indices', PACKAGE = 'scran.chan', index, k, nthreads)
 }
@@ -89,8 +93,8 @@ per_cell_qc_metrics <- function(x, subsets, nthreads) {
     .Call('_scran_chan_per_cell_qc_metrics', PACKAGE = 'scran.chan', x, subsets, nthreads)
 }
 
-project_neighbor_embedding <- function(ref_index, emb_data, test_data, k, nthreads) {
-    .Call('_scran_chan_project_neighbor_embedding', PACKAGE = 'scran.chan', ref_index, emb_data, test_data, k, nthreads)
+project_neighbor_embedding <- function(ref_data, nnidx, nndist, emb_data, test_data, k, approximate, nthreads) {
+    .Call('_scran_chan_project_neighbor_embedding', PACKAGE = 'scran.chan', ref_data, nnidx, nndist, emb_data, test_data, k, approximate, nthreads)
 }
 
 tatami_dim <- function(x) {

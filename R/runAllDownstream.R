@@ -74,7 +74,7 @@ runAllDownstream <- function(x,
     default_args <- function(names, formals, args) {
         for (n in names) {
             if (!n %in% names(args)) {
-                args[[n]] <- formals[[n]]
+                args[n] <- formals[n]
             }
         }
         args
@@ -189,6 +189,7 @@ runAllDownstream <- function(x,
     # Cleaning up.
     completed <- finishJobs(env)
     output <- list()
+    undown.proj.neighbors <- NULL 
 
     for (n in names(completed)) {
         new.name <- switch(n,
@@ -203,7 +204,11 @@ runAllDownstream <- function(x,
 
         if (down) {
             if (new.name == "tsne" || new.name == "umap") {
-                store <- .undownsample_embedding(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
+                if (is.null(undown.proj.neighbors)) {
+                    # Share the neighbors across t-SNE and UMAP.
+                    undown.proj.neighbors <- .project_neighbors(original, index=nnbuilt, num.threads=num.threads)
+                }
+                store <- .undownsample_embedding(subset=x, neighbors=undown.proj.neighbors, output=store, original=original, approximate=approximate, num.threads=num.threads)
             } else if (new.name == "cluster.snn") {
                 store <- .undownsample_snn(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
             } else if (new.name == "cluster.kmeans") {
