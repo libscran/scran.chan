@@ -88,9 +88,9 @@ runUMAP.chan <- function(x,
     existing
 }
 
-.undownsample_embedding <- function(subset, index, output, original, ...) {
+.undownsample_embedding <- function(subset, index, neighbors, output, original, ...) {
     for (i in seq_along(output$results)) {
-        output$results[[i]] <- .project_neighbor_embedding(subset, index=nnbuilt, embedding=output$results[[i]], test=original, ...)
+        output$results[[i]] <- .project_neighbor_embedding(subset, index=index, neighbors=neighbors, embedding=output$results[[i]], test=original, ...)
     }
     output
 }
