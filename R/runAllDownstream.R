@@ -74,7 +74,7 @@ runAllDownstream <- function(x,
     default_args <- function(names, formals, args) {
         for (n in names) {
             if (!n %in% names(args)) {
-                args[[n]] <- formals[[n]]
+                args[n] <- formals[n]
             }
         }
         args

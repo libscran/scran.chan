@@ -21,9 +21,4 @@ test_that("projectNeighborEmbedding works as expected", {
     full <- projectNeighborEmbedding.chan(x, embed, y)
     expect_identical(rownames(full), colnames(y))
     expect_identical(colnames(full), colnames(embed))
-
-    # Works with a prebuilt index.
-    idx <- scran.chan:::build_nn_index(x, approximate=TRUE)
-    full2 <- projectNeighborEmbedding.chan(idx, embed, y)
-    expect_identical(full, full2)
 })

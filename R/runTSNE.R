@@ -52,10 +52,6 @@ runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=4
     nnbuilt <- build_nn_index(x, approximate=approximate)
     all.neighbors <- .find_tsne_neighbors(nnbuilt, perplexity, num.threads=num.threads)
 
-    if (is.null(interpolate)) {
-        interpolate <- -1
-    }
-
     sweep <- function(...) {
         .tsne_sweeper(all.neighbors, 
             perplexity=perplexity, 
@@ -102,6 +98,10 @@ runTSNE.chan.core <- function(neighbors, perplexity, interpolate, max.depth, see
     counter <- 0L
     preflight <- is.null(.env)
     parameters <- list()
+
+    if (is.null(interpolate)) {
+        interpolate <- -1
+    }
 
     for (p in perplexity) {
         k <- perplexity_to_neighbors(p)
