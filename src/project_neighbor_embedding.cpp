@@ -5,7 +5,7 @@
 #include "Rcpp.h"
 
 //[[Rcpp::export(rng=false)]]
-SEXP project_neighbor_embedding(Rcpp::NumericMatrix ref_data, SEXP ref_index, Rcpp::NumericMatrix emb_data, Rcpp::NumericMatrix test_data, int k, bool approximate, int nthreads) {
+SEXP project_neighbor_embedding(Rcpp::NumericMatrix ref_data, SEXP ref_index, Rcpp::NumericMatrix emb_data, Rcpp::NumericMatrix test_data, int k, double scale, bool approximate, int nthreads) {
     KnncollePtr index(ref_index);
     size_t ref_nr = index->ndim(), ref_nc = index->nobs();
     auto ref_ptr = static_cast<const double*>(ref_data.begin());
@@ -28,6 +28,7 @@ SEXP project_neighbor_embedding(Rcpp::NumericMatrix ref_data, SEXP ref_index, Rc
     scran::ProjectNeighborEmbedding runner;
     runner
         .set_num_neighbors(k)
+        .set_scale(scale)
         .set_approximate(approximate)
         .set_num_threads(nthreads);
 
