@@ -8,8 +8,6 @@
 #' @param test Numeric matrix for the test dataset, where rows are dimensions and columns are cells.
 #' This usually contains PC coordinates similar to \code{ref}.
 #' @param k Integer scalar specifying the number of neighbors to use for projection.
-#' @param scale Numeric scalar specifying the scaling factor to apply to the bandwidth.
-#' Larger values usually reduce clumping in the projected coordinates.
 #' @param approximate Logical scalar indicating whether an approximate neighbor search should be performed.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #'
@@ -32,13 +30,13 @@
 #'     pch=ifelse(seq_len(ncol(x)) %in% keep, 16, 1)) 
 #'
 #' @export
-projectNeighborEmbedding.chan <- function(ref, embedding, test, k=10, scale=5, approximate=TRUE, num.threads=1) {
+projectNeighborEmbedding.chan <- function(ref, embedding, test, k = 10, approximate = TRUE, num.threads = 1) {
     idx <- build_nn_index(ref, approximate=approximate)
-    .project_neighbor_embedding(ref, index=idx, embedding=embedding, test=test, k=k, scale=scale, approximate=approximate, num.threads=num.threads)
+    .project_neighbor_embedding(ref, index=idx, embedding=embedding, test=test, k=k, approximate=approximate, num.threads=num.threads)
 }
 
-.project_neighbor_embedding <- function(ref, index, embedding, test, k=10, scale=5, approximate=TRUE, num.threads=1) {
-    out <- project_neighbor_embedding(ref_data=ref, ref_index=index, emb_data=t(embedding), test_data=test, k=k, scale=scale, approximate=approximate, nthreads=num.threads)
+.project_neighbor_embedding <- function(ref, index, embedding, test, k = 10, approximate = TRUE, num.threads = 1) {
+    out <- project_neighbor_embedding(ref_data=ref, ref_index=index, emb_data=t(embedding), test_data=test, k=k, approximate=approximate, nthreads=num.threads)
     out <- t(out)
     rownames(out) <- colnames(test)
     colnames(out) <- colnames(embedding)

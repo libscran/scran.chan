@@ -9,7 +9,6 @@ projectNeighborEmbedding.chan(
   embedding,
   test,
   k = 10,
-  scale = 1,
   approximate = TRUE,
   num.threads = 1
 )

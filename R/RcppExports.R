@@ -89,8 +89,8 @@ per_cell_qc_metrics <- function(x, subsets, nthreads) {
     .Call('_scran_chan_per_cell_qc_metrics', PACKAGE = 'scran.chan', x, subsets, nthreads)
 }
 
-project_neighbor_embedding <- function(ref_data, ref_index, emb_data, test_data, k, scale, approximate, nthreads) {
-    .Call('_scran_chan_project_neighbor_embedding', PACKAGE = 'scran.chan', ref_data, ref_index, emb_data, test_data, k, scale, approximate, nthreads)
+project_neighbor_embedding <- function(ref_data, ref_index, emb_data, test_data, k, approximate, nthreads) {
+    .Call('_scran_chan_project_neighbor_embedding', PACKAGE = 'scran.chan', ref_data, ref_index, emb_data, test_data, k, approximate, nthreads)
 }
 
 tatami_dim <- function(x) {
