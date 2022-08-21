@@ -52,9 +52,9 @@ runUMAP.chan <- function(x,
 {
     down <- do_downsample(downsample)
     if (down) {
-        original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
-        x <- x[,chosen,drop=FALSE]
+        x <- x[,chosen$chosen,drop=FALSE]
+        m <- match(chosen$assigned, chosen$chosen)
     }
 
     nnbuilt <- build_nn_index(x, approximate=approximate)
@@ -72,7 +72,7 @@ runUMAP.chan <- function(x,
     output <- .sweep_wrapper(sweep, "runUMAP", num.threads=num.threads)
 
     if (down) {
-        output <- .undownsample_embedding(subset=x, index=nnbuilt, output=output, original=original, approximate=approximate, num.threads=num.threads)
+        output <- .undownsample_embedding(m, output)
     }
 
     .drop_sweep(output, drop)
@@ -88,9 +88,9 @@ runUMAP.chan <- function(x,
     existing
 }
 
-.undownsample_embedding <- function(subset, index, neighbors, output, original, ...) {
+.undownsample_embedding <- function(m, output) {
     for (i in seq_along(output$results)) {
-        output$results[[i]] <- .project_neighbor_embedding(subset, index=index, neighbors=neighbors, embedding=output$results[[i]], test=original, ...)
+        output$results[[i]] <- output$results[[i]][m,,drop=FALSE]
     }
     output
 }

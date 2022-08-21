@@ -48,16 +48,16 @@
 clusterKmeans.chan <- function(x, k=10, init.method = "pca-part", seed=5489L, drop=TRUE, downsample=NULL, num.threads=1) {
     down <- do_downsample(downsample)
     if (down) {
-        original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, num.threads=num.threads)
-        x <- x[,chosen,drop=FALSE]
+        x <- x[,chosen$chosen,drop=FALSE]
+        m <- match(chosen$assigned, chosen$chosen)
     }
 
     sweep <- function(...) .kmeans_sweeper(x, k=k, init.method=init.method, seed=seed, ...)
     output <- .sweep_wrapper(sweep, "clusterKmeans", num.threads=num.threads)
 
     if (down) {
-        output <- .undownsample_kmeans(output, x, original, num.threads=num.threads)
+        output <- .undownsample_kmeans(m, output)
     }
 
     .drop_sweep(output, drop)
@@ -71,10 +71,9 @@ clusterKmeans.chan.core <- function(x, k, init.method, seed, num.threads) {
     output 
 }
 
-.undownsample_kmeans <- function(output, x, original, ...) {
+.undownsample_kmeans <- function(m, output) {
     for (i in seq_along(output$results)) {
-        full <- assignReferenceClusters.chan(x, output$results[[i]]$clusters, original, ...)
-        output$results[[i]] <- list(clusters=full$assigned)
+        output$results[[i]] <- list(clusters=output$results[[i]]$clusters[m])
     }
     output
 }

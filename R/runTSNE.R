@@ -44,9 +44,9 @@
 runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=42, drop=TRUE, approximate=TRUE, downsample=NULL, num.threads=1) {
     down <- do_downsample(downsample)
     if (down) {
-        original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
-        x <- x[,chosen,drop=FALSE]
+        x <- x[,chosen$chosen,drop=FALSE]
+        m <- match(chosen$assigned, chosen$chosen)
     }
 
     nnbuilt <- build_nn_index(x, approximate=approximate)
@@ -64,7 +64,7 @@ runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=4
     output <- .sweep_wrapper(sweep, "runTSNE", num.threads=num.threads)
 
     if (down) {
-        output <- .undownsample_embedding(subset=x, index=nnbuilt, output=output, original=original, approximate=approximate, num.threads=num.threads)
+        output <- .undownsample_embedding(m, output)
     }
 
     .drop_sweep(output, drop)

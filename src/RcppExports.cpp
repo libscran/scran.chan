@@ -22,21 +22,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// assign_reference_clusters
-SEXP assign_reference_clusters(SEXP ref_index, Rcpp::IntegerVector ref_clusters, Rcpp::NumericMatrix test_data, int k, bool approximate, int nthreads);
-RcppExport SEXP _scran_chan_assign_reference_clusters(SEXP ref_indexSEXP, SEXP ref_clustersSEXP, SEXP test_dataSEXP, SEXP kSEXP, SEXP approximateSEXP, SEXP nthreadsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< SEXP >::type ref_index(ref_indexSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ref_clusters(ref_clustersSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type test_data(test_dataSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
-    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(assign_reference_clusters(ref_index, ref_clusters, test_data, k, approximate, nthreads));
-    return rcpp_result_gen;
-END_RCPP
-}
 // build_nn_index
 SEXP build_nn_index(Rcpp::NumericMatrix data, bool approximate);
 RcppExport SEXP _scran_chan_build_nn_index(SEXP dataSEXP, SEXP approximateSEXP) {
@@ -314,23 +299,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// project_neighbor_embedding
-SEXP project_neighbor_embedding(Rcpp::NumericMatrix ref_data, Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, Rcpp::NumericMatrix emb_data, Rcpp::NumericMatrix test_data, int k, bool approximate, int nthreads);
-RcppExport SEXP _scran_chan_project_neighbor_embedding(SEXP ref_dataSEXP, SEXP nnidxSEXP, SEXP nndistSEXP, SEXP emb_dataSEXP, SEXP test_dataSEXP, SEXP kSEXP, SEXP approximateSEXP, SEXP nthreadsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type ref_data(ref_dataSEXP);
-    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type nnidx(nnidxSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type nndist(nndistSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type emb_data(emb_dataSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type test_data(test_dataSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
-    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(project_neighbor_embedding(ref_data, nnidx, nndist, emb_data, test_data, k, approximate, nthreads));
-    return rcpp_result_gen;
-END_RCPP
-}
 // tatami_dim
 Rcpp::IntegerVector tatami_dim(SEXP x);
 RcppExport SEXP _scran_chan_tatami_dim(SEXP xSEXP) {
@@ -469,7 +437,6 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_aggregate_across_cells", (DL_FUNC) &_scran_chan_aggregate_across_cells, 3},
-    {"_scran_chan_assign_reference_clusters", (DL_FUNC) &_scran_chan_assign_reference_clusters, 6},
     {"_scran_chan_build_nn_index", (DL_FUNC) &_scran_chan_build_nn_index, 2},
     {"_scran_chan_find_nearest_neighbors", (DL_FUNC) &_scran_chan_find_nearest_neighbors, 3},
     {"_scran_chan_query_nearest_neighbors", (DL_FUNC) &_scran_chan_query_nearest_neighbors, 4},
@@ -491,7 +458,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
     {"_scran_chan_per_cell_qc_filters", (DL_FUNC) &_scran_chan_per_cell_qc_filters, 5},
     {"_scran_chan_per_cell_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_qc_metrics, 3},
-    {"_scran_chan_project_neighbor_embedding", (DL_FUNC) &_scran_chan_project_neighbor_embedding, 8},
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},

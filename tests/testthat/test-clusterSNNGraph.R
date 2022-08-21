@@ -33,4 +33,5 @@ test_that("clusterSNNGraph works in sweep mode", {
 test_that("clusterSNNGraph works after downsampling", {
     clustering <- clusterSNNGraph.chan(x, downsample=5)
     expect_identical(length(clustering$membership), ncol(x))
+    expect_true(!anyNA(clustering$membership))
 })

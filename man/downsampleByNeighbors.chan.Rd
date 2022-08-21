@@ -17,23 +17,25 @@ Larger values result in greater downsampling, roughly at a ratio of \code{k/2}.}
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 }
 \value{
-An integer vector containing the column indices of \code{x} to retain.
+List containing:
+\itemize{
+\item \code{chosen}, an integer vector containing the column indices of \code{x} to retain.
+\item \code{assigned}, integer vector of length equal to \code{ncol(x)},
+containing the column index of the representative cell for each cell in \code{x}.
+}
 }
 \description{
 Implements a nearest neighbor-based downsampling scheme that preserves density while also guaranteeing representation of low-frequency subpopulations.
 }
 \examples{
 x <- t(as.matrix(iris[,1:4]))
-keep <- downsampleByNeighbors.chan(x, 10)
+down <- downsampleByNeighbors.chan(x, 10)
+keep <- down$chosen
 length(keep)
 
 # Visualizing what was kept.
 plot(x[1,], x[2,], col=seq_len(ncol(x)) \%in\% keep + 1L)
 
-}
-\seealso{
-\code{\link{assignReferenceClusters.chan}} and \code{\link{projectNeighborEmbedding.chan}},
-to obtain the full clusters or visualizations from a downsampled dataset.
 }
 \author{
 Aaron Lun

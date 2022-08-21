@@ -82,9 +82,9 @@ clusterSNNGraph.chan <- function(x,
 {
     down <- do_downsample(downsample)
     if (down) {
-        original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
-        x <- x[,chosen,drop=FALSE]
+        x <- x[,chosen$chosen,drop=FALSE]
+        m <- match(chosen$assigned, chosen$chosen)
     }
 
     nnbuilt <- build_nn_index(x, approximate=approximate)
@@ -104,7 +104,7 @@ clusterSNNGraph.chan <- function(x,
     output <- .sweep_wrapper(sweep, "clusterSNNGraph", num.threads=num.threads)
 
     if (down) {
-        output <- .undownsample_snn(output, x, original, approximate=approximate, num.threads=num.threads)
+        output <- .undownsample_snn(m, output)
     }
 
     .drop_sweep(output, drop)
@@ -120,10 +120,9 @@ clusterSNNGraph.chan <- function(x,
     existing
 }
 
-.undownsample_snn <- function(output, nnbuilt, original, ...) {
+.undownsample_snn <- function(m, output) {
     for (i in seq_along(output$results)) {
-        full <- assignReferenceClusters.chan(nnbuilt, output$results[[i]]$membership, original, ...)
-        output$results[[i]] <- list(membership = full$assigned)
+        output$results[[i]] <- list(membership = output$results[[i]]$membership[m])
     }
     output
 }

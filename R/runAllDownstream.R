@@ -110,9 +110,9 @@ runAllDownstream <- function(x,
 
     down <- do_downsample(downsample)
     if (down) {
-        original <- x
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
-        x <- x[,chosen,drop=FALSE]
+        x <- x[,chosen$chosen,drop=FALSE]
+        m <- match(chosen$assigned, chosen$chosen)
     }
 
     # Generating the neighbors.
@@ -204,16 +204,11 @@ runAllDownstream <- function(x,
 
         if (down) {
             if (new.name == "tsne" || new.name == "umap") {
-                if (is.null(undown.proj.neighbors)) {
-                    # Share the neighbors across t-SNE and UMAP.
-                    undown.proj.neighbors <- .project_neighbors(original, index=nnbuilt, num.threads=num.threads)
-                }
-                store <- .undownsample_embedding(subset=x, neighbors=undown.proj.neighbors, output=store, original=original, approximate=approximate, num.threads=num.threads)
+                store <- .undownsample_embedding(m, store)
             } else if (new.name == "cluster.snn") {
-                store <- .undownsample_snn(store, nnbuilt, original, approximate=approximate, num.threads=num.threads)
+                store <- .undownsample_snn(m, store)
             } else if (new.name == "cluster.kmeans") {
-                chosen <- if (length(all.neighbors)) nnbuilt else x
-                store <- .undownsample_kmeans(store, chosen, original, approximate=approximate, num.threads=num.threads)
+                store <- .undownsample_kmeans(m, store)
             }
         }
 

@@ -14,6 +14,11 @@ SEXP downsample_by_neighbors(Rcpp::NumericMatrix data, int k, bool approximate, 
         .set_approximate(approximate)
         .set_num_threads(nthreads);
 
-    auto res = runner.run(nr, nc, ptr);
-    return Rcpp::IntegerVector(res.begin(), res.end());
+    Rcpp::IntegerVector assigned(nc);
+    auto res = runner.run(nr, nc, ptr, static_cast<int*>(assigned.begin()));
+
+    return Rcpp::List::create(
+        Rcpp::Named("chosen") = Rcpp::IntegerVector(res.begin(), res.end()),
+        Rcpp::Named("assigned") = assigned
+    );
 }

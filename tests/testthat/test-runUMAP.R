@@ -31,4 +31,5 @@ test_that("runUMAP works in sweep mode", {
 test_that("runUMAP works with downsampling", {
     umap <- runUMAP.chan(x, downsample=5)
     expect_identical(nrow(umap), ncol(x))
+    expect_true(!anyNA(umap))
 })

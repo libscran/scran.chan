@@ -48,6 +48,7 @@ test_that("runAllDownstream works correctly with downsampling", {
     expect_identical(nrow(res$tsne), ncol(x))
     expect_identical(nrow(res$umap), ncol(x))
     expect_identical(length(res$cluster.snn$membership), ncol(x))
+    expect_true(!anyNA(res$cluster.snn$membership))
 
     res <- runAllDownstream(x, do.cluster.kmeans=TRUE, do.umap=FALSE, do.tsne=FALSE, do.cluster.snn=FALSE, downsample=5)
     expect_identical(length(res$cluster.kmeans$clusters), ncol(x))

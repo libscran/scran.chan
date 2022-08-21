@@ -33,4 +33,5 @@ test_that("clusterKmeans works in sweep mode", {
 test_that("clusterKmeans works after downsampling", {
     clustering <- clusterKmeans.chan(x, downsample=5)
     expect_identical(length(clustering$clusters), ncol(x))
+    expect_true(!anyNA(clustering$clusters))
 })

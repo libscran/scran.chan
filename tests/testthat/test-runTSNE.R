@@ -29,6 +29,7 @@ test_that("runTSNE works in sweep mode", {
 })
 
 test_that("runTSNE works with downsampling", {
-    umap <- runTSNE.chan(x, downsample=5)
-    expect_identical(nrow(umap), ncol(x))
+    tsne <- runTSNE.chan(x, downsample=5)
+    expect_identical(nrow(tsne), ncol(x))
+    expect_true(!anyNA(tsne))
 })
