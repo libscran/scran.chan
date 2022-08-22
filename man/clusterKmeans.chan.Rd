@@ -54,8 +54,8 @@ Perform k-means clustering using kmeans++ initialization with the Hartigan-Wong 
 }
 \examples{
 x <- t(as.matrix(iris[,1:4]))
-clustering <- clusterKmeans.chan(x)
-table(clustering$clusters)
+clustering <- clusterKmeans.chan(x, k=3)
+table(clustering$clusters, iris[,"Species"])
 
 # Parameter sweep mode.
 swept <- clusterKmeans.chan(x, k=c(2,5,10), 
@@ -64,6 +64,10 @@ swept <- clusterKmeans.chan(x, k=c(2,5,10),
 swept$parameters
 length(swept$results)
 table(swept$results[[1]]$clusters)
+
+# Adding some downsampling.
+down.clust <- clusterKmeans.chan(x, k=3, downsample=5)
+table(down.clust$clusters, iris[,"Species"])
 
 }
 \author{
