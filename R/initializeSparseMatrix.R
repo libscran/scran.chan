@@ -135,6 +135,8 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
         } else {
             ptr <- finalize_all_blocks_CSR(ptr0)
         }
+
+        gc(verbose=FALSE) # need to garbage collect the gunk from block processing.
     }
 
     c(list(pointer=ptr), dim.names)
