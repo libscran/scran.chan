@@ -10,6 +10,7 @@ clusterSNNGraph.chan(
   weight.scheme = "rank",
   method = "multilevel",
   resolution = 1,
+  objective = "modularity",
   steps = 4,
   seed = 42,
   drop = TRUE,
@@ -32,6 +33,9 @@ Options are multi-level (\code{"multilevel"}), Walktrap (\code{"walktrap"}) or L
 This may also be a vector to perform a parameter sweep.}
 
 \item{resolution}{Numeric scalar specifying the resolution to use for multi-level or Leiden clustering.
+This may also be a vector to perform a parameter sweep.}
+
+\item{objective}{String specifying the objective function to use for Leiden clustering: \code{"CPM"} or \code{"modularity"}.
 This may also be a vector to perform a parameter sweep.}
 
 \item{steps}{Integer scalar specifying the number of steps to use for Walktrap clustering.

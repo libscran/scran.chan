@@ -8,7 +8,7 @@
 #include <string>
 
 //[[Rcpp::export(rng=false)]]
-SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std::string method, double resolution, int steps, int seed, int nthreads) {
+SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std::string method, double resolution, int steps, bool use_cpm, int seed, int nthreads) {
     auto neighbors = unpack_neighbors<int>(nnidx);
     auto ncells = neighbors.size();
 
@@ -49,7 +49,7 @@ SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std
 
     } else if (method == "leiden") {
         scran::ClusterSNNGraphLeiden runner;
-        runner.set_resolution(resolution).set_seed(seed);
+        runner.set_resolution(resolution).set_seed(seed).set_modularity(!use_cpm);
         auto res = runner.run(edges);
 
         output = Rcpp::List::create(

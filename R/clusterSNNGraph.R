@@ -12,6 +12,8 @@
 #' This may also be a vector to perform a parameter sweep.
 #' @param resolution Numeric scalar specifying the resolution to use for multi-level or Leiden clustering.
 #' This may also be a vector to perform a parameter sweep.
+#' @param objective String specifying the objective function to use for Leiden clustering: \code{"CPM"} or \code{"modularity"}.
+#' This may also be a vector to perform a parameter sweep.
 #' @param steps Integer scalar specifying the number of steps to use for Walktrap clustering.
 #' This may also be a vector to perform a parameter sweep.
 #' @param seed Integer scalar specifying the seed to use for multi-level or Leiden clustering. 
@@ -73,6 +75,7 @@ clusterSNNGraph.chan <- function(x,
     weight.scheme="rank",
     method="multilevel",
     resolution=1, 
+    objective="modularity",
     steps=4,
     seed=42,
     drop=TRUE,
@@ -96,6 +99,7 @@ clusterSNNGraph.chan <- function(x,
             weight.scheme=weight.scheme, 
             method=method, 
             resolution=resolution, 
+            objective=objective,
             steps=steps, 
             seed=seed, 
             ...)
@@ -131,12 +135,13 @@ clusterSNNGraph.chan <- function(x,
 
 .snn.weight.choices <- c("rank", "number", "jaccard")
 
-clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resolution, steps, seed, num.threads) {
+clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resolution, objective, steps, seed, num.threads) {
     clustering <- cluster_snn_graph(
         nnidx=neighbors,
         weight_scheme=weight.scheme,
         method=method,
         resolution=resolution, 
+        use_cpm=(objective == "CPM"),
         steps=steps, 
         seed=seed, 
         nthreads=num.threads)
@@ -152,7 +157,7 @@ clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resoluti
     clustering
 }
 
-.snn_sweeper <- function(neighbors, num.neighbors, weight.scheme, method, resolution, steps, seed, num.threads, .env) {
+.snn_sweeper <- function(neighbors, num.neighbors, weight.scheme, method, resolution, objective, steps, seed, num.threads, .env) {
     counter <- 0L
     preflight <- is.null(.env)
     parameters <- list()
@@ -173,11 +178,11 @@ clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resoluti
                     for (s in steps) {
                         counter <- counter + 1L
                         if (preflight) {
-                            parameters[[counter]] <- data.frame(num.neighbors=k, weight.scheme=w, method=m, resolution=NA_real_, seed=NA_integer_, steps=s)
+                            parameters[[counter]] <- data.frame(num.neighbors=k, weight.scheme=w, method=m, resolution=NA_real_, objective=NA_character_, seed=NA_integer_, steps=s)
                         } else {
                             submitJob(.env,
                                 fun=clusterSNNGraph.chan.core,
-                                args=list(curneighbors, weight.scheme=w, method=m, resolution=0, seed=0, steps=s, num.threads=num.threads),
+                                args=list(curneighbors, weight.scheme=w, method=m, resolution=0, seed=0, steps=s, objective="modularity", num.threads=num.threads),
                                 type="clusterSNNGraph",
                                 index=counter
                             )
@@ -186,16 +191,32 @@ clusterSNNGraph.chan.core <- function(neighbors, weight.scheme, method, resoluti
                 } else {
                     for (r in resolution) {
                         for (s in seed) {
-                            counter <- counter + 1L
-                            if (preflight) {
-                                parameters[[counter]] <- data.frame(num.neighbors=k, weight.scheme=w, method=m, resolution=r, seed=s, steps=NA_integer_)
+                            if (m == "leiden") {
+                                for (o in objective) {
+                                    counter <- counter + 1L
+                                    if (preflight) {
+                                        parameters[[counter]] <- data.frame(num.neighbors=k, weight.scheme=w, method=m, resolution=r, objective=o, seed=s, steps=NA_integer_)
+                                    } else {
+                                        submitJob(.env,
+                                            fun=clusterSNNGraph.chan.core,
+                                            args=list(curneighbors, weight.scheme=w, method=m, resolution=r, objective=o, seed=s, steps=0, num.threads=num.threads),
+                                            type="clusterSNNGraph",
+                                            index=counter
+                                        )
+                                    }
+                                }
                             } else {
-                                submitJob(.env,
-                                    fun=clusterSNNGraph.chan.core,
-                                    args=list(curneighbors, weight.scheme=w, method=m, resolution=r, seed=s, steps=0, num.threads=num.threads),
-                                    type="clusterSNNGraph",
-                                    index=counter
-                                )
+                                counter <- counter + 1L
+                                if (preflight) {
+                                    parameters[[counter]] <- data.frame(num.neighbors=k, weight.scheme=w, method=m, resolution=r, objective=NA_character_, seed=s, steps=NA_integer_)
+                                } else {
+                                    submitJob(.env,
+                                        fun=clusterSNNGraph.chan.core,
+                                        args=list(curneighbors, weight.scheme=w, method=m, resolution=r, seed=s, steps=0, objective="modularity", num.threads=num.threads),
+                                        type="clusterSNNGraph",
+                                        index=counter
+                                    )
+                                }
                             }
                         }
                     }

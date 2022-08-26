@@ -85,8 +85,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cluster_snn_graph
-SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std::string method, double resolution, int steps, int seed, int nthreads);
-RcppExport SEXP _scran_chan_cluster_snn_graph(SEXP nnidxSEXP, SEXP weight_schemeSEXP, SEXP methodSEXP, SEXP resolutionSEXP, SEXP stepsSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
+SEXP cluster_snn_graph(Rcpp::IntegerMatrix nnidx, std::string weight_scheme, std::string method, double resolution, int steps, bool use_cpm, int seed, int nthreads);
+RcppExport SEXP _scran_chan_cluster_snn_graph(SEXP nnidxSEXP, SEXP weight_schemeSEXP, SEXP methodSEXP, SEXP resolutionSEXP, SEXP stepsSEXP, SEXP use_cpmSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type nnidx(nnidxSEXP);
@@ -94,9 +94,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type method(methodSEXP);
     Rcpp::traits::input_parameter< double >::type resolution(resolutionSEXP);
     Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
+    Rcpp::traits::input_parameter< bool >::type use_cpm(use_cpmSEXP);
     Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cluster_snn_graph(nnidx, weight_scheme, method, resolution, steps, seed, nthreads));
+    rcpp_result_gen = Rcpp::wrap(cluster_snn_graph(nnidx, weight_scheme, method, resolution, steps, use_cpm, seed, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -442,7 +443,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_query_nearest_neighbors", (DL_FUNC) &_scran_chan_query_nearest_neighbors, 4},
     {"_scran_chan_find_nearest_neighbor_indices", (DL_FUNC) &_scran_chan_find_nearest_neighbor_indices, 3},
     {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 5},
-    {"_scran_chan_cluster_snn_graph", (DL_FUNC) &_scran_chan_cluster_snn_graph, 7},
+    {"_scran_chan_cluster_snn_graph", (DL_FUNC) &_scran_chan_cluster_snn_graph, 8},
     {"_scran_chan_downsample_by_neighbors", (DL_FUNC) &_scran_chan_downsample_by_neighbors, 4},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_CSC", (DL_FUNC) &_scran_chan_initialize_from_CSC, 7},

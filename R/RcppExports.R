@@ -25,8 +25,8 @@ cluster_kmeans <- function(data, nclusters, init_method, seed, nthreads) {
     .Call('_scran_chan_cluster_kmeans', PACKAGE = 'scran.chan', data, nclusters, init_method, seed, nthreads)
 }
 
-cluster_snn_graph <- function(nnidx, weight_scheme, method, resolution, steps, seed, nthreads) {
-    .Call('_scran_chan_cluster_snn_graph', PACKAGE = 'scran.chan', nnidx, weight_scheme, method, resolution, steps, seed, nthreads)
+cluster_snn_graph <- function(nnidx, weight_scheme, method, resolution, steps, use_cpm, seed, nthreads) {
+    .Call('_scran_chan_cluster_snn_graph', PACKAGE = 'scran.chan', nnidx, weight_scheme, method, resolution, steps, use_cpm, seed, nthreads)
 }
 
 downsample_by_neighbors <- function(data, k, approximate, nthreads) {

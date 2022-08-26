@@ -98,7 +98,7 @@ runAllDownstream <- function(x,
         cluster.snn.args <- legacy_args("num.neighbors", cluster.snn.num.neighbors, cluster.snn.formals, cluster.snn.args)
         cluster.snn.args <- legacy_args("method", cluster.snn.method, cluster.snn.formals, cluster.snn.args)
         cluster.snn.args <- legacy_args("resolution", cluster.snn.resolution, cluster.snn.formals, cluster.snn.args)
-        cluster.snn.args <- default_args(c("weight.scheme", "steps", "seed"), cluster.snn.formals, cluster.snn.args)
+        cluster.snn.args <- default_args(c("weight.scheme", "steps", "objective", "seed"), cluster.snn.formals, cluster.snn.args)
     }
 
     if (do.cluster.kmeans) {
