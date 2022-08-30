@@ -83,7 +83,7 @@ runAllDownstream <- function(x,
     if (do.tsne) {
         tsne.formals <- formals(runTSNE.chan) 
         tsne.args <- legacy_args("perplexity", tsne.perplexity, tsne.formals, tsne.args)
-        tsne.args <- default_args(c("interpolate", "max.depth", "seed"), tsne.formals, tsne.args)
+        tsne.args <- default_args(c("interpolate", "max.depth", "max.iter", "seed"), tsne.formals, tsne.args)
     }
 
     if (do.umap) {

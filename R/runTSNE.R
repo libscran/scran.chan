@@ -14,6 +14,7 @@
 #' @param seed Integer scalar specifying the seed to use for generating the initial coordinates.
 #' This may also be a vector to perform a parameter sweep.
 #' @param num.threads Integer scalar specifying the number of threads to use.
+#' @param max.iter Integer scalar specifying the maximum number of iterations to perform.
 #' @param drop Logical scalar indicating whether to drop the sweep-based formatting when the parameters are scalars.
 #' @param downsample Integer scalar specifying the downsampling level (see \code{k} in \code{\link{downsampleByNeighbors.chan}}.
 #' If \code{NULL}, no downsampling is performed.
@@ -41,7 +42,7 @@
 #' head(swept$results[[1]])
 #' 
 #' @export
-runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=42, drop=TRUE, approximate=TRUE, downsample=NULL, num.threads=1) {
+runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, max.iter=500, seed=42, drop=TRUE, approximate=TRUE, downsample=NULL, num.threads=1) {
     down <- do_downsample(downsample)
     if (down) {
         chosen <- downsampleByNeighbors.chan(x, downsample, approximate=approximate, num.threads=num.threads)
@@ -57,6 +58,7 @@ runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=4
             perplexity=perplexity, 
             interpolate=interpolate, 
             max.depth=max.depth, 
+            max.iter=max.iter,
             seed=seed, 
             ...)
     }
@@ -81,20 +83,21 @@ runTSNE.chan <- function(x, perplexity=30, interpolate=NULL, max.depth=7, seed=4
     existing
 }
 
-runTSNE.chan.core <- function(neighbors, perplexity, interpolate, max.depth, seed, num.threads) {
+runTSNE.chan.core <- function(neighbors, perplexity, interpolate, max.depth, max.iter, seed, num.threads) {
     output <- run_tsne(
         nnidx=neighbors$index, 
         nndist=neighbors$distance, 
         perplexity=perplexity,
         interpolate=interpolate,
         max_depth=max.depth,
+        max_iter=max.iter,
         seed=seed,
         nthreads=num.threads
     )
     t(output)
 }
 
-.tsne_sweeper <- function(neighbors, perplexity, interpolate, max.depth, seed, num.threads, .env) {
+.tsne_sweeper <- function(neighbors, perplexity, interpolate, max.depth, max.iter, seed, num.threads, .env) {
     counter <- 0L
     preflight <- is.null(.env)
     parameters <- list()
@@ -109,17 +112,19 @@ runTSNE.chan.core <- function(neighbors, perplexity, interpolate, max.depth, see
 
         for (i in interpolate) {
             for (d in max.depth) {
-                for (s in seed) {
-                    counter <- counter + 1L
-                    if (preflight) {
-                        parameters[[counter]] <- data.frame(perplexity = p, interpolate = i, max.depth = d, seed=s)
-                    } else {
-                        submitJob(.env, 
-                            fun=runTSNE.chan.core, 
-                            args=list(neighbors=curneighbors, perplexity=p, interpolate=i, max.depth=d, seed=s, num.threads=num.threads),
-                            type="runTSNE", 
-                            index=counter
-                        )
+                for (m in max.iter) {
+                    for (s in seed) {
+                        counter <- counter + 1L
+                        if (preflight) {
+                            parameters[[counter]] <- data.frame(perplexity = p, interpolate = i, max.depth = d, max.iter = m, seed=s)
+                        } else {
+                            submitJob(.env, 
+                                fun=runTSNE.chan.core, 
+                                args=list(neighbors=curneighbors, perplexity=p, interpolate=i, max.depth=d, max.iter=m, seed=s, num.threads=num.threads),
+                                type="runTSNE", 
+                                index=counter
+                            )
+                        }
                     }
                 }
             }

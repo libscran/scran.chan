@@ -381,8 +381,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_tsne
-SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int seed, int nthreads);
-RcppExport SEXP _scran_chan_run_tsne(SEXP nnidxSEXP, SEXP nndistSEXP, SEXP perplexitySEXP, SEXP interpolateSEXP, SEXP max_depthSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
+SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int max_iter, int seed, int nthreads);
+RcppExport SEXP _scran_chan_run_tsne(SEXP nnidxSEXP, SEXP nndistSEXP, SEXP perplexitySEXP, SEXP interpolateSEXP, SEXP max_depthSEXP, SEXP max_iterSEXP, SEXP seedSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type nnidx(nnidxSEXP);
@@ -390,9 +390,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type perplexity(perplexitySEXP);
     Rcpp::traits::input_parameter< int >::type interpolate(interpolateSEXP);
     Rcpp::traits::input_parameter< int >::type max_depth(max_depthSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< int >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_tsne(nnidx, nndist, perplexity, interpolate, max_depth, seed, nthreads));
+    rcpp_result_gen = Rcpp::wrap(run_tsne(nnidx, nndist, perplexity, interpolate, max_depth, max_iter, seed, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -465,7 +466,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_blocked_pca", (DL_FUNC) &_scran_chan_run_blocked_pca, 6},
     {"_scran_chan_run_multibatch_pca", (DL_FUNC) &_scran_chan_run_multibatch_pca, 6},
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 5},
-    {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 7},
+    {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 8},
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 5},

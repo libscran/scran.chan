@@ -9,6 +9,7 @@ runTSNE.chan(
   perplexity = 30,
   interpolate = NULL,
   max.depth = 7,
+  max.iter = 500,
   seed = 42,
   drop = TRUE,
   approximate = TRUE,
@@ -29,6 +30,8 @@ This may also be a vector to perform a parameter sweep.}
 \item{max.depth}{Integer scalar specifying the maximum depth of the Barnes-Hut quad trees (larger is slower but more accurate).
 Set to a large integer (e.g., 1000) to eliminate depth restrictions.
 This may also be a vector to perform a parameter sweep.}
+
+\item{max.iter}{Integer scalar specifying the maximum number of iterations to perform.}
 
 \item{seed}{Integer scalar specifying the seed to use for generating the initial coordinates.
 This may also be a vector to perform a parameter sweep.}

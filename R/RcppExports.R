@@ -113,8 +113,8 @@ run_pca <- function(x, ndim, features, rotation, nthreads) {
     .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, rotation, nthreads)
 }
 
-run_tsne <- function(nnidx, nndist, perplexity, interpolate, max_depth, seed, nthreads) {
-    .Call('_scran_chan_run_tsne', PACKAGE = 'scran.chan', nnidx, nndist, perplexity, interpolate, max_depth, seed, nthreads)
+run_tsne <- function(nnidx, nndist, perplexity, interpolate, max_depth, max_iter, seed, nthreads) {
+    .Call('_scran_chan_run_tsne', PACKAGE = 'scran.chan', nnidx, nndist, perplexity, interpolate, max_depth, max_iter, seed, nthreads)
 }
 
 perplexity_to_neighbors <- function(p) {

@@ -5,12 +5,16 @@
 #include "qdtsne/qdtsne.hpp"
 
 //[[Rcpp::export(rng=false)]]
-SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int seed, int nthreads) {
+SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int max_iter, int seed, int nthreads) {
     auto neighbors = unpack_neighbors<int, float>(nnidx, nndist);
     size_t nobs = neighbors.size();
 
     qdtsne::Tsne<2, float> runner;
-    runner.set_perplexity(perplexity).set_max_depth(max_depth).set_num_threads(nthreads);
+    runner
+        .set_perplexity(perplexity)
+        .set_max_depth(max_depth)
+        .set_num_threads(nthreads)
+        .set_max_iter(max_iter);
     
     if (interpolate) {
         if (interpolate > 0) {
