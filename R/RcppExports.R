@@ -121,6 +121,10 @@ perplexity_to_neighbors <- function(p) {
     .Call('_scran_chan_perplexity_to_neighbors', PACKAGE = 'scran.chan', p)
 }
 
+init_tsne <- function(nnidx, nndist, perplexity, interpolate, max_depth, max_iter, nthreads) {
+    .Call('_scran_chan_init_tsne', PACKAGE = 'scran.chan', nnidx, nndist, perplexity, interpolate, max_depth, max_iter, nthreads)
+}
+
 run_umap <- function(nnidx, nndist, min_dist, seed, num_epochs, nthreads) {
     .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, num_epochs, nthreads)
 }

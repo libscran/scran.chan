@@ -407,6 +407,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// init_tsne
+SEXP init_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int max_iter, int nthreads);
+RcppExport SEXP _scran_chan_init_tsne(SEXP nnidxSEXP, SEXP nndistSEXP, SEXP perplexitySEXP, SEXP interpolateSEXP, SEXP max_depthSEXP, SEXP max_iterSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type nnidx(nnidxSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type nndist(nndistSEXP);
+    Rcpp::traits::input_parameter< double >::type perplexity(perplexitySEXP);
+    Rcpp::traits::input_parameter< int >::type interpolate(interpolateSEXP);
+    Rcpp::traits::input_parameter< int >::type max_depth(max_depthSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(init_tsne(nnidx, nndist, perplexity, interpolate, max_depth, max_iter, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // run_umap
 SEXP run_umap(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double min_dist, int seed, int num_epochs, int nthreads);
 RcppExport SEXP _scran_chan_run_umap(SEXP nnidxSEXP, SEXP nndistSEXP, SEXP min_distSEXP, SEXP seedSEXP, SEXP num_epochsSEXP, SEXP nthreadsSEXP) {
@@ -468,6 +484,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 5},
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 8},
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
+    {"_scran_chan_init_tsne", (DL_FUNC) &_scran_chan_init_tsne, 7},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 5},
     {NULL, NULL, 0}

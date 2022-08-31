@@ -15,7 +15,7 @@ SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perp
         .set_max_depth(max_depth)
         .set_num_threads(nthreads)
         .set_max_iter(max_iter);
-    
+
     if (interpolate) {
         if (interpolate > 0) {
             runner.set_interpolation(interpolate);
@@ -36,4 +36,35 @@ SEXP run_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perp
 //[[Rcpp::export(rng=false)]]
 int perplexity_to_neighbors(double p) {
     return qdtsne::perplexity_to_k(p);
+}
+
+//[[Rcpp::export(rng=false)]]
+SEXP init_tsne(Rcpp::IntegerMatrix nnidx, Rcpp::NumericMatrix nndist, double perplexity, int interpolate, int max_depth, int max_iter, int nthreads) {
+    auto neighbors = unpack_neighbors<int, float>(nnidx, nndist);
+    size_t nobs = neighbors.size();
+
+    qdtsne::Tsne<2, float> runner;
+    runner
+        .set_perplexity(perplexity)
+        .set_max_depth(max_depth)
+        .set_num_threads(nthreads)
+        .set_max_iter(max_iter);
+
+    auto init = runner.initialize(std::move(neighbors));
+
+    Rcpp::List symmetrized(nobs);
+    for (size_t i = 0; i < nobs; ++i) {
+        const auto& current = init.neighbors[i];
+
+        Rcpp::IntegerVector ivec(current.size());
+        Rcpp::NumericVector dvec(current.size());
+        for (size_t j = 0; j < current.size(); ++j) {
+            ivec[j] = current[j].first;
+            dvec[j] = current[j].second;
+        }
+
+        symmetrized[i] = Rcpp::List::create(ivec, dvec);
+    }
+
+    return symmetrized;
 }
