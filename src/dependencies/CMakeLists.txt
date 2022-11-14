@@ -11,6 +11,13 @@ set(IGRAPH_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 include(FetchContent)
 
 FetchContent_Declare(
+  tatami
+  GIT_REPOSITORY https://github.com/LTLA/tatami
+  GIT_TAG 48e0eafe9580a282463f3c406f1cabf70039599a
+)
+FetchContent_MakeAvailable(tatami)
+
+FetchContent_Declare(
   scran
   GIT_REPOSITORY https://github.com/LTLA/libscran
   GIT_TAG ae74e0345303a2d2c6e70d599d72c0e02d346fb6

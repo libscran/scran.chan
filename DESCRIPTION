@@ -10,7 +10,8 @@ Imports:
     Rcpp,
     methods
 LinkingTo:
-    Rcpp
+    Rcpp,
+    Rhdf5lib
 Suggests:
     knitr,
     rmarkdown,

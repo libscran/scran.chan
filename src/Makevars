@@ -1,3 +1,5 @@
-STUFF=`cat INCLUDES | sed "s/^/-Idependencies\/build\/_deps\//" | tr "\n" " "`
-PKG_CPPFLAGS += ${STUFF} -flto $(SHLIB_OPENMP_CXXFLAGS)
-PKG_LIBS += dependencies/build/_deps/igraph-build/src/libigraph.a -flto $(SHLIB_OPENMP_CXXFLAGS)
+RHDF5_LIBS=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e 'Rhdf5lib::pkgconfig("PKG_CXX_LIBS")') 
+SCRAN_INCLUDES=`cat INCLUDES | sed "s/^/-Idependencies\/build\/_deps\//" | tr "\n" " "`
+
+PKG_CPPFLAGS += ${SCRAN_INCLUDES} -flto $(SHLIB_OPENMP_CXXFLAGS)
+PKG_LIBS += dependencies/build/_deps/igraph-build/src/libigraph.a -flto $(SHLIB_OPENMP_CXXFLAGS) ${RHDF5_LIBS}

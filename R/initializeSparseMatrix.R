@@ -52,23 +52,11 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
     }
 
     if (is(x, "dgCMatrix")) {
-        ptr <- initialize_from_CSC(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy, forced=force.integer)
-
+        ptr <- initialize_from_memory(x@x, x@i, x@p, NR, NC, no_copy=no.sparse.copy, byrow=FALSE, forced=force.integer)
     } else if (is(x, "dgRMatrix")) {
-        ptr <- initialize_from_CSR(x@x, x@j, x@p, NR, NC, no_copy=no.sparse.copy, forced=force.integer)
-
+        ptr <- initialize_from_memory(x@x, x@j, x@p, NR, NC, no_copy=no.sparse.copy, byrow=TRUE, forced=force.integer)
     } else if (is(x, "H5SparseMatrixSeed")) {
-        # Special case handling of sparse HDF5 matrices.
-        indptrs <- x@indptr_ranges
-        p <- cumsum(c(0, indptrs$width))
-        v <- rhdf5::h5read(x@filepath, paste0(x@group, "/data"))
-        i <- rhdf5::h5read(x@filepath, paste0(x@group, "/indices"))
-
-        if (is(x, "CSC_H5SparseMatrixSeed")) {
-            ptr <- initialize_from_CSC(v, i, p, NR, NC, no_copy=FALSE, forced=force.integer)
-        } else {
-            ptr <- initialize_from_CSR(v, i, p, NR, NC, no_copy=FALSE, forced=force.integer)
-        }
+        ptr <- initialize_from_hdf5(x@filepath, x@group, NR, NC, byrow=!is(x, "CSC_H5SparseMatrixSeed"), forced=force.integer)
     } 
 
     if (is.null(ptr)) { 

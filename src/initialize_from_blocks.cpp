@@ -32,7 +32,7 @@ typedef accumulated<uint16_t, double> short_dbl;
 typedef accumulated<uint32_t, double> regular_dbl; 
 
 Rcpp::List initialize_from_blocks(int nr, int nc, bool is_integer, bool byrow) {
-    if (nc <= std::numeric_limits<uint16_t>::max()) {
+    if ((byrow ? nc : nr) <= std::numeric_limits<uint16_t>::max()) {
         if (is_integer) {
             return Rcpp::List::create(
                 Rcpp::XPtr<short_int>(new short_int(nr, nc, byrow)),
@@ -97,7 +97,7 @@ SEXP add_new_block(Rcpp::List ptr0, Rcpp::IntegerVector primary, Rcpp::IntegerVe
         return add_new_block_internal<short_dbl, Rcpp::NumericVector>(ptr0, primary, secondary, values, nprimary);
     } else if (y == 2) {
         return add_new_block_internal<regular_int, Rcpp::IntegerVector>(ptr0, primary, secondary, values, nprimary);
-    } else if (y == 3) {
+    } else { // y == 3
         return add_new_block_internal<regular_dbl, Rcpp::NumericVector>(ptr0, primary, secondary, values, nprimary);
     }
 }
@@ -136,7 +136,7 @@ SEXP finalize_all_blocks(Rcpp::List ptr0) {
         return finalize_all_blocks_internal<byrow, short_dbl>(ptr0);
     } else if (y == 2) {
         return finalize_all_blocks_internal<byrow, regular_int>(ptr0);
-    } else if (y == 3) {
+    } else { // y == 3
         return finalize_all_blocks_internal<byrow, regular_dbl>(ptr0);
     }
 }
