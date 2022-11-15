@@ -37,10 +37,6 @@ filter_cells <- function(x, discard) {
     .Call('_scran_chan_filter_cells', PACKAGE = 'scran.chan', x, discard)
 }
 
-initialize_from_memory <- function(x, i, p, nrow, ncol, no_copy, byrow, forced) {
-    .Call('_scran_chan_initialize_from_memory', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, byrow, forced)
-}
-
 initialize_from_blocks_CSC <- function(nr, nc, is_integer) {
     .Call('_scran_chan_initialize_from_blocks_CSC', PACKAGE = 'scran.chan', nr, nc, is_integer)
 }
@@ -67,6 +63,10 @@ finalize_all_blocks_CSR <- function(ptr0) {
 
 initialize_from_hdf5 <- function(file, name, nrow, ncol, byrow, forced) {
     .Call('_scran_chan_initialize_from_hdf5', PACKAGE = 'scran.chan', file, name, nrow, ncol, byrow, forced)
+}
+
+initialize_from_memory <- function(x, i, p, nrow, ncol, no_copy, byrow, forced) {
+    .Call('_scran_chan_initialize_from_memory', PACKAGE = 'scran.chan', x, i, p, nrow, ncol, no_copy, byrow, forced)
 }
 
 log_norm_counts <- function(x, size_factors, batch, batch_mode, nthreads) {
@@ -125,7 +125,7 @@ run_umap <- function(nnidx, nndist, min_dist, seed, num_epochs, nthreads) {
     .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, num_epochs, nthreads)
 }
 
-score_markers <- function(x, groups, batch, lfc, nthreads) {
-    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, lfc, nthreads)
+score_markers <- function(x, groups, batch, simple_means_only, lfc, nthreads) {
+    .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, simple_means_only, lfc, nthreads)
 }
 

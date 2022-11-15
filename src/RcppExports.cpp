@@ -125,23 +125,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// initialize_from_memory
-SEXP initialize_from_memory(Rcpp::RObject x, Rcpp::RObject i, Rcpp::RObject p, int nrow, int ncol, bool no_copy, bool byrow, bool forced);
-RcppExport SEXP _scran_chan_initialize_from_memory(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP no_copySEXP, SEXP byrowSEXP, SEXP forcedSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::RObject >::type x(xSEXP);
-    Rcpp::traits::input_parameter< Rcpp::RObject >::type i(iSEXP);
-    Rcpp::traits::input_parameter< Rcpp::RObject >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
-    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
-    Rcpp::traits::input_parameter< bool >::type no_copy(no_copySEXP);
-    Rcpp::traits::input_parameter< bool >::type byrow(byrowSEXP);
-    Rcpp::traits::input_parameter< bool >::type forced(forcedSEXP);
-    rcpp_result_gen = Rcpp::wrap(initialize_from_memory(x, i, p, nrow, ncol, no_copy, byrow, forced));
-    return rcpp_result_gen;
-END_RCPP
-}
 // initialize_from_blocks_CSC
 Rcpp::List initialize_from_blocks_CSC(int nr, int nc, bool is_integer);
 RcppExport SEXP _scran_chan_initialize_from_blocks_CSC(SEXP nrSEXP, SEXP ncSEXP, SEXP is_integerSEXP) {
@@ -226,6 +209,23 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type byrow(byrowSEXP);
     Rcpp::traits::input_parameter< bool >::type forced(forcedSEXP);
     rcpp_result_gen = Rcpp::wrap(initialize_from_hdf5(file, name, nrow, ncol, byrow, forced));
+    return rcpp_result_gen;
+END_RCPP
+}
+// initialize_from_memory
+SEXP initialize_from_memory(Rcpp::RObject x, Rcpp::RObject i, Rcpp::RObject p, int nrow, int ncol, bool no_copy, bool byrow, bool forced);
+RcppExport SEXP _scran_chan_initialize_from_memory(SEXP xSEXP, SEXP iSEXP, SEXP pSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP no_copySEXP, SEXP byrowSEXP, SEXP forcedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type i(iSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
+    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< bool >::type no_copy(no_copySEXP);
+    Rcpp::traits::input_parameter< bool >::type byrow(byrowSEXP);
+    Rcpp::traits::input_parameter< bool >::type forced(forcedSEXP);
+    rcpp_result_gen = Rcpp::wrap(initialize_from_memory(x, i, p, nrow, ncol, no_copy, byrow, forced));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -423,16 +423,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // score_markers
-Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, double lfc, int nthreads);
-RcppExport SEXP _scran_chan_score_markers(SEXP xSEXP, SEXP groupsSEXP, SEXP batchSEXP, SEXP lfcSEXP, SEXP nthreadsSEXP) {
+Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, bool simple_means_only, double lfc, int nthreads);
+RcppExport SEXP _scran_chan_score_markers(SEXP xSEXP, SEXP groupsSEXP, SEXP batchSEXP, SEXP simple_means_onlySEXP, SEXP lfcSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type groups(groupsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
+    Rcpp::traits::input_parameter< bool >::type simple_means_only(simple_means_onlySEXP);
     Rcpp::traits::input_parameter< double >::type lfc(lfcSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(score_markers(x, groups, batch, lfc, nthreads));
+    rcpp_result_gen = Rcpp::wrap(score_markers(x, groups, batch, simple_means_only, lfc, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -447,7 +448,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_cluster_snn_graph", (DL_FUNC) &_scran_chan_cluster_snn_graph, 8},
     {"_scran_chan_downsample_by_neighbors", (DL_FUNC) &_scran_chan_downsample_by_neighbors, 4},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
-    {"_scran_chan_initialize_from_memory", (DL_FUNC) &_scran_chan_initialize_from_memory, 8},
     {"_scran_chan_initialize_from_blocks_CSC", (DL_FUNC) &_scran_chan_initialize_from_blocks_CSC, 3},
     {"_scran_chan_initialize_from_blocks_CSR", (DL_FUNC) &_scran_chan_initialize_from_blocks_CSR, 3},
     {"_scran_chan_add_new_block_CSC", (DL_FUNC) &_scran_chan_add_new_block_CSC, 5},
@@ -455,6 +455,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_finalize_all_blocks_CSC", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSC, 1},
     {"_scran_chan_finalize_all_blocks_CSR", (DL_FUNC) &_scran_chan_finalize_all_blocks_CSR, 1},
     {"_scran_chan_initialize_from_hdf5", (DL_FUNC) &_scran_chan_initialize_from_hdf5, 6},
+    {"_scran_chan_initialize_from_memory", (DL_FUNC) &_scran_chan_initialize_from_memory, 8},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 5},
     {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 9},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
@@ -469,7 +470,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 8},
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
-    {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 5},
+    {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 6},
     {NULL, NULL, 0}
 };
 

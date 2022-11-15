@@ -10,7 +10,7 @@
 #include "ResolvedBatch.h"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, double lfc, int nthreads) {
+Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, bool simple_means_only, double lfc, int nthreads) {
     auto mat = extract_NumericMatrix(x);
     size_t NR = mat->nrow();
     const int ngroups = (groups.size() ? *std::max_element(groups.begin(), groups.end()) + 1 : 1);
@@ -37,16 +37,38 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
     }
 
     // Setting up all the damn output vectors (II) - for log-FC & delta-detected
-    std::vector<Rcpp::NumericVector> logfc, delta_detected;
+    std::vector<std::vector<Rcpp::NumericVector> > logfc(ngroups), delta_detected(ngroups);
     std::vector<std::vector<double*> > lptrs(scran::differential_analysis::n_summaries);
+
     lptrs[scran::differential_analysis::MEAN].resize(ngroups);
+    if (!simple_means_only) {
+        lptrs[scran::differential_analysis::MIN].resize(ngroups);
+        lptrs[scran::differential_analysis::MIN_RANK].resize(ngroups);
+    }
     auto ddptrs = lptrs;
 
     for (int g = 0; g < ngroups; ++g) {
-        logfc.emplace_back(NR);
-        lptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(logfc.back().begin());
-        delta_detected.emplace_back(NR);
-        ddptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(delta_detected.back().begin());
+        if (simple_means_only) {
+            logfc[g].emplace_back(NR);
+            lptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(logfc[g].back().begin());
+            delta_detected[g].emplace_back(NR);
+            ddptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(delta_detected[g].back().begin());
+        } else {
+            logfc[g].reserve(3);
+            delta_detected[g].reserve(3);
+            for (int i = 0; i < 3; ++i) {
+                logfc[g].emplace_back(NR);
+                delta_detected[g].emplace_back(NR);
+            }
+
+            lptrs[scran::differential_analysis::MIN][g] = static_cast<double*>(logfc[g][0].begin());
+            lptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(logfc[g][1].begin());
+            lptrs[scran::differential_analysis::MIN_RANK][g] = static_cast<double*>(logfc[g][2].begin());
+
+            ddptrs[scran::differential_analysis::MIN][g] = static_cast<double*>(delta_detected[g][0].begin());
+            ddptrs[scran::differential_analysis::MEAN][g] = static_cast<double*>(delta_detected[g][1].begin());
+            ddptrs[scran::differential_analysis::MIN_RANK][g] = static_cast<double*>(delta_detected[g][2].begin());
+        }
     }
 
     // Setting up all the damn output vectors (III) - Cohen & AUC
@@ -97,18 +119,37 @@ Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp
             raw_detected[g] = Rcpp::List(detected[g].begin(), detected[g].end());
         }
 
-        output[g] = Rcpp::DataFrame::create(
-            Rcpp::Named("mean") = outmean,
-            Rcpp::Named("detected") = outdet,
-            Rcpp::Named("logFC") = logfc[g],
-            Rcpp::Named("delta.detected") = delta_detected[g],
-            Rcpp::Named("cohen.min") = cohens[g][0],
-            Rcpp::Named("cohen.mean") = cohens[g][1],
-            Rcpp::Named("cohen.rank") = cohens[g][2],
-            Rcpp::Named("auc.min") = aucs[g][0],
-            Rcpp::Named("auc.mean") = aucs[g][1],
-            Rcpp::Named("auc.rank") = aucs[g][2]
-        );
+        if (simple_means_only) {
+            output[g] = Rcpp::DataFrame::create(
+                Rcpp::Named("mean") = outmean,
+                Rcpp::Named("detected") = outdet,
+                Rcpp::Named("logFC") = logfc[g][0],
+                Rcpp::Named("delta.detected") = delta_detected[g][0],
+                Rcpp::Named("cohen.min") = cohens[g][0],
+                Rcpp::Named("cohen.mean") = cohens[g][1],
+                Rcpp::Named("cohen.rank") = cohens[g][2],
+                Rcpp::Named("auc.min") = aucs[g][0],
+                Rcpp::Named("auc.mean") = aucs[g][1],
+                Rcpp::Named("auc.rank") = aucs[g][2]
+            );
+        } else {
+            output[g] = Rcpp::DataFrame::create(
+                Rcpp::Named("mean") = outmean,
+                Rcpp::Named("detected") = outdet,
+                Rcpp::Named("logFC.min") = logfc[g][0],
+                Rcpp::Named("logFC.mean") = logfc[g][1],
+                Rcpp::Named("logFC.rank") = logfc[g][2],
+                Rcpp::Named("delta.detected.min") = delta_detected[g][0],
+                Rcpp::Named("delta.detected.mean") = delta_detected[g][1],
+                Rcpp::Named("delta.detected.rank") = delta_detected[g][2],
+                Rcpp::Named("cohen.min") = cohens[g][0],
+                Rcpp::Named("cohen.mean") = cohens[g][1],
+                Rcpp::Named("cohen.rank") = cohens[g][2],
+                Rcpp::Named("auc.min") = aucs[g][0],
+                Rcpp::Named("auc.mean") = aucs[g][1],
+                Rcpp::Named("auc.rank") = aucs[g][2]
+            );
+        }
     }
 
     if (bptr == NULL) {
