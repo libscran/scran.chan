@@ -9,6 +9,9 @@
 #' @param lfc Non-negative numeric scalar specifying the log-fold change threshold to use.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #' @param simple.means.only Logical scalar indicating whether to only report the means for the simple effect sizes, i.e., log-fold change and delta-detected.
+#' @param sort.by String specifying the column to use for sorting genes in descending order
+#' (except if it ends with \code{.rank}, in which case it is sorted in ascending order).
+#' If \code{NULL}, no sorting is performed.
 #'
 #' @return A list containing \code{statistics}, a list of data frame of marker statistics. 
 #' Each data frame corresponds to a group in \code{groups} and contains:
@@ -24,7 +27,7 @@
 #' \item \code{auc.mean}, the mean AUC across all pairwise comparisons involving the current group.
 #' \item \code{auc.rank}, the minimum rank of the AUC across all pairwise comparisons.
 #' }
-#' Data frames are sorted by \code{cohen.rank} by default.
+#' Rows are sorted by the specified column in \code{sort.by}.
 #'
 #' If \code{simple.means.only=FALSE}, \code{logFC} and \code{delta.detected} are renamed to \code{logFC.mean} and \code{delta.detected.mean}, respectively.
 #' In addition, the corresponding \code{*.min} and \code{*.rank} columns are also reported.
@@ -63,7 +66,7 @@
 #' \url{https://ltla.github.io/libscran/classscran_1_1ScoreMarkers.html}
 #'
 #' @export
-scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1, simple.means.only=TRUE) {
+scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1, simple.means.only=TRUE, sort.by="cohen.rank") {
     groups <- transform_factor(groups, n = tatami_ncol(x))
     batch <- transform_factor(batch, n = tatami_ncol(x))
     output <- score_markers(x$pointer, groups$index, batch$index, lfc=lfc, nthreads=num.threads, simple_means_only=simple.means.only)
@@ -72,7 +75,11 @@ scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1, simpl
     for (i in seq_along(formatted)) {
         df <- output$statistics[[i]]
         rownames(df) <- x$rownames
-        formatted[[i]] <- df[order(df$cohen.rank),,drop=FALSE]
+
+        if (!is.null(sort.by)) {
+            df <- df[order(df[,sort.by], decreasing=grepl(".rank$", sort.by)),,drop=FALSE]
+        }
+        formatted[[i]] <- df
     }
 
     names(formatted) <- groups$names

@@ -10,7 +10,8 @@ scoreMarkers.chan(
   batch = NULL,
   lfc = 0,
   num.threads = 1,
-  simple.means.only = TRUE
+  simple.means.only = TRUE,
+  sort.by = "cohen.rank"
 )
 }
 \arguments{
@@ -26,6 +27,10 @@ Alternatively \code{NULL} if all cells belong to the same batch.}
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 
 \item{simple.means.only}{Logical scalar indicating whether to only report the means for the simple effect sizes, i.e., log-fold change and delta-detected.}
+
+\item{sort.by}{String specifying the column to use for sorting genes in descending order
+(except if it ends with \code{.rank}, in which case it is sorted in ascending order).
+If \code{NULL}, no sorting is performed.}
 }
 \value{
 A list containing \code{statistics}, a list of data frame of marker statistics. 
@@ -42,7 +47,7 @@ Each data frame corresponds to a group in \code{groups} and contains:
 \item \code{auc.mean}, the mean AUC across all pairwise comparisons involving the current group.
 \item \code{auc.rank}, the minimum rank of the AUC across all pairwise comparisons.
 }
-Data frames are sorted by \code{cohen.rank} by default.
+Rows are sorted by the specified column in \code{sort.by}.
 
 If \code{simple.means.only=FALSE}, \code{logFC} and \code{delta.detected} are renamed to \code{logFC.mean} and \code{delta.detected.mean}, respectively.
 In addition, the corresponding \code{*.min} and \code{*.rank} columns are also reported.
