@@ -77,7 +77,7 @@ scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1, simpl
         rownames(df) <- x$rownames
 
         if (!is.null(sort.by)) {
-            df <- df[order(df[,sort.by], decreasing=grepl(".rank$", sort.by)),,drop=FALSE]
+            df <- df[order(df[,sort.by], decreasing=!grepl(".rank$", sort.by)),,drop=FALSE]
         }
         formatted[[i]] <- df
     }
