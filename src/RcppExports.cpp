@@ -437,6 +437,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// subset_matrix
+SEXP subset_matrix(SEXP x, Rcpp::RObject i, Rcpp::RObject j);
+RcppExport SEXP _scran_chan_subset_matrix(SEXP xSEXP, SEXP iSEXP, SEXP jSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type i(iSEXP);
+    Rcpp::traits::input_parameter< Rcpp::RObject >::type j(jSEXP);
+    rcpp_result_gen = Rcpp::wrap(subset_matrix(x, i, j));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_aggregate_across_cells", (DL_FUNC) &_scran_chan_aggregate_across_cells, 3},
@@ -471,6 +483,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 6},
+    {"_scran_chan_subset_matrix", (DL_FUNC) &_scran_chan_subset_matrix, 3},
     {NULL, NULL, 0}
 };
 
