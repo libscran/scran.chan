@@ -1,16 +1,9 @@
 # This checks the initialization procedure.
-# library(testthat); library(scran.chan); source("test-initializeSparseMatrix.R")
+# library(testthat); library(scran.chan); source("setup.R"); source("test-initializeSparseMatrix.R")
 
 set.seed(1000)
 x <- Matrix::rsparsematrix(1000, 100, 0.1)
 y <- round(abs(x)*10)
-
-am_i_ok <- function(ref, ptr) {
-    expect_identical(dim(ref), scran.chan:::tatami_dim(ptr$pointer))
-    for (i in seq_len(ncol(ref))) {
-        expect_identical(ref[,i], scran.chan:::tatami_columns(ptr$pointer, i-1, 0, nrow(ref))[,1])
-    }
-}
 
 test_that("initialization works correctly with a dgCMatrix", {
     ptr <- initializeSparseMatrix(y)

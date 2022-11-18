@@ -16,7 +16,7 @@ or character, containing the names of the rows/columns to retain.
 This can also be set to \code{NULL} to not perform filtering on that dimension.}
 }
 \value{
-A list containing the subsetted matrix data, along with correspondingly subsetted dimnames.
+A list containing the subsetted matrix data, along with their subsetted dimnames.
 }
 \description{
 Subset an initialized matrix

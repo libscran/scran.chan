@@ -1,17 +1,10 @@
 # This contains some brief tests for subsetMatrix
-# library(testthat); library(scran.chan); source("test-subsetMatrix.R")
+# library(testthat); library(scran.chan); source("setup.R"); source("test-subsetMatrix.R")
 
 library(Matrix)
 x <- round(abs(rsparsematrix(100, 10, 0.1) * 100))
 rownames(x) <- sprintf("GENE_%i", seq_len(100))
 colnames(x) <- LETTERS[1:10]
-
-compare <- function(ref, ptr) {
-    expect_identical(dim(ref), scran.chan:::tatami_dim(ptr$pointer))
-    for (i in seq_len(ncol(ref))) {
-        expect_identical(unname(ref[,i]), scran.chan:::tatami_columns(ptr$pointer, i-1, 0, nrow(ref))[,1])
-    }
-}
 
 test_that("subsetMatrix works as expected", {
     y <- initializeSparseMatrix(x)

@@ -22,7 +22,7 @@ prepare_indices <- function(indices, dim, names) {
 #' or character, containing the names of the rows/columns to retain.
 #' This can also be set to \code{NULL} to not perform filtering on that dimension.
 #'
-#' @return A list containing the subsetted matrix data, along with correspondingly subsetted dimnames.
+#' @return A list containing the subsetted matrix data, along with their subsetted dimnames.
 #'
 #' @author Aaron Lun
 #'
