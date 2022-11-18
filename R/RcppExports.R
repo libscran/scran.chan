@@ -29,6 +29,10 @@ cluster_snn_graph <- function(nnidx, weight_scheme, method, resolution, steps, u
     .Call('_scran_chan_cluster_snn_graph', PACKAGE = 'scran.chan', nnidx, weight_scheme, method, resolution, steps, use_cpm, seed, nthreads)
 }
 
+combine_matrix <- function(x, byrow) {
+    .Call('_scran_chan_combine_matrix', PACKAGE = 'scran.chan', x, byrow)
+}
+
 downsample_by_neighbors <- function(data, k, approximate, nthreads) {
     .Call('_scran_chan_downsample_by_neighbors', PACKAGE = 'scran.chan', data, k, approximate, nthreads)
 }

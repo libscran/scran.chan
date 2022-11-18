@@ -101,6 +101,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// combine_matrix
+SEXP combine_matrix(Rcpp::List x, bool byrow);
+RcppExport SEXP _scran_chan_combine_matrix(SEXP xSEXP, SEXP byrowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< bool >::type byrow(byrowSEXP);
+    rcpp_result_gen = Rcpp::wrap(combine_matrix(x, byrow));
+    return rcpp_result_gen;
+END_RCPP
+}
 // downsample_by_neighbors
 SEXP downsample_by_neighbors(Rcpp::NumericMatrix data, int k, bool approximate, int nthreads);
 RcppExport SEXP _scran_chan_downsample_by_neighbors(SEXP dataSEXP, SEXP kSEXP, SEXP approximateSEXP, SEXP nthreadsSEXP) {
@@ -458,6 +469,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_find_nearest_neighbor_indices", (DL_FUNC) &_scran_chan_find_nearest_neighbor_indices, 3},
     {"_scran_chan_cluster_kmeans", (DL_FUNC) &_scran_chan_cluster_kmeans, 5},
     {"_scran_chan_cluster_snn_graph", (DL_FUNC) &_scran_chan_cluster_snn_graph, 8},
+    {"_scran_chan_combine_matrix", (DL_FUNC) &_scran_chan_combine_matrix, 2},
     {"_scran_chan_downsample_by_neighbors", (DL_FUNC) &_scran_chan_downsample_by_neighbors, 4},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
     {"_scran_chan_initialize_from_blocks_CSC", (DL_FUNC) &_scran_chan_initialize_from_blocks_CSC, 3},
