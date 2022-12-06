@@ -20,7 +20,7 @@ FetchContent_MakeAvailable(tatami)
 FetchContent_Declare(
   scran
   GIT_REPOSITORY https://github.com/LTLA/libscran
-  GIT_TAG 064ee89cf6b0a3821be9a270fae0cbc43ef6cfe1
+  GIT_TAG 4a9271dd02aa9a571a2803d46ed1870f01d056d4
 )
 FetchContent_MakeAvailable(scran)
 

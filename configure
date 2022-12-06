@@ -6,7 +6,7 @@ set -u
 if [[ ! -e src/dependencies/build ]]
 then
     cd src/dependencies
-    cmake -S . -B build 
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
     cmake --build build
     cd -
 fi
