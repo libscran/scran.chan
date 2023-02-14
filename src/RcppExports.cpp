@@ -285,6 +285,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// per_cell_adt_qc_metrics
+Rcpp::List per_cell_adt_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads);
+RcppExport SEXP _scran_chan_per_cell_adt_qc_metrics(SEXP xSEXP, SEXP subsetsSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type subsets(subsetsSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(per_cell_adt_qc_metrics(x, subsets, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// per_cell_crispr_qc_metrics
+Rcpp::List per_cell_crispr_qc_metrics(SEXP x, int nthreads);
+RcppExport SEXP _scran_chan_per_cell_crispr_qc_metrics(SEXP xSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(per_cell_crispr_qc_metrics(x, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // per_cell_rna_qc_metrics
 Rcpp::List per_cell_rna_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads);
 RcppExport SEXP _scran_chan_per_cell_rna_qc_metrics(SEXP xSEXP, SEXP subsetsSEXP, SEXP nthreadsSEXP) {
@@ -446,6 +469,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// suggest_adt_qc_filters
+Rcpp::List suggest_adt_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, Rcpp::Nullable<Rcpp::IntegerVector> batch, double nmads);
+RcppExport SEXP _scran_chan_suggest_adt_qc_filters(SEXP sumsSEXP, SEXP detectedSEXP, SEXP subsetsSEXP, SEXP batchSEXP, SEXP nmadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type sums(sumsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type detected(detectedSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type subsets(subsetsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
+    Rcpp::traits::input_parameter< double >::type nmads(nmadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(suggest_adt_qc_filters(sums, detected, subsets, batch, nmads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// suggest_crispr_qc_filters
+Rcpp::List suggest_crispr_qc_filters(Rcpp::NumericVector sums, Rcpp::NumericVector max_prop, Rcpp::Nullable<Rcpp::IntegerVector> batch, double nmads);
+RcppExport SEXP _scran_chan_suggest_crispr_qc_filters(SEXP sumsSEXP, SEXP max_propSEXP, SEXP batchSEXP, SEXP nmadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type sums(sumsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type max_prop(max_propSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
+    Rcpp::traits::input_parameter< double >::type nmads(nmadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(suggest_crispr_qc_filters(sums, max_prop, batch, nmads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // suggest_rna_qc_filters
 Rcpp::List suggest_rna_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, Rcpp::Nullable<Rcpp::IntegerVector> batch, double nmads);
 RcppExport SEXP _scran_chan_suggest_rna_qc_filters(SEXP sumsSEXP, SEXP detectedSEXP, SEXP subsetsSEXP, SEXP batchSEXP, SEXP nmadsSEXP) {
@@ -483,6 +533,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 5},
     {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 9},
     {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
+    {"_scran_chan_per_cell_adt_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_adt_qc_metrics, 3},
+    {"_scran_chan_per_cell_crispr_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_crispr_qc_metrics, 2},
     {"_scran_chan_per_cell_rna_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_rna_qc_metrics, 3},
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
@@ -495,6 +547,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 6},
     {"_scran_chan_subset_matrix", (DL_FUNC) &_scran_chan_subset_matrix, 3},
+    {"_scran_chan_suggest_adt_qc_filters", (DL_FUNC) &_scran_chan_suggest_adt_qc_filters, 5},
+    {"_scran_chan_suggest_crispr_qc_filters", (DL_FUNC) &_scran_chan_suggest_crispr_qc_filters, 4},
     {"_scran_chan_suggest_rna_qc_filters", (DL_FUNC) &_scran_chan_suggest_rna_qc_filters, 5},
     {NULL, NULL, 0}
 };
