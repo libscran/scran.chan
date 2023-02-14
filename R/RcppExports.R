@@ -133,6 +133,10 @@ run_umap <- function(nnidx, nndist, min_dist, seed, num_epochs, nthreads) {
     .Call('_scran_chan_run_umap', PACKAGE = 'scran.chan', nnidx, nndist, min_dist, seed, num_epochs, nthreads)
 }
 
+scale_by_neighbors <- function(matrices, k, approximate, nthreads) {
+    .Call('_scran_chan_scale_by_neighbors', PACKAGE = 'scran.chan', matrices, k, approximate, nthreads)
+}
+
 score_markers <- function(x, groups, batch, simple_means_only, lfc, nthreads) {
     .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, simple_means_only, lfc, nthreads)
 }

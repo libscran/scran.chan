@@ -442,6 +442,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// scale_by_neighbors
+Rcpp::NumericVector scale_by_neighbors(Rcpp::List matrices, int k, bool approximate, int nthreads);
+RcppExport SEXP _scran_chan_scale_by_neighbors(SEXP matricesSEXP, SEXP kSEXP, SEXP approximateSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type matrices(matricesSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< bool >::type approximate(approximateSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(scale_by_neighbors(matrices, k, approximate, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // score_markers
 Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, bool simple_means_only, double lfc, int nthreads);
 RcppExport SEXP _scran_chan_score_markers(SEXP xSEXP, SEXP groupsSEXP, SEXP batchSEXP, SEXP simple_means_onlySEXP, SEXP lfcSEXP, SEXP nthreadsSEXP) {
@@ -545,6 +558,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 8},
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
+    {"_scran_chan_scale_by_neighbors", (DL_FUNC) &_scran_chan_scale_by_neighbors, 4},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 6},
     {"_scran_chan_subset_matrix", (DL_FUNC) &_scran_chan_subset_matrix, 3},
     {"_scran_chan_suggest_adt_qc_filters", (DL_FUNC) &_scran_chan_suggest_adt_qc_filters, 5},
