@@ -11,7 +11,7 @@ mnnCorrect.chan(
   nmads = 3,
   mass.cap = NULL,
   order = NULL,
-  reference.policy = c("max-size", "max-variance", "max-rss", "input"),
+  reference.policy = c("max-rss", "max-size", "max-variance", "input"),
   approximate = FALSE,
   num.threads = 1
 )
