@@ -38,7 +38,7 @@
 #' str(corrected)
 #'
 #' @export
-mnnCorrect.chan <- function(x, batch, k=15, nmads=3, mass.cap=NULL, order=NULL, reference.policy=c("max-size", "max-variance", "max-rss", "input"), approximate=FALSE, num.threads=1) {
+mnnCorrect.chan <- function(x, batch, k=15, nmads=3, mass.cap=NULL, order=NULL, reference.policy=c("max-rss", "max-size", "max-variance", "input"), approximate=FALSE, num.threads=1) {
     batch <- transform_factor(batch, n = ncol(x))
 
     if (!is.null(order)) {
