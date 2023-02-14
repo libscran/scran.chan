@@ -1,7 +1,7 @@
 #ifndef SCRANCHAN_TATAMIZE_H
 #define SCRANCHAN_TATAMIZE_H
 
-#include "tatami/tatami.h"
+#include "tatami/tatami.hpp"
 #include <memory>
 #include "Rcpp.h"
 

@@ -1,8 +1,8 @@
 #include "config.h"
 
 #include <array>
-#include "tatami/tatami.h"
-#include "tatami/ext/load_hdf5_matrix.hpp"
+#include "tatami/tatami.hpp"
+#include "tatami/ext/hdf5/load_hdf5_matrix.hpp"
 #include "Rcpp.h"
 #include "tatamize.h"
 #include "H5Cpp.h"
