@@ -455,6 +455,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// score_feature_set
+Rcpp::List score_feature_set(SEXP x, Rcpp::LogicalVector features, Rcpp::Nullable<Rcpp::IntegerVector> batch, bool scale, int nthreads);
+RcppExport SEXP _scran_chan_score_feature_set(SEXP xSEXP, SEXP featuresSEXP, SEXP batchSEXP, SEXP scaleSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::LogicalVector >::type features(featuresSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
+    Rcpp::traits::input_parameter< bool >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(score_feature_set(x, features, batch, scale, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // score_markers
 Rcpp::List score_markers(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, bool simple_means_only, double lfc, int nthreads);
 RcppExport SEXP _scran_chan_score_markers(SEXP xSEXP, SEXP groupsSEXP, SEXP batchSEXP, SEXP simple_means_onlySEXP, SEXP lfcSEXP, SEXP nthreadsSEXP) {
@@ -559,6 +573,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
     {"_scran_chan_scale_by_neighbors", (DL_FUNC) &_scran_chan_scale_by_neighbors, 4},
+    {"_scran_chan_score_feature_set", (DL_FUNC) &_scran_chan_score_feature_set, 5},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 6},
     {"_scran_chan_subset_matrix", (DL_FUNC) &_scran_chan_subset_matrix, 3},
     {"_scran_chan_suggest_adt_qc_filters", (DL_FUNC) &_scran_chan_suggest_adt_qc_filters, 5},
