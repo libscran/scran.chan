@@ -85,6 +85,14 @@ model_gene_var <- function(x, batch, span, nthreads) {
     .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, batch, span, nthreads)
 }
 
+per_cell_adt_qc_metrics <- function(x, subsets, nthreads) {
+    .Call('_scran_chan_per_cell_adt_qc_metrics', PACKAGE = 'scran.chan', x, subsets, nthreads)
+}
+
+per_cell_crispr_qc_metrics <- function(x, nthreads) {
+    .Call('_scran_chan_per_cell_crispr_qc_metrics', PACKAGE = 'scran.chan', x, nthreads)
+}
+
 per_cell_rna_qc_metrics <- function(x, subsets, nthreads) {
     .Call('_scran_chan_per_cell_rna_qc_metrics', PACKAGE = 'scran.chan', x, subsets, nthreads)
 }
@@ -131,6 +139,14 @@ score_markers <- function(x, groups, batch, simple_means_only, lfc, nthreads) {
 
 subset_matrix <- function(x, i, j) {
     .Call('_scran_chan_subset_matrix', PACKAGE = 'scran.chan', x, i, j)
+}
+
+suggest_adt_qc_filters <- function(sums, detected, subsets, batch, nmads) {
+    .Call('_scran_chan_suggest_adt_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, batch, nmads)
+}
+
+suggest_crispr_qc_filters <- function(sums, max_prop, batch, nmads) {
+    .Call('_scran_chan_suggest_crispr_qc_filters', PACKAGE = 'scran.chan', sums, max_prop, batch, nmads)
 }
 
 suggest_rna_qc_filters <- function(sums, detected, subsets, batch, nmads) {

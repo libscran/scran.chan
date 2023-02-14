@@ -4,13 +4,13 @@
 #'
 #' @param x List containing the output of \code{\link{initializeSparseMatrix}},
 #' corresponding to a matrix of gene expression counts.
-#' @param subsets List of logical vectors specifying feature subsets of interest.
+#' @param subsets List of logical vectors specifying feature subsets of interest, typically mitochondrial or spike-in features.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #'
 #' @return A list containing:
 #' \itemize{
-#' \item \code{sum}, a numeric vector containing the total sum for each cell.
-#' \item \code{detected}, an integer vector containing the number of detected features per cell.
+#' \item \code{sum}, a numeric vector containing the total count across genes for each cell.
+#' \item \code{detected}, an integer vector containing the number of detected genes per cell.
 #' \item \code{subsets}, a list of numeric vectors containing the proportion of counts in each feature subset.
 #' }
 #' Each vector is of length equal to the number of cells.
