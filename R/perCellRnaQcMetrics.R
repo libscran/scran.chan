@@ -1,8 +1,9 @@
-#' Compute per-cell QC metrics
+#' Compute per-cell RNA QC metrics
 #'
-#' Calculate per-cell QC metrics from an initialized matrix.
+#' Calculate per-cell QC metrics from an initialized matrix of gene expression counts.
 #'
-#' @param x List containing the output of \code{\link{initializeSparseMatrix}}.
+#' @param x List containing the output of \code{\link{initializeSparseMatrix}},
+#' corresponding to a matrix of gene expression counts.
 #' @param subsets List of logical vectors specifying feature subsets of interest.
 #' @param num.threads Integer scalar specifying the number of threads to use.
 #'
@@ -25,13 +26,13 @@
 #'
 #' # Running the analysis:
 #' y <- initializeSparseMatrix(x)
-#' qc <- perCellQCMetrics.chan(y, sub)
+#' qc <- perCellRnaQcMetrics.chan(y, sub)
 #' summary(qc$sum)
 #' summary(qc$detected)
 #' summary(qc$subsets$Mito)
 #'
 #' @export
-perCellQCMetrics.chan <- function(x, subsets, num.threads = 1) {
+perCellRnaQcMetrics.chan <- function(x, subsets, num.threads = 1) {
     nr <- tatami_dim(x$pointer)[1]
 
     # Converting to the expected logical vector.
@@ -39,7 +40,11 @@ perCellQCMetrics.chan <- function(x, subsets, num.threads = 1) {
     subsets <- lapply(subsets, to_logical, n=nr, names=x$rownames)
  
     # Slapping on some names.
-    output <- per_cell_qc_metrics(x$pointer, subsets, nthreads=num.threads)
+    output <- per_cell_rna_qc_metrics(x$pointer, subsets, nthreads=num.threads)
     names(output$subsets) <- names(subsets)
     output
 }
+
+#' @export
+#' @rdname perCellRnaQcMetrics.chan
+perCellQCMetrics.chan <- perCellRnaQcMetrics.chan
