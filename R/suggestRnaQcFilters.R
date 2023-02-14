@@ -1,6 +1,6 @@
-#' Compute per-cell QC metrics
+#' Suggest filters for RNA QC metrics
 #'
-#' Calculate per-cell QC metrics from an initialized matrix.
+#' Suggest appropriate filters to be applied on the per-cell QC metrics for RNA data.
 #'
 #' @param sums Numeric vector containing the sum of counts for each cell.
 #' @param detected Integer vector containing the total number of detected features for each cell.
@@ -11,14 +11,8 @@
 #'
 #' @return A list containing:
 #' \itemize{
-#'     \item \code{filters}, a list containing:
-#'     \itemize{
-#'         \item \code{sums}, a logical vector indicating whether a cell was removed because its total count was too low.
-#'         \item \code{detected}, a logical vector indicating whether a cell was removed because the number of detected features was too low.
-#'         \item \code{subsets}, a list of logical vectors indicating whether a cell was removed because the proportion of counts in each feature subset was too high.
-#'         \item \code{overall}, a logical vector indicating whether a cell was removed for any reason.
-#'     }
-#'     All logical vectors are of length equal to the number of cells.
+#'     \item \code{filter}, a logical vector of length equal to the number of cells.
+#'     True values indicate that a cell was considered to be low quality (for any reason) and removed.
 #'     \item \code{thresholds}, a list containing:
 #'     \itemize{
 #'         \item \code{sums}, a numeric vector containing the minimum threshold on the total count (in each batch, if \code{batch} is not \code{NULL}).
@@ -39,23 +33,50 @@
 #'
 #' # Running the analysis:
 #' y <- initializeSparseMatrix(x)
-#' qc <- perCellQCMetrics.chan(y, sub)
-#' filters <- perCellQCFilters.chan(qc$sums, qc$detected, qc$subsets)
+#' qc <- perCellRnaQcMetrics.chan(y, sub)
+#' filters <- suggestRnaQcFilters.chan(qc$sums, qc$detected, qc$subsets)
 #' str(filters)
 #'
 #' @export
-perCellQCFilters.chan <- function(sums, detected, subsets, batch=NULL, nmads=3) {
+suggestRnaQcFilters.chan <- function(sums, detected, subsets, batch=NULL, nmads=3) {
     batch <- transform_factor(batch, n = length(sums))
-    filters <- per_cell_qc_filters(sums, detected, subsets, batch=batch$index, nmads=nmads)
+    filters <- suggest_rna_qc_filters(sums, detected, subsets, batch=batch$index, nmads=nmads)
 
-    names(filters$filters$subsets) <- names(subsets)
-    names(filters$thresholds$subsets) <- names(subsets)
-
-    names(filters$thresholds$sum) <- batch$names
+    names(filters$thresholds$sums) <- batch$names
     names(filters$thresholds$detected) <- batch$names
     for (i in seq_along(subsets)) {
         names(filters$thresholds$subsets[[i]]) <- batch$names
     }
 
     filters
+}
+
+#' @export
+#' @rdname suggestRnaQcFilters.chan
+perCellQCFilters.chan <- function(sums, detected, subsets, batch=NULL, ...) {
+    res <- suggestRnaQcFilters.chan(sums, detected, subsets, batch=batch, ...)
+    batch <- if (is.null(batch)) 1L else transform_factor(batch, n = length(sums))$index + 1L
+
+    sum.thresh <- unname(res$thresholds$sums)[batch]
+    by.sum <- sums < sum.thresh
+
+    detected.thresh <- unname(res$thresholds$detected)[batch]
+    by.detected <- detected < detected.thresh
+
+    by.subset <- list()
+    for (i in seq_along(subsets)) {
+        sub.thresh <- unname(res$thresholds$subsets[[i]])[batch]
+        by.subset[[i]] <- subsets[[i]] > sub.thresh
+    }
+    names(by.subset) <- names(subsets)
+
+    res$filters <- list(
+        sums = by.sum,
+        detected = by.detected,
+        subsets = by.subset,
+        overall = res$filter
+    )
+    res$filter <- NULL
+
+    res
 }

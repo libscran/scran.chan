@@ -5,7 +5,7 @@
 #include "tatamize.h"
 
 // [[Rcpp::export(rng=false)]]
-Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads) {
+Rcpp::List per_cell_rna_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads) {
     std::vector<const int*> in_sub_ptrs;
     std::vector<Rcpp::LogicalVector> in_subsets;
 
@@ -23,23 +23,21 @@ Rcpp::List per_cell_qc_metrics(SEXP x, Rcpp::List subsets, int nthreads) {
     Rcpp::NumericVector sums(nc);
     Rcpp::IntegerVector detected(nc);
     std::vector<Rcpp::NumericVector> out_subsets;
-    std::vector<double*> out_sub_ptrs;
     for (size_t s = 0; s < subsets.size(); ++s) {
         out_subsets.emplace_back(nc);
     }
+
+    scran::PerCellRnaQcMetrics::Buffers<double, int> buffers;
+    buffers.sums = sums.begin();
+    buffers.detected = detected.begin();
     for (auto& s : out_subsets) {
-        out_sub_ptrs.push_back(s.begin());
+        buffers.subset_proportions.push_back(s.begin());
     }
 
     // Running QC code.
-    scran::PerCellQCMetrics qc;
+    scran::PerCellRnaQcMetrics qc;
     qc.set_num_threads(nthreads);
-    qc.run(mat, 
-        std::move(in_sub_ptrs), 
-        static_cast<double*>(sums.begin()),
-        static_cast<int*>(detected.begin()),
-        std::move(out_sub_ptrs)
-    );
+    qc.run(mat, std::move(in_sub_ptrs), buffers);
 
     return Rcpp::List::create(
         Rcpp::Named("sums") = sums,
