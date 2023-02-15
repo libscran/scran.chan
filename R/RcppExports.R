@@ -109,16 +109,16 @@ tatami_columns <- function(x, columns, first, last) {
     .Call('_scran_chan_tatami_columns', PACKAGE = 'scran.chan', x, columns, first, last)
 }
 
-run_blocked_pca <- function(x, ndim, batch, features, rotation, nthreads) {
-    .Call('_scran_chan_run_blocked_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, rotation, nthreads)
+run_blocked_pca <- function(x, ndim, batch, features, scale, rotation, nthreads) {
+    .Call('_scran_chan_run_blocked_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, scale, rotation, nthreads)
 }
 
-run_multibatch_pca <- function(x, ndim, batch, features, rotation, nthreads) {
-    .Call('_scran_chan_run_multibatch_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, rotation, nthreads)
+run_multibatch_pca <- function(x, ndim, batch, features, scale, rotation, nthreads) {
+    .Call('_scran_chan_run_multibatch_pca', PACKAGE = 'scran.chan', x, ndim, batch, features, scale, rotation, nthreads)
 }
 
-run_pca <- function(x, ndim, features, rotation, nthreads) {
-    .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, rotation, nthreads)
+run_pca <- function(x, ndim, features, scale, rotation, nthreads) {
+    .Call('_scran_chan_run_pca', PACKAGE = 'scran.chan', x, ndim, features, scale, rotation, nthreads)
 }
 
 run_tsne <- function(nnidx, nndist, perplexity, interpolate, max_depth, max_iter, seed, nthreads) {

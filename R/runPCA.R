@@ -7,6 +7,7 @@
 #' @param subset Integer, logical or character vector specifying which features to use in the PCA (e.g., highly variable genes).
 #' If \code{NULL}, all features in \code{x} are used.
 #' @param num.threads Integer scalar specifying the number of threads to use.
+#' @param scale Logical scalar indicating whether to scale rows to unit variance. 
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 #' Alternatively \code{NULL} if all cells belong to the same batch.
 #' @param batch.method String indicating how \code{batch} should be handled (if it is supplied).
@@ -49,21 +50,21 @@
 #' barplot(weighted$prop.variance)
 #'
 #' @export
-runPCA.chan <- function(x, num.comp=50, subset=NULL, num.threads=1, batch=NULL, batch.method=c("block", "weight"), rotation=FALSE) {
+runPCA.chan <- function(x, num.comp=50, subset=NULL, scale=FALSE, num.threads=1, batch=NULL, batch.method=c("block", "weight"), rotation=FALSE) {
     if (!is.null(subset)) {
         subset <- to_logical(subset, n=tatami_dim(x$pointer)[1], names=x$rownames)
     }
 
     if (is.null(batch)) {
-        output <- run_pca(x$pointer, num.comp, subset, rotation=rotation, nthreads=num.threads)
+        output <- run_pca(x$pointer, num.comp, subset, scale=scale, rotation=rotation, nthreads=num.threads)
     } else {
         batch.method <- match.arg(batch.method)
         batch <- transform_factor(batch, n = tatami_ncol(x))
 
         if (batch.method == "block") {
-            output <- run_blocked_pca(x$pointer, num.comp, batch$index, subset, rotation=rotation, nthreads=num.threads)
+            output <- run_blocked_pca(x$pointer, num.comp, batch$index, subset, scale=scale, rotation=rotation, nthreads=num.threads)
         } else {
-            output <- run_multibatch_pca(x$pointer, num.comp, batch$index, subset, rotation=rotation, nthreads=num.threads)
+            output <- run_multibatch_pca(x$pointer, num.comp, batch$index, subset, scale=scale, rotation=rotation, nthreads=num.threads)
         }
     }
 
