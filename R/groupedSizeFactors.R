@@ -5,12 +5,31 @@
 #' @param x A list of matrix data like that produced by \code{\link{initializeSparseMatrix}}.
 #' @param group Vector or factor of length equal to the number of columns of \code{x},
 #' containing the group assignment for each cell in \code{x}.
+#' Alternatively \code{NULL}, in which case k-means clustering is performed internally.
 #' @param center Logical scalar specifying whether the size factors should be centered on output.
 #' @param prior.count Numeric scalar specifying the prior count to add to the pseudo-bulk profiles.
 #' Larger values improve stability at the cost of accurate removal of composition biases.
 #' @param reference Identity of the group in \code{group} to be used as a reference.
 #' If \code{NULL}, a suitable reference is automatically chosen.
+#' @param size.factors Passed to \code{\link{logNormCounts.chan}}.
+#' Only used if \code{group=NULL}.
+#' @param batch Passed to \code{\link{logNormCounts.chan}} and \code{\link{runPCA.chan}}.
+#' Only used if \code{group=NULL}.
+#' @param num.comp Number of principal components to use for clustering.
+#' Only relevant if \code{group=NULL}.
+#' @param num.clusters Number of k-means clusters to generate.
+#' Only used if \code{group=NULL}.
 #' @param num.threads Integer scalar specifying the number of threads to use.
+#'
+#' @details
+#' If \code{group=NULL}, we generate a k-means clustering on the top PCs of the log-normalized matrix generated from \code{x}.
+#' This involves:
+#' \itemize{
+#' \item Running \code{\link{logNormCounts.chan}} on \code{x}.
+#' \item Running \code{\link{runPCA.chan}} to obtain \code{num.comp} PCs.
+#' \item Running \code{\link{clusterKmeans.chan}} to obtain \code{num.clusters} clusters.
+#' }
+#' If \code{batch} is provided, this is used in \code{\link{logNormCounts.chan}} and \code{\link{runPCA.chan}} to reduce the impact of large/deeply sequenced batches.
 #'
 #' @return Numeric vector containing the size factor for each cell.
 #' @author Aaron Lun
@@ -18,23 +37,23 @@
 #' library(Matrix)
 #' x <- round(abs(rsparsematrix(1000, 100, 0.1) * 100))
 #' y <- initializeSparseMatrix(x)
-#' 
-#' # Obtain a sensible grouping with a short first-pass analysis.
-#' normed <- logNormCounts.chan(y)
-#' pcs <- runPCA.chan(norm)
-#' clust <- clusterKmeans.chan(pcs$components, k=5)
-#'
-#' # Obtaining the grouped size factors.
-#' groupedSizeFactors(y, clust$clusters)
+#' groupedSizeFactors(y, group=NULL)
 #'
 #' @export
-groupedSizeFactors <- function(x, group, center=TRUE, prior.count=10, reference=NULL, num.threads=1) {
+groupedSizeFactors <- function(x, group, center=TRUE, prior.count=10, reference=NULL, size.factors=NULL, batch=NULL, num.comp=25, num.clusters=20, num.threads=1) {
+    if (is.null(group)) {
+        norm <- logNormCounts.chan(x, size.factors=size.factors, batch=batch)
+        pcs <- runPCA.chan(norm, num.comp=num.comp, num.threads=num.threads, batch=batch, batch.method="weight")
+        clust <- clusterKmeans.chan(pcs$components, k=num.clusters, num.threads=num.threads)
+        group <- clust$clusters
+    }
+    
     g <- as.integer(factor(group)) - 1L
     grouped_size_factors(
-        x, 
+        x$pointer,
         g,
         center=center, 
-        prior.count=prior.count, 
+        prior_count=prior.count, 
         reference=if (is.null(reference)) -1L else g[match(reference, group)], # index of the natural match
         nthreads=num.threads
     )
