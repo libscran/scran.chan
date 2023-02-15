@@ -8,6 +8,7 @@ runPCA.chan(
   x,
   num.comp = 50,
   subset = NULL,
+  scale = FALSE,
   num.threads = 1,
   batch = NULL,
   batch.method = c("block", "weight"),
@@ -21,6 +22,8 @@ runPCA.chan(
 
 \item{subset}{Integer, logical or character vector specifying which features to use in the PCA (e.g., highly variable genes).
 If \code{NULL}, all features in \code{x} are used.}
+
+\item{scale}{Logical scalar indicating whether to scale rows to unit variance.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 
