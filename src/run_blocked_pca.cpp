@@ -9,9 +9,12 @@
 #include "format_pca_output.h"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool rotation, int nthreads) {
+Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool scale, bool rotation, int nthreads) {
     scran::BlockedPCA pcs;
-    pcs.set_rank(ndim).set_num_threads(nthreads);
+    pcs
+        .set_rank(ndim)
+        .set_scale(scale)
+        .set_num_threads(nthreads);
 
     ResolvedFeatures feat(features);
     const int* fptr = feat.ptr;

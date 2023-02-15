@@ -357,46 +357,49 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_blocked_pca
-Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool rotation, int nthreads);
-RcppExport SEXP _scran_chan_run_blocked_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP batchSEXP, SEXP featuresSEXP, SEXP rotationSEXP, SEXP nthreadsSEXP) {
+Rcpp::List run_blocked_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool scale, bool rotation, int nthreads);
+RcppExport SEXP _scran_chan_run_blocked_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP batchSEXP, SEXP featuresSEXP, SEXP scaleSEXP, SEXP rotationSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type ndim(ndimSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type batch(batchSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::LogicalVector> >::type features(featuresSEXP);
+    Rcpp::traits::input_parameter< bool >::type scale(scaleSEXP);
     Rcpp::traits::input_parameter< bool >::type rotation(rotationSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_blocked_pca(x, ndim, batch, features, rotation, nthreads));
+    rcpp_result_gen = Rcpp::wrap(run_blocked_pca(x, ndim, batch, features, scale, rotation, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
 // run_multibatch_pca
-Rcpp::List run_multibatch_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool rotation, int nthreads);
-RcppExport SEXP _scran_chan_run_multibatch_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP batchSEXP, SEXP featuresSEXP, SEXP rotationSEXP, SEXP nthreadsSEXP) {
+Rcpp::List run_multibatch_pca(SEXP x, int ndim, Rcpp::IntegerVector batch, Rcpp::Nullable<Rcpp::LogicalVector> features, bool scale, bool rotation, int nthreads);
+RcppExport SEXP _scran_chan_run_multibatch_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP batchSEXP, SEXP featuresSEXP, SEXP scaleSEXP, SEXP rotationSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type ndim(ndimSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type batch(batchSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::LogicalVector> >::type features(featuresSEXP);
+    Rcpp::traits::input_parameter< bool >::type scale(scaleSEXP);
     Rcpp::traits::input_parameter< bool >::type rotation(rotationSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_multibatch_pca(x, ndim, batch, features, rotation, nthreads));
+    rcpp_result_gen = Rcpp::wrap(run_multibatch_pca(x, ndim, batch, features, scale, rotation, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
 // run_pca
-Rcpp::List run_pca(SEXP x, int ndim, Rcpp::Nullable<Rcpp::LogicalVector> features, bool rotation, int nthreads);
-RcppExport SEXP _scran_chan_run_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP featuresSEXP, SEXP rotationSEXP, SEXP nthreadsSEXP) {
+Rcpp::List run_pca(SEXP x, int ndim, Rcpp::Nullable<Rcpp::LogicalVector> features, bool scale, bool rotation, int nthreads);
+RcppExport SEXP _scran_chan_run_pca(SEXP xSEXP, SEXP ndimSEXP, SEXP featuresSEXP, SEXP scaleSEXP, SEXP rotationSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type ndim(ndimSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::LogicalVector> >::type features(featuresSEXP);
+    Rcpp::traits::input_parameter< bool >::type scale(scaleSEXP);
     Rcpp::traits::input_parameter< bool >::type rotation(rotationSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_pca(x, ndim, features, rotation, nthreads));
+    rcpp_result_gen = Rcpp::wrap(run_pca(x, ndim, features, scale, rotation, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -566,9 +569,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_tatami_dim", (DL_FUNC) &_scran_chan_tatami_dim, 1},
     {"_scran_chan_tatami_rows", (DL_FUNC) &_scran_chan_tatami_rows, 4},
     {"_scran_chan_tatami_columns", (DL_FUNC) &_scran_chan_tatami_columns, 4},
-    {"_scran_chan_run_blocked_pca", (DL_FUNC) &_scran_chan_run_blocked_pca, 6},
-    {"_scran_chan_run_multibatch_pca", (DL_FUNC) &_scran_chan_run_multibatch_pca, 6},
-    {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 5},
+    {"_scran_chan_run_blocked_pca", (DL_FUNC) &_scran_chan_run_blocked_pca, 7},
+    {"_scran_chan_run_multibatch_pca", (DL_FUNC) &_scran_chan_run_multibatch_pca, 7},
+    {"_scran_chan_run_pca", (DL_FUNC) &_scran_chan_run_pca, 6},
     {"_scran_chan_run_tsne", (DL_FUNC) &_scran_chan_run_tsne, 8},
     {"_scran_chan_perplexity_to_neighbors", (DL_FUNC) &_scran_chan_perplexity_to_neighbors, 1},
     {"_scran_chan_run_umap", (DL_FUNC) &_scran_chan_run_umap, 6},
