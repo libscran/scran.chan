@@ -41,6 +41,10 @@ filter_cells <- function(x, discard) {
     .Call('_scran_chan_filter_cells', PACKAGE = 'scran.chan', x, discard)
 }
 
+grouped_size_factors <- function(x, clusters, center, prior_count, reference, nthreads) {
+    .Call('_scran_chan_grouped_size_factors', PACKAGE = 'scran.chan', x, clusters, center, prior_count, reference, nthreads)
+}
+
 initialize_from_blocks_CSC <- function(nr, nc, is_integer) {
     .Call('_scran_chan_initialize_from_blocks_CSC', PACKAGE = 'scran.chan', nr, nc, is_integer)
 }

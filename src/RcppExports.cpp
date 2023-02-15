@@ -136,6 +136,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// grouped_size_factors
+Rcpp::NumericVector grouped_size_factors(SEXP x, Rcpp::IntegerVector clusters, bool center, double prior_count, int reference, int nthreads);
+RcppExport SEXP _scran_chan_grouped_size_factors(SEXP xSEXP, SEXP clustersSEXP, SEXP centerSEXP, SEXP prior_countSEXP, SEXP referenceSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type clusters(clustersSEXP);
+    Rcpp::traits::input_parameter< bool >::type center(centerSEXP);
+    Rcpp::traits::input_parameter< double >::type prior_count(prior_countSEXP);
+    Rcpp::traits::input_parameter< int >::type reference(referenceSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(grouped_size_factors(x, clusters, center, prior_count, reference, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // initialize_from_blocks_CSC
 Rcpp::List initialize_from_blocks_CSC(int nr, int nc, bool is_integer);
 RcppExport SEXP _scran_chan_initialize_from_blocks_CSC(SEXP nrSEXP, SEXP ncSEXP, SEXP is_integerSEXP) {
@@ -552,6 +567,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_combine_matrix", (DL_FUNC) &_scran_chan_combine_matrix, 2},
     {"_scran_chan_downsample_by_neighbors", (DL_FUNC) &_scran_chan_downsample_by_neighbors, 4},
     {"_scran_chan_filter_cells", (DL_FUNC) &_scran_chan_filter_cells, 2},
+    {"_scran_chan_grouped_size_factors", (DL_FUNC) &_scran_chan_grouped_size_factors, 6},
     {"_scran_chan_initialize_from_blocks_CSC", (DL_FUNC) &_scran_chan_initialize_from_blocks_CSC, 3},
     {"_scran_chan_initialize_from_blocks_CSR", (DL_FUNC) &_scran_chan_initialize_from_blocks_CSR, 3},
     {"_scran_chan_add_new_block_CSC", (DL_FUNC) &_scran_chan_add_new_block_CSC, 5},
