@@ -8,6 +8,11 @@ project(dependencies
 set(CMAKE_CXX_STANDARD 17)
 set(IGRAPH_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 
+# Avoid missing symbol errors when CMake gets tricked into using the system libraries.
+set(IGRAPH_USE_INTERNAL_LAPACK ON CACHE BOOL "" FORCE) 
+set(IGRAPH_USE_INTERNAL_ARPACK ON CACHE BOOL "" FORCE) 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON) # required to avoid ARPACK linking errors for shared libraries.
+
 include(FetchContent)
 
 FetchContent_Declare(
