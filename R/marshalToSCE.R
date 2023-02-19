@@ -50,12 +50,7 @@ marshalToSCE <- function(x, results, assay.type="counts", include.gene.data=FALS
     SingleCellExperiment::reducedDim(x, "TSNE") <- results$tsne
     SingleCellExperiment::reducedDim(x, "UMAP") <- results$umap
 
-    clust.info <- results$clusters.snn$membership
-    for (i in seq_along(clust.info)) {
-        SummarizedExperiment::colData(x, paste0("clusters.", i)) <- results$cluster.snn$membership[[i]]
-    }
-    m <- results$cluster.snn$best
-    SingleCellExperiment::colLabels(x) <- results$cluster.snn$membership[[m]]
+    SingleCellExperiment::colLabels(x) <- results$cluster.snn$membership
 
     if (include.gene.data) {
         SummarizedExperiment::rowData(x)$variances <- S4Vectors::DataFrame(results$variances)
