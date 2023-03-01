@@ -4,17 +4,23 @@
 \alias{suggestAdtQcFilters.chan}
 \title{Suggest filters for ADT QC metrics}
 \usage{
-suggestAdtQcFilters.chan(sums, detected, subsets, batch = NULL, nmads = 3)
+suggestAdtQcFilters.chan(
+  detected,
+  subsets,
+  batch = NULL,
+  min.detected.drop = 0.1,
+  nmads = 3
+)
 }
 \arguments{
-\item{sums}{Numeric vector containing the sum of counts for each cell.}
-
 \item{detected}{Integer vector containing the total number of detected features for each cell.}
 
 \item{subsets}{List of numeric vectors containing the total counts assigned to each feature subset in each cell.}
 
 \item{batch}{Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 Alternatively \code{NULL} if all cells belong to the same batch.}
+
+\item{min.detected.drop}{Numeric scalar specifying the minimum relative drop from the median number of detected features.}
 
 \item{nmads}{Numeric scalar specifying the number of median absolute deviations to be used to detect outliers.}
 }
@@ -45,7 +51,7 @@ sub <- list(IgG=rbinom(nrow(x), 1, 0.1) > 0)
 # Running the analysis:
 y <- initializeSparseMatrix(x)
 qc <- perCellAdtQcMetrics.chan(y, sub)
-filters <- suggestAdtQcFilters.chan(qc$sums, qc$detected, qc$subsets)
+filters <- suggestAdtQcFilters.chan(qc$detected, qc$subsets)
 str(filters)
 
 }

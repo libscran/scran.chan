@@ -16,7 +16,7 @@ test_that("perCellAdtQcMetrics works as expected", {
 test_that("suggestAdtQcFilters works as expected", { 
     sub <- list(IgG=rbinom(nrow(x), 1, 0.1) > 0)
     qc <- perCellAdtQcMetrics.chan(y, sub)
-    filtered <- suggestAdtQcFilters.chan(qc$sums, qc$detected, qc$subsets)
+    filtered <- suggestAdtQcFilters.chan(qc$detected, qc$subsets)
 
     # Check the thresholds.
     ldet <- log(qc$detected)
@@ -33,7 +33,7 @@ test_that("suggestAdtQcFilters works as expected with blocking", {
     sub <- list(IgG=rbinom(nrow(x), 1, 0.1) > 0)
     qc <- perCellAdtQcMetrics.chan(y, sub)
     block <- sample(3, ncol(x), replace=TRUE)
-    filtered <- suggestAdtQcFilters.chan(qc$sums, qc$detected, qc$subsets, batch=block)
+    filtered <- suggestAdtQcFilters.chan(qc$detected, qc$subsets, batch=block)
 
     # Check the thresholds.
     for (b in 1:3) {

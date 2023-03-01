@@ -5,7 +5,7 @@
 #include "ResolvedBatch.h"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List suggest_adt_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, Rcpp::Nullable<Rcpp::IntegerVector> batch, double nmads) {
+Rcpp::List suggest_adt_qc_filters(Rcpp::IntegerVector detected, Rcpp::List subsets, Rcpp::Nullable<Rcpp::IntegerVector> batch, double min_detected_drop, double nmads) {
     std::vector<Rcpp::NumericVector> in_subsets;
     const size_t nsubs = subsets.size();
     for (auto sIt = subsets.begin(); sIt != subsets.end(); ++sIt) {
@@ -13,7 +13,6 @@ Rcpp::List suggest_adt_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector 
     }
 
     scran::PerCellAdtQcMetrics::Buffers<double, int> buffers;
-    buffers.sums = sums.begin();
     buffers.detected = detected.begin();
     for (auto& s : in_subsets) {
         buffers.subset_totals.push_back(s.begin());
@@ -21,11 +20,13 @@ Rcpp::List suggest_adt_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector 
 
     auto batch_info = ResolvedBatch(batch);
     auto bptr = batch_info.ptr;
-    size_t ncells = sums.size();
+    size_t ncells = detected.size();
 
     // Setting up the outputs.
     scran::SuggestAdtQcFilters qc;
-    qc.set_num_mads(nmads);
+    qc
+        .set_num_mads(nmads)
+        .set_min_detected_drop(min_detected_drop);
     auto thresh = qc.run_blocked(ncells, bptr, buffers);
 
     // Converting threshold statistics.

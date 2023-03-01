@@ -515,16 +515,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // suggest_adt_qc_filters
-Rcpp::List suggest_adt_qc_filters(Rcpp::NumericVector sums, Rcpp::IntegerVector detected, Rcpp::List subsets, Rcpp::Nullable<Rcpp::IntegerVector> batch, double nmads);
-RcppExport SEXP _scran_chan_suggest_adt_qc_filters(SEXP sumsSEXP, SEXP detectedSEXP, SEXP subsetsSEXP, SEXP batchSEXP, SEXP nmadsSEXP) {
+Rcpp::List suggest_adt_qc_filters(Rcpp::IntegerVector detected, Rcpp::List subsets, Rcpp::Nullable<Rcpp::IntegerVector> batch, double min_detected_drop, double nmads);
+RcppExport SEXP _scran_chan_suggest_adt_qc_filters(SEXP detectedSEXP, SEXP subsetsSEXP, SEXP batchSEXP, SEXP min_detected_dropSEXP, SEXP nmadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type sums(sumsSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type detected(detectedSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type subsets(subsetsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
+    Rcpp::traits::input_parameter< double >::type min_detected_drop(min_detected_dropSEXP);
     Rcpp::traits::input_parameter< double >::type nmads(nmadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(suggest_adt_qc_filters(sums, detected, subsets, batch, nmads));
+    rcpp_result_gen = Rcpp::wrap(suggest_adt_qc_filters(detected, subsets, batch, min_detected_drop, nmads));
     return rcpp_result_gen;
 END_RCPP
 }

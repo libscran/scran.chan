@@ -153,8 +153,8 @@ subset_matrix <- function(x, i, j) {
     .Call('_scran_chan_subset_matrix', PACKAGE = 'scran.chan', x, i, j)
 }
 
-suggest_adt_qc_filters <- function(sums, detected, subsets, batch, nmads) {
-    .Call('_scran_chan_suggest_adt_qc_filters', PACKAGE = 'scran.chan', sums, detected, subsets, batch, nmads)
+suggest_adt_qc_filters <- function(detected, subsets, batch, min_detected_drop, nmads) {
+    .Call('_scran_chan_suggest_adt_qc_filters', PACKAGE = 'scran.chan', detected, subsets, batch, min_detected_drop, nmads)
 }
 
 suggest_crispr_qc_filters <- function(sums, max_prop, batch, nmads) {
