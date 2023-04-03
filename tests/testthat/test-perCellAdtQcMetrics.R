@@ -8,9 +8,9 @@ y <- initializeSparseMatrix(x)
 test_that("perCellAdtQcMetrics works as expected", { 
     sub <- list(IgG=rbinom(nrow(x), 1, 0.1) > 0)
     qc <- perCellAdtQcMetrics.chan(y, sub)
-    expect_identical(qc$sum, colSums(x))
-    expect_identical(qc$detected, colSums(x > 0))
-    expect_identical(qc$subsets$IgG, colSums(x[sub$IgG,]))
+    expect_identical(qc$sum, Matrix::colSums(x))
+    expect_identical(qc$detected, Matrix::colSums(x > 0))
+    expect_identical(qc$subsets$IgG, Matrix::colSums(x[sub$IgG,]))
 })
 
 test_that("suggestAdtQcFilters works as expected", { 
