@@ -8,8 +8,8 @@ z <- as.matrix(x)
 
 test_that("perCellCrisprQcMetrics works as expected", { 
     qc <- perCellCrisprQcMetrics.chan(y)
-    expect_identical(qc$sum, colSums(x))
-    expect_identical(qc$detected, colSums(x > 0))
+    expect_identical(qc$sum, Matrix::colSums(x))
+    expect_identical(qc$detected, Matrix::colSums(x > 0))
 
     top <- max.col(t(z))
     expect_equal(qc$max.proportion, z[cbind(top, seq_along(top))] / qc$sum)

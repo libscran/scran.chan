@@ -8,9 +8,9 @@ y <- initializeSparseMatrix(x)
 test_that("perCellRnaQcMetrics works as expected", { 
     sub <- list(Mito=rbinom(nrow(x), 1, 0.1) > 0)
     qc <- perCellRnaQcMetrics.chan(y, sub)
-    expect_identical(qc$sum, colSums(x))
-    expect_identical(qc$detected, colSums(x > 0))
-    expect_identical(qc$subsets$Mito, colSums(x[sub$Mito,]) / qc$sum)
+    expect_identical(qc$sum, Matrix::colSums(x))
+    expect_identical(qc$detected, Matrix::colSums(x > 0))
+    expect_identical(qc$subsets$Mito, Matrix::colSums(x[sub$Mito,]) / qc$sum)
 })
 
 test_that("suggestRnaQcFilters works as expected", { 
