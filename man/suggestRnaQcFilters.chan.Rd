@@ -20,6 +20,8 @@ perCellQCFilters.chan(sums, detected, subsets, batch = NULL, ...)
 Alternatively \code{NULL} if all cells belong to the same batch.}
 
 \item{nmads}{Numeric scalar specifying the number of median absolute deviations to be used to detect outliers.}
+
+\item{...}{Further arguments to pass to \code{suggestRnaQcFilters.chan}.}
 }
 \value{
 A list containing:

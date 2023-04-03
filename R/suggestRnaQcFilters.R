@@ -8,6 +8,7 @@
 #' @param batch Vector or factor of length equal to the number of cells, specifying the batch of origin for each cell.
 #' Alternatively \code{NULL} if all cells belong to the same batch.
 #' @param nmads Numeric scalar specifying the number of median absolute deviations to be used to detect outliers.
+#' @param ... Further arguments to pass to \code{suggestRnaQcFilters.chan}.
 #'
 #' @return A list containing:
 #' \itemize{
