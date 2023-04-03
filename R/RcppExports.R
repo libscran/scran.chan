@@ -149,6 +149,10 @@ score_markers <- function(x, groups, batch, simple_means_only, lfc, nthreads) {
     .Call('_scran_chan_score_markers', PACKAGE = 'scran.chan', x, groups, batch, simple_means_only, lfc, nthreads)
 }
 
+score_markers_full <- function(x, groups, batch, simple_means_only, lfc, nthreads) {
+    .Call('_scran_chan_score_markers_full', PACKAGE = 'scran.chan', x, groups, batch, simple_means_only, lfc, nthreads)
+}
+
 subset_matrix <- function(x, i, j) {
     .Call('_scran_chan_subset_matrix', PACKAGE = 'scran.chan', x, i, j)
 }

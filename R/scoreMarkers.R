@@ -12,6 +12,7 @@
 #' @param sort.by String specifying the column to use for sorting genes in descending order
 #' (except if it ends with \code{.rank}, in which case it is sorted in ascending order).
 #' If \code{NULL}, no sorting is performed.
+#' @param all.pairwise Logical scalar indicating whether to report the full effects for every pairwise comparison.
 #'
 #' @return A list containing \code{statistics}, a list of data frame of marker statistics. 
 #' Each data frame corresponds to a group in \code{groups} and contains:
@@ -36,6 +37,11 @@
 #' If \code{batch} is supplied, this list will also contain \code{per.batch}.
 #' This is a list containing \code{mean} and \code{detected}, each of which are lists of data frames containing the batch-specific statistics for each group.
 #' (In this case, \code{statistics} contains the averaged statistics for each gene across batches.)
+#'
+#' If \code{all.pairwise=TRUE}, this list will also contain \code{pairwise}, a list of lists of data frames.
+#' Each data frame contains the statistics for the pairwise comparison between groups, 
+#' e.g., `pairwise$A$B` contains the statistics for A versus B where large effects correspond to upregulation in A.
+#' Note that rows correspond to the order in \code{x} - \code{sort.by} has no effect on these data frames.
 #'
 #' @details
 #' \code{min} is the most stringent summary statistic for identifying upregulated genes, 
@@ -66,10 +72,11 @@
 #' \url{https://ltla.github.io/libscran/classscran_1_1ScoreMarkers.html}
 #'
 #' @export
-scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1, simple.means.only=TRUE, sort.by="cohen.rank") {
+scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1, simple.means.only=TRUE, sort.by="cohen.rank", all.pairwise=FALSE) {
     groups <- transform_factor(groups, n = tatami_ncol(x))
     batch <- transform_factor(batch, n = tatami_ncol(x))
-    output <- score_markers(x$pointer, groups$index, batch$index, lfc=lfc, nthreads=num.threads, simple_means_only=simple.means.only)
+    FUN <- if (all.pairwise) score_markers_full else score_markers
+    output <- FUN(x$pointer, groups$index, batch$index, lfc=lfc, nthreads=num.threads, simple_means_only=simple.means.only)
 
     formatted <- vector("list", length(groups$names))
     for (i in seq_along(formatted)) {
@@ -99,6 +106,21 @@ scoreMarkers.chan <- function(x, groups, batch=NULL, lfc=0, num.threads=1, simpl
             rownames(detect.df) <- x$rownames
             colnames(detect.df) <- batch$names
             output$per.batch$detected[[i]] <- detect.df
+        }
+    }
+
+    if (all.pairwise) {
+        names(output$pairwise) <- groups$names
+        for (i in seq_along(output$pairwise)) {
+            current <- output$pairwise[[i]]
+            names(current) <- groups$names
+
+            current <- current[!vapply(current, is.null, TRUE)]
+            for (y in seq_along(current)) {
+                rownames(current[[y]]) <- x$rownames
+            }
+
+            output$pairwise[[i]] <- current
         }
     }
 

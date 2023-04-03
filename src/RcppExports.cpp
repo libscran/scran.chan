@@ -502,6 +502,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// score_markers_full
+Rcpp::List score_markers_full(SEXP x, Rcpp::IntegerVector groups, Rcpp::Nullable<Rcpp::IntegerVector> batch, bool simple_means_only, double lfc, int nthreads);
+RcppExport SEXP _scran_chan_score_markers_full(SEXP xSEXP, SEXP groupsSEXP, SEXP batchSEXP, SEXP simple_means_onlySEXP, SEXP lfcSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
+    Rcpp::traits::input_parameter< bool >::type simple_means_only(simple_means_onlySEXP);
+    Rcpp::traits::input_parameter< double >::type lfc(lfcSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(score_markers_full(x, groups, batch, simple_means_only, lfc, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // subset_matrix
 SEXP subset_matrix(SEXP x, Rcpp::RObject i, Rcpp::RObject j);
 RcppExport SEXP _scran_chan_subset_matrix(SEXP xSEXP, SEXP iSEXP, SEXP jSEXP) {
@@ -594,6 +609,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_scale_by_neighbors", (DL_FUNC) &_scran_chan_scale_by_neighbors, 4},
     {"_scran_chan_score_feature_set", (DL_FUNC) &_scran_chan_score_feature_set, 5},
     {"_scran_chan_score_markers", (DL_FUNC) &_scran_chan_score_markers, 6},
+    {"_scran_chan_score_markers_full", (DL_FUNC) &_scran_chan_score_markers_full, 6},
     {"_scran_chan_subset_matrix", (DL_FUNC) &_scran_chan_subset_matrix, 3},
     {"_scran_chan_suggest_adt_qc_filters", (DL_FUNC) &_scran_chan_suggest_adt_qc_filters, 5},
     {"_scran_chan_suggest_crispr_qc_filters", (DL_FUNC) &_scran_chan_suggest_crispr_qc_filters, 4},

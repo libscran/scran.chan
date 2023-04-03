@@ -11,7 +11,8 @@ scoreMarkers.chan(
   lfc = 0,
   num.threads = 1,
   simple.means.only = TRUE,
-  sort.by = "cohen.rank"
+  sort.by = "cohen.rank",
+  all.pairwise = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ Alternatively \code{NULL} if all cells belong to the same batch.}
 \item{sort.by}{String specifying the column to use for sorting genes in descending order
 (except if it ends with \code{.rank}, in which case it is sorted in ascending order).
 If \code{NULL}, no sorting is performed.}
+
+\item{all.pairwise}{Logical scalar indicating whether to report the full effects for every pairwise comparison.}
 }
 \value{
 A list containing \code{statistics}, a list of data frame of marker statistics. 
@@ -56,6 +59,11 @@ These can be interpreted in a similar manner as \code{cohen.min}, \code{cohen.ra
 If \code{batch} is supplied, this list will also contain \code{per.batch}.
 This is a list containing \code{mean} and \code{detected}, each of which are lists of data frames containing the batch-specific statistics for each group.
 (In this case, \code{statistics} contains the averaged statistics for each gene across batches.)
+
+If \code{all.pairwise=TRUE}, this list will also contain \code{pairwise}, a list of lists of data frames.
+Each data frame contains the statistics for the pairwise comparison between groups, 
+e.g., `pairwise$A$B` contains the statistics for A versus B where large effects correspond to upregulation in A.
+Note that rows correspond to the order in \code{x} - \code{sort.by} has no effect on these data frames.
 }
 \description{
 Score marker genes using a variety of effect sizes from pairwise comparisons.
