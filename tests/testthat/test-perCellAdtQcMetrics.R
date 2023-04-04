@@ -23,6 +23,7 @@ test_that("suggestAdtQcFilters works as expected", {
     expect_equal(filtered$thresholds$detected, exp(median(ldet) - 3 * mad(ldet)))
     lsub <- log(qc$subsets[[1]])
     expect_equal(filtered$thresholds$subsets[[1]], exp(median(lsub) + 3 * mad(lsub)))
+    expect_equal(names(filtered$thresholds$subsets), "IgG")
 
     # Check the filter.
     expected <- qc$detected >= filtered$thresholds$detected & qc$subsets[[1]] <= filtered$thresholds$subsets[[1]]

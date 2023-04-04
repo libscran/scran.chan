@@ -23,8 +23,10 @@ test_that("suggestRnaQcFilters works as expected", {
     expect_equal(filtered$thresholds$sums, exp(median(lsums) - 3 * mad(lsums)))
     ldet <- log(qc$detected)
     expect_equal(filtered$thresholds$detected, exp(median(ldet) - 3 * mad(ldet)))
+
     sub <- qc$subsets[[1]]
     expect_equal(filtered$thresholds$subsets[[1]], median(sub) + 3 * mad(sub))
+    expect_equal(names(filtered$thresholds$subsets), "Mito")
 
     # Check the filter.
     expected <- qc$sums >= filtered$thresholds$sums & qc$detected >= filtered$thresholds$detected & qc$subsets[[1]] <= filtered$thresholds$subsets[[1]]

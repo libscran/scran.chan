@@ -42,6 +42,7 @@ suggestAdtQcFilters.chan <- function(detected, subsets, batch=NULL, min.detected
     filters <- suggest_adt_qc_filters(detected, subsets, batch=batch$index, min_detected_drop=min.detected.drop, nmads=nmads)
 
     names(filters$thresholds$detected) <- batch$names
+    names(filters$thresholds$subsets) <- names(subsets)
     for (i in seq_along(subsets)) {
         names(filters$thresholds$subsets[[i]]) <- batch$names
     }

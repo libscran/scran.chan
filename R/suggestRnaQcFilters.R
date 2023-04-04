@@ -45,6 +45,8 @@ suggestRnaQcFilters.chan <- function(sums, detected, subsets, batch=NULL, nmads=
 
     names(filters$thresholds$sums) <- batch$names
     names(filters$thresholds$detected) <- batch$names
+
+    names(filters$thresholds$subsets) <- names(subsets)
     for (i in seq_along(subsets)) {
         names(filters$thresholds$subsets[[i]]) <- batch$names
     }
