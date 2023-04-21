@@ -2,7 +2,7 @@
 
 #include "Rcpp.h"
 
-#include "scran/aggregation/ScoreFeatureSet.hpp"
+#include "scran/feature_set_enrichment/ScoreFeatureSet.hpp"
 
 #include "tatamize.h"
 #include "ResolvedFeatures.h"

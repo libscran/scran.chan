@@ -288,15 +288,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // model_gene_var
-Rcpp::List model_gene_var(SEXP x, Rcpp::Nullable<Rcpp::IntegerVector> batch, double span, int nthreads);
-RcppExport SEXP _scran_chan_model_gene_var(SEXP xSEXP, SEXP batchSEXP, SEXP spanSEXP, SEXP nthreadsSEXP) {
+Rcpp::List model_gene_var(SEXP x, Rcpp::Nullable<Rcpp::IntegerVector> batch, double span, bool use_fixed, double fixed_width, int min_count, int nthreads);
+RcppExport SEXP _scran_chan_model_gene_var(SEXP xSEXP, SEXP batchSEXP, SEXP spanSEXP, SEXP use_fixedSEXP, SEXP fixed_widthSEXP, SEXP min_countSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type batch(batchSEXP);
     Rcpp::traits::input_parameter< double >::type span(spanSEXP);
+    Rcpp::traits::input_parameter< bool >::type use_fixed(use_fixedSEXP);
+    Rcpp::traits::input_parameter< double >::type fixed_width(fixed_widthSEXP);
+    Rcpp::traits::input_parameter< int >::type min_count(min_countSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(model_gene_var(x, batch, span, nthreads));
+    rcpp_result_gen = Rcpp::wrap(model_gene_var(x, batch, span, use_fixed, fixed_width, min_count, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -593,7 +596,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scran_chan_initialize_from_memory", (DL_FUNC) &_scran_chan_initialize_from_memory, 8},
     {"_scran_chan_log_norm_counts", (DL_FUNC) &_scran_chan_log_norm_counts, 5},
     {"_scran_chan_mnn_correct", (DL_FUNC) &_scran_chan_mnn_correct, 9},
-    {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 4},
+    {"_scran_chan_model_gene_var", (DL_FUNC) &_scran_chan_model_gene_var, 7},
     {"_scran_chan_per_cell_adt_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_adt_qc_metrics, 3},
     {"_scran_chan_per_cell_crispr_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_crispr_qc_metrics, 2},
     {"_scran_chan_per_cell_rna_qc_metrics", (DL_FUNC) &_scran_chan_per_cell_rna_qc_metrics, 3},

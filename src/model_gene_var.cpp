@@ -10,10 +10,13 @@
 #include "vector_to_pointers.h"
 
 //[[Rcpp::export(rng=false)]]
-Rcpp::List model_gene_var(SEXP x, Rcpp::Nullable<Rcpp::IntegerVector> batch, double span, int nthreads) {
+Rcpp::List model_gene_var(SEXP x, Rcpp::Nullable<Rcpp::IntegerVector> batch, double span, bool use_fixed, double fixed_width, int min_count, int nthreads) {
     scran::ModelGeneVar mvar;
     mvar.set_num_threads(nthreads);
     mvar.set_span(span);
+    mvar.set_use_fixed_width(use_fixed);
+    mvar.set_fixed_width(fixed_width);
+    mvar.set_minimum_window_count(min_count);
 
     auto mat = extract_NumericMatrix(x);
     size_t NR = mat->nrow(), NC = mat->ncol();

@@ -85,8 +85,8 @@ mnn_correct <- function(x, batch, k, nmads, nthreads, mass_cap, order, ref_polic
     .Call('_scran_chan_mnn_correct', PACKAGE = 'scran.chan', x, batch, k, nmads, nthreads, mass_cap, order, ref_policy, approximate)
 }
 
-model_gene_var <- function(x, batch, span, nthreads) {
-    .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, batch, span, nthreads)
+model_gene_var <- function(x, batch, span, use_fixed, fixed_width, min_count, nthreads) {
+    .Call('_scran_chan_model_gene_var', PACKAGE = 'scran.chan', x, batch, span, use_fixed, fixed_width, min_count, nthreads)
 }
 
 per_cell_adt_qc_metrics <- function(x, subsets, nthreads) {
