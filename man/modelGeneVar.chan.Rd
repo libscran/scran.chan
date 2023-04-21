@@ -4,12 +4,28 @@
 \alias{modelGeneVar.chan}
 \title{Model per-gene variance}
 \usage{
-modelGeneVar.chan(x, span = 0.3, num.threads = 1, batch = NULL)
+modelGeneVar.chan(
+  x,
+  span = 0.3,
+  use.fixed.width = FALSE,
+  fixed.width = 1,
+  fixed.min.count = 200,
+  num.threads = 1,
+  batch = NULL
+)
 }
 \arguments{
 \item{x}{A list containing the log-expression matrix, typically produced by \code{\link{logNormCounts.chan}}.}
 
 \item{span}{Numeric scalar containing the span to use for LOWESS smoothing of the trend.}
+
+\item{use.fixed.width}{Logical scalar specifying whether to apply a fixed-width constraint on the smoothing,
+to avoid problems with large differences in density across the range of means.}
+
+\item{fixed.width}{Numeric scalar specifying the window width when `use.fixed.width = TRUE`.}
+
+\item{fixed.min.count}{Integer scalar specifying the minimum number of genes in a window when `use.fixed.width = TRUE`.
+Windows with too few genes are expanded until they contain the required minimum.}
 
 \item{num.threads}{Integer scalar specifying the number of threads to use.}
 
