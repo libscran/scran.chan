@@ -2,8 +2,8 @@ Package: scran.chan
 Title: A smaller version of the scran package
 Description: A diet version of scran for single-cell RNA-seq data analysis,
     without any of its dependencies.
-Version: 0.3.4
-Date: 2023-04-02
+Version: 0.3.5
+Date: 2024-09-17
 Authors@R: person("Aaron", "Lun", email="infinite.monkeys.with.keyboards@gmail.com", role=c("aut", "cre"))
 License: MIT + file LICENSE
 Imports:
@@ -20,7 +20,10 @@ Suggests:
     Matrix,
     BiocGenerics,
     S4Vectors,
+    S4Arrays,
     DelayedArray,
+    SparseArray,
+    HDF5Array,
     SummarizedExperiment,
     SingleCellExperiment,
     BiocParallel,
@@ -28,4 +31,4 @@ Suggests:
     rhdf5
 VignetteBuilder: knitr
 SystemRequirements: C++17, git, CMake
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

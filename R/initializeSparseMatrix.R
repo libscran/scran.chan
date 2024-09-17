@@ -81,17 +81,17 @@ initializeSparseMatrix <- function(x, force.integer=TRUE, no.sparse.copy=TRUE, b
         # Doing the sort inside the extractor, so we can exploit compute in multiple cores.
         if (by.column) {
             extractor <- function(vp) {
-                output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
-                nzi <- DelayedArray::nzindex(output)
+                output <- S4Arrays::read_block(x, vp, as.sparse=TRUE)
+                nzi <- SparseArray::nzwhich(output, arr.ind=TRUE)
                 o <- order(nzi[,2], nzi[,1])
-                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], ncol=ncol(output))
+                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=SparseArray::nzvals(output)[o], ncol=ncol(output))
             }
         } else {
             extractor <- function(vp) {
-                output <- DelayedArray::read_block(x, vp, as.sparse=TRUE)
-                nzi <- DelayedArray::nzindex(output)
+                output <- S4Arrays::read_block(x, vp, as.sparse=TRUE)
+                nzi <- SparseArray::nzwhich(output, arr.ind=TRUE)
                 o <- order(nzi[,1], nzi[,2])
-                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=DelayedArray::nzdata(output)[o], nrow=nrow(output))
+                list(row=nzi[o,1] - 1L, column=nzi[o,2] - 1L, value=SparseArray::nzvals(output)[o], nrow=nrow(output))
             }
         }
 
