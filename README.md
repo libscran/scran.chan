@@ -1,5 +1,7 @@
 # A slimmed-down version of scran
 
+⚠️ ⚠️ ⚠️ ⚠️  **This repository is deprecated, use the [scrapper](https://github.com/libscran/scrapper) package instead.** ⚠️ ⚠️ ⚠️ ⚠️  
+
 ## Overview
 
 **scran.chan** is a slimmed-down version of the [**scran**](https://bioconductor.org/packages/scran) Bioconductor package,
